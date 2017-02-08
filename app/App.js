@@ -2,36 +2,29 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
+import MapView from 'react-native-maps';
+const styles = require( "../assets/css/style");
 
-class App extends Component {
+export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Singular view for both versions!
-        </Text>
+        <MapView style={styles.map}
+                 initialRegion={{
+            latitude: 37.78825,
+            longitude: -122.4324,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        }}>
+        </MapView>
+          <Text style={styles.description}>
+              Description of location is here. Description of location is here. Description of location is here.
+              Description of location is here. Description of location is here. Description of location is here.
+              Description of location is here.
+          </Text>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});

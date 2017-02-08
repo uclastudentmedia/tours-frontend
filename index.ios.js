@@ -3,12 +3,12 @@ import {
   AppRegistry,
   View
 } from 'react-native';
-import App from 'app/App';
+import App from './app/App';
 
 export default class toursfrontend extends Component {
   render() {
     return (
-      <View>
+      <View style={{flex: 1}}>
         <App/>
       </View>
     );
