@@ -13,7 +13,7 @@ var {height, width} = Dimensions.get('window');
 module.exports = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         backgroundColor: 'black',
     },
