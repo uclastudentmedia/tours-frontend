@@ -16,11 +16,14 @@ export default class MainMapView extends Component {
             <View style={styles.container}>
                 <MapView style={styles.map}
                          initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
+            latitude: 34.070286,
+            longitude: -118.443413,
             latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-        }}>
+            longitudeDelta: 0.0421,}}>
+                    <MapView.Marker draggable
+                                    coordinate={this.state.x}
+                                    onDragEnd={(e) => this.setState({ x: e.nativeEvent.coordinate })}
+                    />
                 </MapView>
                 <Text style={styles.description}>
                     Description of location is here. Description of location is here. Description of location is here.
