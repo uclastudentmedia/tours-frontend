@@ -5,25 +5,14 @@ import {
   View,
 } from 'react-native';
 import MapView from 'react-native-maps';
+import MainMapView from 'MainMapView';
 const styles = require( "../assets/css/style");
 
 export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <MapView style={styles.map}
-                 initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-        }}>
-        </MapView>
-          <Text style={styles.description}>
-              Description of location is here. Description of location is here. Description of location is here.
-              Description of location is here. Description of location is here. Description of location is here.
-              Description of location is here.
-          </Text>
+            <MainMapView></MainMapView>
       </View>
     );
   }
