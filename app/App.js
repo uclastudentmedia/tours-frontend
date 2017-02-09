@@ -5,14 +5,14 @@ import {
   View,
 } from 'react-native';
 import MapView from 'react-native-maps';
-import MainMapView from 'MainMapView';
+import LoadingView from './Views/LoadingView';
 const styles = require( "../assets/css/style");
 
 export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-            <MainMapView></MainMapView>
+          <LoadingView></LoadingView>
       </View>
     );
   }
