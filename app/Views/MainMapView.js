@@ -11,6 +11,12 @@ import MapView from 'react-native-maps';
 const styles = require( "../../assets/css/style");
 
 export default class MainMapView extends Component {
+    static get defaultProps() {
+        return {
+            title: 'MapView'
+        };
+    }
+
     render() {
         return (
             <View style={styles.container}>
