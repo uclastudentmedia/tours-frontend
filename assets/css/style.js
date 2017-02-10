@@ -45,4 +45,9 @@ module.exports = StyleSheet.create({
         padding: 20,
         backgroundColor:'#F5FCFF'
     },
+    description: {
+        flex: 3,
+        padding: 20,
+        width: 372
+    }
 });
