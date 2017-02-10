@@ -15,13 +15,15 @@ import MapView from 'react-native-maps';
 import LoadingView from './LoadingView';
 
 const styles = require( "../../assets/css/style");
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 var {height, width} = Dimensions.get('window');
 var dataPop = [];
+var test = ['a','b'];
 
 export default class MainMapView extends Component {
 
-    async componentDidMount(){
+    async componentWillMount(){
         try {
             let value = await AsyncStorage.getItem('data');
             let val = JSON.parse(value);
@@ -30,10 +32,13 @@ export default class MainMapView extends Component {
                     data: val
                 });
                 var temp = val.results;
-                for(var i = 0; i < 2; i++)
+                for(var i = 0; i < temp.length; i++)
                 {
                     dataPop.push(temp[i].name);
                 }
+                this.setState({
+                    dataSource: ds.cloneWithRows(dataPop)
+                });
                 this.setState({
                     loaded: true
                 });
@@ -45,7 +50,6 @@ export default class MainMapView extends Component {
 
     constructor(props){
         super(props);
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             data: '',
             dataSource: ds.cloneWithRows(dataPop),
@@ -67,6 +71,8 @@ export default class MainMapView extends Component {
         }
         else {
             console.log(this.state.dataSource);
+            console.log(dataPop);
+            console.log(test);
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
