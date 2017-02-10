@@ -8,7 +8,7 @@ import {
     View,
 } from 'react-native';
 import MapView from 'react-native-maps';
-const styles = require( "../assets/css/style");
+const styles = require( "../../assets/css/style");
 
 export default class MainMapView extends Component {
     render() {
