@@ -17,6 +17,20 @@ module.exports = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'black',
     },
+    loading:{
+        backgroundColor: '#B2E4F7',
+        flex:1,
+        width:width,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    center:{
+        fontSize: 50
+    },
+    loading_logo:{
+        width:100,
+        height:100,
+    },
     map: {
         height: (height*2/3),
         width: width
@@ -26,9 +40,14 @@ module.exports = StyleSheet.create({
         color: '#333333',
         marginBottom: 5,
     },
-    description: {
+    info: {
         flex:1,
         padding: 20,
         backgroundColor:'#F5FCFF'
     },
+    description: {
+        flex: 3,
+        padding: 20,
+        width: 372
+    }
 });
