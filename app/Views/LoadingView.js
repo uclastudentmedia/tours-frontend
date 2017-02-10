@@ -4,7 +4,8 @@ import {
     StyleSheet,
     Text,
     View,
-    Image
+    Image,
+    AsyncStorage
 } from 'react-native';
 
 import MainMapView from './MainMapView';
@@ -32,6 +33,7 @@ export default class App extends Component {
         this.setState({
           results: responseJson
         });
+        this.storeData();
         this.setState({
           done: true
         });
@@ -40,6 +42,11 @@ export default class App extends Component {
       .catch((error) => {
         console.error(error);
       });
+  }
+
+  storeData(){
+      let data = this.state.results;
+      AsyncStorage.setItem('data', JSON.stringify(data));
   }
 
   render() {
