@@ -7,7 +7,8 @@ import {
     Text,
     View,
     AsyncStorage,
-    ListView
+    ListView,
+    Dimensions
 } from 'react-native';
 import MapView from 'react-native-maps';
 
@@ -15,7 +16,8 @@ import LoadingView from './LoadingView';
 
 const styles = require( "../../assets/css/style");
 
-var dataPop = '';
+var {height, width} = Dimensions.get('window');
+var dataPop = [];
 
 export default class MainMapView extends Component {
 
@@ -27,16 +29,18 @@ export default class MainMapView extends Component {
                 this.setState({
                     data: val
                 });
-                dataPop = val.results;
+                var temp = val.results;
+                for(var i = 0; i < 2; i++)
+                {
+                    dataPop.push(temp[i].name);
+                }
                 this.setState({
                     loaded: true
                 });
-                console.log(dataPop);
             }
         } catch (e) {
             console.log(e);
         }
-        console.log(this.state.data);
     }
 
     constructor(props){
@@ -62,6 +66,7 @@ export default class MainMapView extends Component {
             );
         }
         else {
+            console.log(this.state.dataSource);
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
@@ -82,6 +87,7 @@ export default class MainMapView extends Component {
                     <View style={styles.info}>
 
                         <ListView
+                            style={{width: width - 40}}
                             dataSource={this.state.dataSource}
                             renderRow={(rowData) => <Text>{rowData}</Text>}
                             enableEmptySections={true}
