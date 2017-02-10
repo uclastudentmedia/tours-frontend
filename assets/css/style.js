@@ -40,7 +40,7 @@ module.exports = StyleSheet.create({
         color: '#333333',
         marginBottom: 5,
     },
-    description: {
+    info: {
         flex:1,
         padding: 20,
         backgroundColor:'#F5FCFF'

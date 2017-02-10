@@ -18,18 +18,25 @@ export default class MainMapView extends Component {
                          initialRegion={{
             latitude: 34.070286,
             longitude: -118.443413,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,}}>
-                    <MapView.Marker draggable
-                                    coordinate={this.state.x}
-                                    onDragEnd={(e) => this.setState({ x: e.nativeEvent.coordinate })}
+            latitudeDelta: 0.0122,
+            longitudeDelta: 0.0921,}}>
+                    <MapView.Marker
+                        image={require('../../assets/images/pin_1x.png')}
+                        coordinate={{
+            latitude: 34.070286,
+            longitude: -118.443413,
+            latitudeDelta: 0.0122,
+            longitudeDelta: 0.0921,}}
                     />
                 </MapView>
-                <Text style={styles.description}>
-                    Description of location is here. Description of location is here. Description of location is here.
-                    Description of location is here. Description of location is here. Description of location is here.
-                    Description of location is here.
-                </Text>
+                <View style={styles.info}>
+
+                    <Text style={styles.description}>
+                        Description of location is here. Description of location is here. Description of location is here.
+                        Description of location is here. Description of location is here. Description of location is here.
+                        Description of location is here.
+                    </Text>
+                </View>
             </View>
         );
     }
