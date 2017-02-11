@@ -63,7 +63,7 @@ export default class App extends Component {
         });
         this.storeData();
         this.setState({
-          done: false //make sure to change to true
+          done: true 
         });
       })
       .catch((error) => {
