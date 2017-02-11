@@ -6,8 +6,7 @@ import {
     StyleSheet,
     Dimensions
 } from "react-native";
-
-import MapView from 'react-native-maps';
+import MapView from 'react-native-maps'
 
 var {height, width} = Dimensions.get('window');
 
@@ -46,12 +45,21 @@ module.exports = StyleSheet.create({
     info: {
         flex:1,
         padding: 20,
+        paddingBottom:0,
+        paddingTop:0,
         backgroundColor:'#F5FCFF'
     },
     description: {
         flex: 3,
         padding: 20,
         width: 372
+    },
+    locations:{
+        width: width - 40
+    },
+    locText:{
+        padding:10,
+        fontSize:30
     },
     spin: {
         top: 40
