@@ -23,6 +23,8 @@ var test = ['a','b'];
 
 export default class MainMapView extends Component {
 
+    watchID: ?number = null;
+
     async componentWillMount(){
         try {
             let value = await AsyncStorage.getItem('data');
@@ -32,7 +34,7 @@ export default class MainMapView extends Component {
                     data: val
                 });
                 var temp = val.results;
-                for(var i = 0; i < temp.length; i++)
+                for(var i = 0; i < 10; i++)
                 {
                     dataPop.push(temp[i].name);
                 }
@@ -46,6 +48,25 @@ export default class MainMapView extends Component {
         } catch (e) {
             console.log(e);
         }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                var initialPosition = JSON.stringify(position);
+                var val = JSON.parse(initialPosition);
+                this.setState({initialPosition});
+            },
+            (error) => alert(JSON.stringify(error)),
+            {enableHighAccuracty: true, timeout: 20000, maximumAge: 1000}
+        );
+        this.watchID = navigator.geolocation.watchPosition((position) => {
+            var lastPosition = JSON.stringify(position);
+            var val = JSON.parse(lastPosition);
+            this.setState({lastPosition});
+        });
+    }
+
+    componentWillUnmount(){
+        navigator.geolocation.clearWatch(this.watchID);
     }
 
     constructor(props){
@@ -53,7 +74,9 @@ export default class MainMapView extends Component {
         this.state = {
             data: '',
             dataSource: ds.cloneWithRows(dataPop),
-            loaded: false
+            loaded: false,
+            initialPosition: 'unknown',
+            lastPosition: 'unknown',
         }
     }
 
@@ -71,8 +94,7 @@ export default class MainMapView extends Component {
         }
         else {
             console.log(this.state.dataSource);
-            console.log(dataPop);
-            console.log(test);
+            console.log(this.state);
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
