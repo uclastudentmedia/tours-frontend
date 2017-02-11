@@ -9,7 +9,9 @@
   "dependencies": {
     "react": "15.4.2",
     "react-native": "^0.41.1",
+    "react-native-loading-spinner-overlay": "^0.4.1",
     "react-native-maps": "^0.12.4",
+    "react-native-spinkit": "^1.0.2",
     "react-native-vector-icons": "^4.0.0"
   },
   "devDependencies": {
