@@ -8,7 +8,8 @@ import {
     View,
     AsyncStorage,
     ListView,
-    Dimensions
+    Dimensions,
+    Image
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {DistancePrioritize} from '../Utils'
@@ -110,7 +111,7 @@ export default class MainMapView extends Component {
                 latitudeDelta: 0.0122,
                 longitudeDelta: 0.0921,}}>
                         <MapView.Marker
-                            image={require('../../assets/images/pin_1x.png')}
+                            image={require('../../assets/images/pin_80.png')}
                             coordinate={{
                 latitude: this.state.initialPosition.coords.latitude,
                 longitude: this.state.initialPosition.coords.longitude,
@@ -121,9 +122,9 @@ export default class MainMapView extends Component {
                     <View style={styles.info}>
 
                         <ListView
-                            style={{width: width - 40}}
+                            style={styles.locations}
                             dataSource={this.state.dataSource}
-                            renderRow={(rowData) => <Text>{rowData}</Text>}
+                            renderRow={(rowData) => <Text style={styles.locText}>{rowData}</Text>}
                             enableEmptySections={true}
                         />
                     </View>
