@@ -11,6 +11,7 @@ import {
     Dimensions
 } from 'react-native';
 import MapView from 'react-native-maps';
+import {DistancePrioritize} from '../Utils'
 
 import LoadingView from './LoadingView';
 
@@ -97,6 +98,7 @@ export default class MainMapView extends Component {
             );
         }
         else if(this.state.loaded && this.state.initialPosition != 'unknown'){
+            //insert DistancePrioritize(lat,long) function here
             console.log(this.state.dataSource);
             console.log(this.state);
             return (
