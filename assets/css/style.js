@@ -6,14 +6,15 @@ import {
     StyleSheet,
     Dimensions
 } from "react-native";
-import MapView from 'react-native-maps'
+
+import MapView from 'react-native-maps';
 
 var {height, width} = Dimensions.get('window');
 
 module.exports = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         backgroundColor: 'black',
     },
@@ -22,14 +23,16 @@ module.exports = StyleSheet.create({
         flex:1,
         width:width,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        bottom: 0
     },
     center:{
-        fontSize: 50
+        fontSize: 50,
     },
     loading_logo:{
-        width:100,
-        height:100,
+        width:200,
+        height:175,
+        bottom: 10
     },
     map: {
         height: (height*2/3),
@@ -49,5 +52,8 @@ module.exports = StyleSheet.create({
         flex: 3,
         padding: 20,
         width: 372
+    },
+    spin: {
+        top: 40
     }
 });
