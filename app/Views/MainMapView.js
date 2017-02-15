@@ -28,9 +28,16 @@ export default class MainMapView extends Component {
     watchID: ?number = null;
 
     async componentWillMount(){
+        this.getPosition();
+    }
+
+    async componentDidMount(){
         try {
             let value = await AsyncStorage.getItem('data');
             let val = JSON.parse(value);
+            let val2 = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude);
+            console.log("ADFADFAF");
+            console.log(val2);
             if(val !== null){
                 this.setState({
                     data: val
@@ -50,15 +57,13 @@ export default class MainMapView extends Component {
         } catch (e) {
             console.log(e);
         }
+    }
 
+    getPosition(){
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 var initialPosition = JSON.stringify(position);
                 var val = JSON.parse(initialPosition);
-                console.log("ASdAWSDASDASDASD");
-                console.log(val);
-                console.log("Sterster");
-                console.log(initialPosition);
                 this.setState({initialPosition: val});
             },
             (error) => alert(JSON.stringify(error)),
@@ -100,8 +105,6 @@ export default class MainMapView extends Component {
         }
         else if(this.state.loaded && this.state.initialPosition != 'unknown'){
             //insert DistancePrioritize(lat,long) function here
-            console.log(this.state.dataSource);
-            console.log(this.state);
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
