@@ -61,6 +61,9 @@ module.exports = StyleSheet.create({
         padding:10,
         fontSize:30
     },
+    infoSection:{
+
+    },
     spin: {
         top: 40
     }

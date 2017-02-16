@@ -35,9 +35,9 @@ export default class MainMapView extends Component {
         try {
             let value = await AsyncStorage.getItem('data');
             let val = JSON.parse(value);
-            let val2 = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude);
-            console.log("ADFADFAF");
-            console.log(val2);
+            //let val2 = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude);
+            //console.log("ADFADFAF");
+            //console.log(val2);
             if(val !== null){
                 this.setState({
                     data: val
@@ -99,12 +99,16 @@ export default class MainMapView extends Component {
 
     render() {
         if(!this.state.loaded){
+            let val2 = DistancePrioritize(34.070381, -118.443497);
+            //console.log("ADFADFAF");
+            console.log(val2);
             return (
                 <LoadingView/>
             );
         }
         else if(this.state.loaded && this.state.initialPosition != 'unknown'){
             //insert DistancePrioritize(lat,long) function here
+            //console.log(DistancePrioritize(1,0));
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
