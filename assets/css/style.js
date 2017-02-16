@@ -58,13 +58,28 @@ module.exports = StyleSheet.create({
         width: width - 40
     },
     locText:{
-        padding:10,
-        fontSize:30
+        padding:20,
+        fontSize:21,
+        color: '#5b73a4'
+    },
+    placeholder: {
+        top: 15,
+        height: 40,
+        width: 40
+    },
+    separator: {
+        height: 1,
+        backgroundColor: '#dddddd'
     },
     infoSection:{
 
     },
     spin: {
         top: 40
+    },
+    wrapper: {
+        flexWrap: 'wrap', 
+        alignItems: 'flex-start',
+        flexDirection:'row'
     }
 });

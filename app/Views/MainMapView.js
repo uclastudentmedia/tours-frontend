@@ -130,7 +130,16 @@ export default class MainMapView extends Component {
                         <ListView
                             style={styles.locations}
                             dataSource={this.state.dataSource}
-                            renderRow={(rowData) => <Text style={styles.locText}>{rowData}</Text>}
+                            renderRow={(rowData) => 
+                                <View>
+                                    <View style={styles.wrapper}>
+                                        <Image style={styles.placeholder} source={require('../../assets/images/icon_ph.png')}/>
+                                        <Text style={styles.locText}>
+                                            {rowData}
+                                        </Text>
+                                    </View>
+                                    <View style={styles.separator} />
+                                </View>}
                             enableEmptySections={true}
                         />
                     </View>
