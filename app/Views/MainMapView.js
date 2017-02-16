@@ -21,7 +21,6 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 var {height, width} = Dimensions.get('window');
 var dataPop = [];
-var test = ['a','b'];
 
 export default class MainMapView extends Component {
 
@@ -29,9 +28,7 @@ export default class MainMapView extends Component {
 
     async componentWillMount(){
         this.getPosition();
-    }
 
-    async componentDidMount(){
         try {
             let value = await AsyncStorage.getItem('data');
             let val = JSON.parse(value);
@@ -42,6 +39,7 @@ export default class MainMapView extends Component {
                 this.setState({
                     data: val
                 });
+
                 var temp = val.results;
                 for(var i = 0; i < 10; i++)
                 {
@@ -57,6 +55,7 @@ export default class MainMapView extends Component {
         } catch (e) {
             console.log(e);
         }
+
     }
 
     getPosition(){
@@ -140,32 +139,7 @@ export default class MainMapView extends Component {
         }
         else {
             return (
-                <View style={styles.container}>
-                    <MapView style={styles.map}
-                             initialRegion={{
-                                latitude: 34.070286,
-                                longitude: -118.443413,
-                                latitudeDelta: 0.0122,
-                                longitudeDelta: 0.0921,}}>
-                        <MapView.Marker
-                            image={require('../../assets/images/pin_1x.png')}
-                            coordinate={{
-                                latitude: 34.070286,
-                                longitude: -118.443413,
-                                latitudeDelta: 0.0122,
-                                longitudeDelta: 0.0921,}}
-                        />
-                    </MapView>
-                    <View style={styles.info}>
-
-                        <ListView
-                            style={{width: width - 40}}
-                            dataSource={this.state.dataSource}
-                            renderRow={(rowData) => <Text>{rowData}</Text>}
-                            enableEmptySections={true}
-                        />
-                    </View>
-                </View>
+                <LoadingView/>
             );
         }
     }
