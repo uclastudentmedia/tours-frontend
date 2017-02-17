@@ -7,9 +7,9 @@ import {
     AsyncStorage
 } from 'react-native';
 
-export async function DistancePrioritize(currentLat,currentLong){
+export function DistancePrioritize(currentLat,currentLong, data){
     try {
-        const value = await AsyncStorage.getItem('data');
+        const value = data
         if (value !== null){
             // We have data!!
             let val = JSON.parse(value);

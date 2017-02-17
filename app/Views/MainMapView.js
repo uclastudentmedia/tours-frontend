@@ -26,24 +26,31 @@ export default class MainMapView extends Component {
 
     watchID: ?number = null;
 
-    async componentWillMount(){
-        this.getPosition();
+    componentDidMount(){
+        this.setupData();
+        setInterval(function(){
+            this.setupData();
+        }.bind(this), 10000);
+    }
 
+    setupData(){
+        this.getData();
+        this.getPosition();
+    }
+
+    async getData(){
         try {
             let value = await AsyncStorage.getItem('data');
             let val = JSON.parse(value);
-            //let val2 = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude);
-            //console.log("ADFADFAF");
-            //console.log(val2);
             if(val !== null){
                 this.setState({
                     data: val
                 });
 
-                var temp = val.results;
-                for(var i = 0; i < 10; i++)
+                var temp = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude, value);
+                for(var i = 0; i < temp.length; i++)
                 {
-                    dataPop.push(temp[i].name);
+                    dataPop.push(temp[i].location + " " + Math.round(temp[i].distanceAway) + " feet away");
                 }
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
@@ -55,7 +62,6 @@ export default class MainMapView extends Component {
         } catch (e) {
             console.log(e);
         }
-
     }
 
     getPosition(){
@@ -98,9 +104,6 @@ export default class MainMapView extends Component {
 
     render() {
         if(!this.state.loaded){
-            let val2 = DistancePrioritize(34.070381, -118.443497);
-            //console.log("ADFADFAF");
-            console.log(val2);
             return (
                 <LoadingView/>
             );
@@ -130,7 +133,7 @@ export default class MainMapView extends Component {
                         <ListView
                             style={styles.locations}
                             dataSource={this.state.dataSource}
-                            renderRow={(rowData) => 
+                            renderRow={(rowData) =>
                                 <View>
                                     <View style={styles.wrapper}>
                                         <Image style={styles.placeholder} source={require('../../assets/images/icon_ph.png')}/>
