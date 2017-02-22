@@ -59,11 +59,11 @@ module.exports = StyleSheet.create({
     },
     locText:{
         padding:20,
-        fontSize:21,
+        fontSize:17,
         color: '#5b73a4'
     },
     placeholder: {
-        top: 15,
+        top: 23,
         height: 40,
         width: 40
     },

@@ -50,7 +50,8 @@ export default class MainMapView extends Component {
                 var temp = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude, value);
                 for(var i = 0; i < temp.length; i++)
                 {
-                    dataPop.push(temp[i].location + " " + Math.round(temp[i].distanceAway) + " feet away");
+                    var dist = Math.round(temp[i].distanceAway);
+                    dataPop.push(temp[i].location + '\n' + dist + " feet away");
                 }
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
