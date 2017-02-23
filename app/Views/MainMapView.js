@@ -24,7 +24,7 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var {height, width} = Dimensions.get('window');
 var dataPop = [];
 var loaded = false;
-var initialPosition;
+var initialPosition = {};
 
 export default class MainMapView extends Component {
 
@@ -51,7 +51,7 @@ export default class MainMapView extends Component {
                     data: val
                 });
                 LocToData("Kerckhoff Hall",val);
-                var temp = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude, value);
+                var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
                 for(var i = 0; i < temp.length; i++)
                 {
                     dataPop.push(temp[i].location + " " + Math.round(temp[i].distanceAway) + " feet away");
@@ -96,19 +96,9 @@ export default class MainMapView extends Component {
         }
     }
 
-    static get defaultProps() {
-        return {
-            title: 'MapView',
-        };
-    }
-
     render() {
-        if(!loaded){
-            return (
-                <LoadingView/>
-            );
-        }
-        else if(loaded && initialPosition != 'unknown'){
+        console.log(initialPosition);
+        if(loaded && initialPosition != 'unknown'){
             //insert DistancePrioritize(lat,long) function here
             //console.log(DistancePrioritize(1,0));
             return (
@@ -148,7 +138,9 @@ export default class MainMapView extends Component {
         }
         else {
             return (
-                <LoadingView/>
+                <View style={{backgroundColor: 'white', flex: 1}}>
+                    <Text>Failed to get your location.</Text>
+                </View>
             );
         }
     }

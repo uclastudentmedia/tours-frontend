@@ -31,12 +31,14 @@ export default class App extends Component {
     renderScene(route, navigator) {
         var routeID = route.id;
         if(routeID === 'LoadingView') {
+            console.log("LoadingView");
             return(
                 <LoadingView
                     navigator={navigator}/>
             );
         }
         if(routeID === 'MapView') {
+            console.log("MapView");
             return (
                 <MainMapView
                     navigator={navigator}/>

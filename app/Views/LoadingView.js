@@ -14,7 +14,7 @@ import MainMapView from './MainMapView';
 const styles = require("../../assets/css/style");
 const SIZES = ['small', 'normal', 'large'];
 
-export default class App extends Component {
+export default class LoadingView extends Component {
 
   constructor(props){
     super(props);
