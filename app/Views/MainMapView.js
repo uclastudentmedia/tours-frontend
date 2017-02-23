@@ -9,11 +9,13 @@ import {
     AsyncStorage,
     ListView,
     Dimensions,
-    Image
+    Image,
+    TouchableOpacity,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {DistancePrioritize} from '../Utils'
 
+import ListItem from '../Components/ListItem';
 import LoadingView from './LoadingView';
 
 const styles = require( "../../assets/css/style");
@@ -21,6 +23,8 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 var {height, width} = Dimensions.get('window');
 var dataPop = [];
+var loaded = false;
+var initialPosition;
 
 export default class MainMapView extends Component {
 
@@ -47,18 +51,15 @@ export default class MainMapView extends Component {
                     data: val
                 });
 
-                var temp = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude, value);
+                var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
                 for(var i = 0; i < temp.length; i++)
                 {
-                    var dist = Math.round(temp[i].distanceAway);
-                    dataPop.push(temp[i].location + '\n' + dist + " feet away");
+                    dataPop.push(temp[i].location + " " + Math.round(temp[i].distanceAway) + " feet away");
                 }
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
                 });
-                this.setState({
-                    loaded: true
-                });
+                loaded = true;
             }
         } catch (e) {
             console.log(e);
@@ -68,9 +69,9 @@ export default class MainMapView extends Component {
     getPosition(){
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                var initialPosition = JSON.stringify(position);
-                var val = JSON.parse(initialPosition);
-                this.setState({initialPosition: val});
+                var initialPosition2 = JSON.stringify(position);
+                var val = JSON.parse(initialPosition2);
+                initialPosition = val;
             },
             (error) => alert(JSON.stringify(error)),
             {enableHighAccuracty: true, timeout: 20000, maximumAge: 1000}
@@ -91,8 +92,6 @@ export default class MainMapView extends Component {
         this.state = {
             data: '',
             dataSource: ds.cloneWithRows(dataPop),
-            loaded: false,
-            initialPosition: 'unknown',
             lastPosition: 'unknown',
         }
     }
@@ -104,12 +103,12 @@ export default class MainMapView extends Component {
     }
 
     render() {
-        if(!this.state.loaded){
+        if(!loaded){
             return (
                 <LoadingView/>
             );
         }
-        else if(this.state.loaded && this.state.initialPosition != 'unknown'){
+        else if(loaded && initialPosition != 'unknown'){
             //insert DistancePrioritize(lat,long) function here
             //console.log(DistancePrioritize(1,0));
             return (
@@ -123,8 +122,8 @@ export default class MainMapView extends Component {
                         <MapView.Marker
                             image={require('../../assets/images/pin_80.png')}
                             coordinate={{
-                latitude: this.state.initialPosition.coords.latitude,
-                longitude: this.state.initialPosition.coords.longitude,
+                latitude: initialPosition.coords.latitude,
+                longitude: initialPosition.coords.longitude,
                 latitudeDelta: 0.0122,
                 longitudeDelta: 0.0921,}}
                         />
@@ -136,12 +135,9 @@ export default class MainMapView extends Component {
                             dataSource={this.state.dataSource}
                             renderRow={(rowData) =>
                                 <View>
-                                    <View style={styles.wrapper}>
-                                        <Image style={styles.placeholder} source={require('../../assets/images/icon_ph.png')}/>
-                                        <Text style={styles.locText}>
-                                            {rowData}
-                                        </Text>
-                                    </View>
+                                    <TouchableOpacity style={styles.wrapper}>
+                                        <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
+                                    </TouchableOpacity>
                                     <View style={styles.separator} />
                                 </View>}
                             enableEmptySections={true}

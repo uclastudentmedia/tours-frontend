@@ -22,7 +22,7 @@ export default class App extends Component {
       results: '',
       done: false,
       visible: true,
-      visible: this.props.visible, 
+      visible: this.props.visible,
       textContent: this.props.textContent
     }
   }
@@ -63,7 +63,7 @@ export default class App extends Component {
         });
         this.storeData();
         this.setState({
-          done: true 
+          done: true
         });
       })
       .catch((error) => {
