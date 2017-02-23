@@ -13,7 +13,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import MapView from 'react-native-maps';
-import {DistancePrioritize} from '../Utils'
+import {DistancePrioritize,LocToData} from '../Utils'
 
 import ListItem from '../Components/ListItem';
 import LoadingView from './LoadingView';
@@ -50,8 +50,8 @@ export default class MainMapView extends Component {
                 this.setState({
                     data: val
                 });
-
-                var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
+                LocToData("Kerckhoff Hall",val);
+                var temp = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude, value);
                 for(var i = 0; i < temp.length; i++)
                 {
                     dataPop.push(temp[i].location + " " + Math.round(temp[i].distanceAway) + " feet away");
