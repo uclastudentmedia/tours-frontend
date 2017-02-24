@@ -13,7 +13,6 @@ import {
 import MainMapView from './MainMapView';
 
 const styles = require("../../assets/css/style");
-const SIZES = ['small', 'normal', 'large'];
 
 export default class LoadingView extends Component {
 
@@ -22,28 +21,9 @@ export default class LoadingView extends Component {
     this.state = {
       results: '',
       done: false,
-      visible: true,
-      visible: this.props.visible,
-      textContent: this.props.textContent
     }
   }
-
-  static propTypes = {
-    visible: React.PropTypes.bool,
-    textContent: React.PropTypes.string,
-    color: React.PropTypes.string,
-    size: React.PropTypes.oneOf(SIZES),
-    overlayColor: React.PropTypes.string
-  };
-
-  static defaultProps = {
-    visible: false,
-    textContent: "",
-    color: 'white',
-    size: 'large', // 'normal',
-    overlayColor: 'rgba(0, 0, 0, 0.25)',
-  };
-
+  
   componentDidMount(){
     this.getAPIData();
   }

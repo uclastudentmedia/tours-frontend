@@ -19,9 +19,6 @@ class DetailsView extends Component
     renderScene(route, navigator) {
         return (
             <View style={{flex: 1, alignItems: 'center', justifyContent:'center'}}>
-                <TouchableHighlight style={{backgroundColor: 'yellow', padding: 10}}>
-                    <Text style={{backgrondColor: 'yellow', color: 'green'}}>下一页</Text>
-                </TouchableHighlight>
             </View>
         );
     }
@@ -34,7 +31,7 @@ var NavigationBarRouteMapper = {
       <TouchableOpacity style={{flex: 1, justifyContent: 'center'}}
           onPress={() => navigator.parentNavigator.pop()}>
         <Text style={{color: 'white', margin: 10,}}>
-          Back 
+          Back
         </Text>
       </TouchableOpacity>
     );
@@ -46,7 +43,7 @@ var NavigationBarRouteMapper = {
     return (
       <TouchableOpacity style={{flex: 1, justifyContent: 'center'}}>
         <Text style={{color: 'white', margin: 10, fontSize: 16}}>
-          主页
+          Details
         </Text>
       </TouchableOpacity>
     );
