@@ -8,6 +8,7 @@ import {
     View,
     AsyncStorage,
     ListView,
+    TouchableHighlight,
     Dimensions,
     Image,
     TouchableOpacity,
@@ -53,7 +54,11 @@ export default class MainMapView extends Component {
                 var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
                 for(var i = 0; i < temp.length; i++)
                 {
-                    dataPop.push(temp[i].location + " " + Math.round(temp[i].distanceAway) + " feet away");
+                    var locData = {loc:"", dist:0};
+                    var distance = Math.round(temp[i].distanceAway);
+                    locData.loc = temp[i].location;
+                    locData.dist = distance;
+                    dataPop.push(locData);
                 }
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
@@ -124,12 +129,25 @@ export default class MainMapView extends Component {
                             dataSource={this.state.dataSource}
                             renderRow={(rowData) =>
                                 <View>
+<<<<<<< HEAD
                                     <TouchableOpacity style={styles.wrapper}>
                                         <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
                                     </TouchableOpacity>
+=======
+                                    <View style={styles.wrapper}>
+                                        <Image style={styles.placeholder} source={require('../../assets/images/icon_ph.png')}/>
+                                        <Text style={styles.locText}>
+                                            {rowData.loc}{'\n'}
+                                            <Text style={styles.distText}>
+                                                {rowData.dist} feet away
+                                            </Text>
+                                        </Text>
+                                    </View>
+>>>>>>> patrick
                                     <View style={styles.separator} />
                                 </View>}
                             enableEmptySections={true}
+                            showsVerticalScrollIndicator={false}
                         />
                     </View>
                 </View>
