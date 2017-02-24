@@ -84,3 +84,11 @@ export function LocToData(location,data){
         console.log(error.message)
     }
 }
+
+//given location, return image source for icon
+export function LocToIcon(location,data){
+    var type = 1001+(LocToData(location,data).category%4);
+    var imgSrc= "../../assets/icons/" + type+".png";
+    //console.log(imgSrc);
+    return imgSrc
+}
