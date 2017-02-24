@@ -129,21 +129,9 @@ export default class MainMapView extends Component {
                             dataSource={this.state.dataSource}
                             renderRow={(rowData) =>
                                 <View>
-<<<<<<< HEAD
                                     <TouchableOpacity style={styles.wrapper}>
                                         <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
                                     </TouchableOpacity>
-=======
-                                    <View style={styles.wrapper}>
-                                        <Image style={styles.placeholder} source={require('../../assets/images/icon_ph.png')}/>
-                                        <Text style={styles.locText}>
-                                            {rowData.loc}{'\n'}
-                                            <Text style={styles.distText}>
-                                                {rowData.dist} feet away
-                                            </Text>
-                                        </Text>
-                                    </View>
->>>>>>> patrick
                                     <View style={styles.separator} />
                                 </View>}
                             enableEmptySections={true}
