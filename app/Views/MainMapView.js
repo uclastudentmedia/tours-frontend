@@ -123,7 +123,7 @@ export default class MainMapView extends Component {
                 latitudeDelta: 0.0122,
                 longitudeDelta: 0.0921,}}>
                         <MapView.Marker
-                            image={require('../../assets/images/pin_80.png')}
+                            image={require('../../assets/images/pin_shadow_40.png')}
                             coordinate={{
                 latitude: initialPosition.coords.latitude,
                 longitude: initialPosition.coords.longitude,
