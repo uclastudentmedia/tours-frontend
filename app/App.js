@@ -8,6 +8,7 @@ import {
 import MapView from 'react-native-maps';
 import LoadingView from './Views/LoadingView';
 import MainMapView from'./Views/MainMapView';
+import DetailsView from './Views/DetailsView';
 
 const styles = require( "../assets/css/style");
 
@@ -40,6 +41,12 @@ export default class App extends Component {
             console.log("MapView");
             return (
                 <MainMapView
+                    navigator={navigator}/>
+            );
+        } else if (routeID === 'Details') {
+            console.log("Details");
+            return (
+                <DetailsView
                     navigator={navigator}/>
             );
         }

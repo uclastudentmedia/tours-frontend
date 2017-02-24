@@ -12,6 +12,7 @@ import {
     Dimensions,
     Image,
     TouchableOpacity,
+    Navigator,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {DistancePrioritize,LocToData} from '../Utils'
@@ -100,6 +101,14 @@ export default class MainMapView extends Component {
         }
     }
 
+    gotoDescription(){
+        console.log("PRESS");
+        this.props.navigator.push({
+            id: 'Details',
+            name: 'More Details',
+        });
+    }
+
     render() {
         console.log(initialPosition);
         if(loaded && initialPosition != 'unknown'){
@@ -119,7 +128,8 @@ export default class MainMapView extends Component {
                 latitude: initialPosition.coords.latitude,
                 longitude: initialPosition.coords.longitude,
                 latitudeDelta: 0.0122,
-                longitudeDelta: 0.0921,}}
+                longitudeDelta: 0.0921,
+                }}
                         />
                     </MapView>
                     <View style={styles.info}>
@@ -129,7 +139,7 @@ export default class MainMapView extends Component {
                             dataSource={this.state.dataSource}
                             renderRow={(rowData) =>
                                 <View>
-                                    <TouchableOpacity style={styles.wrapper}>
+                                    <TouchableOpacity onPress={this.gotoDescription.bind(this)} style={styles.wrapper}>
                                         <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
                                     </TouchableOpacity>
                                     <View style={styles.separator} />
