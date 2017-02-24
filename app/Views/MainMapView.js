@@ -8,6 +8,7 @@ import {
     View,
     AsyncStorage,
     ListView,
+    TouchableHighlight,
     Dimensions,
     Image
 } from 'react-native';
@@ -50,8 +51,12 @@ export default class MainMapView extends Component {
                 var temp = DistancePrioritize(this.state.initialPosition.coords.latitude, this.state.initialPosition.coords.longitude, value);
                 for(var i = 0; i < temp.length; i++)
                 {
-                    var dist = Math.round(temp[i].distanceAway);
-                    dataPop.push(temp[i].location + '\n' + dist + " feet away");
+                    var locData = {loc:"", dist:0};
+                    var distance = Math.round(temp[i].distanceAway);
+                    locData.loc = temp[i].location;
+                    locData.dist = distance;
+                    //dataPop.push(temp[i].location + '\n' + dist + " feet away");
+                    dataPop.push(locData);
                 }
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
@@ -139,12 +144,16 @@ export default class MainMapView extends Component {
                                     <View style={styles.wrapper}>
                                         <Image style={styles.placeholder} source={require('../../assets/images/icon_ph.png')}/>
                                         <Text style={styles.locText}>
-                                            {rowData}
+                                            {rowData.loc}{'\n'}
+                                            <Text style={styles.distText}>
+                                                {rowData.dist} feet away
+                                            </Text>
                                         </Text>
                                     </View>
                                     <View style={styles.separator} />
                                 </View>}
                             enableEmptySections={true}
+                            showsVerticalScrollIndicator={false}
                         />
                     </View>
                 </View>
