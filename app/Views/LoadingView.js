@@ -6,7 +6,8 @@ import {
     View,
     Image,
     AsyncStorage,
-    ActivityIndicator
+    ActivityIndicator,
+    TouchableOpacity
 } from 'react-native';
 
 import MainMapView from './MainMapView';
@@ -45,14 +46,7 @@ export default class LoadingView extends Component {
 
   componentDidMount(){
     this.getAPIData();
-    setInterval(() => {
-      this.setState({
-        visible: !this.state.visible
-      });
-    }, 3000);
   }
-
-
 
   getAPIData(){
     return fetch("http://tours.bruinmobile.com/api/landmark/")
@@ -76,6 +70,14 @@ export default class LoadingView extends Component {
       AsyncStorage.setItem('data', JSON.stringify(data));
   }
 
+  gotoMapView(){
+      console.log(this.props.navigator);
+      this.props.navigator.push({
+          id: 'MapView',
+          name: 'MapView',
+      });
+  }
+
   render() {
     if(!this.state.done) {
       return (
@@ -94,9 +96,9 @@ export default class LoadingView extends Component {
     }
     else {
       return(
-        <View style={styles.container}>
-          <MainMapView/>
-        </View>
+          <TouchableOpacity onPress={this.gotoMapView.bind(this)} style={{backgroundColor: 'white', flex: 1}}>
+              <Text>Fail222222ed to get your location.</Text>
+          </TouchableOpacity>
       );
     }
   }

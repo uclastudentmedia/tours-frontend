@@ -16,7 +16,6 @@ import MapView from 'react-native-maps';
 import {DistancePrioritize,LocToData} from '../Utils'
 
 import ListItem from '../Components/ListItem';
-import LoadingView from './LoadingView';
 
 const styles = require( "../../assets/css/style");
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -30,7 +29,7 @@ export default class MainMapView extends Component {
 
     watchID: ?number = null;
 
-    componentDidMount(){
+    componentWillMount(){
         this.setupData();
         setInterval(function(){
             this.setupData();
@@ -50,7 +49,7 @@ export default class MainMapView extends Component {
                 this.setState({
                     data: val
                 });
-                LocToData("Kerckhoff Hall",val);
+                //LocToData("Kerckhoff Hall",val);
                 var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
                 for(var i = 0; i < temp.length; i++)
                 {

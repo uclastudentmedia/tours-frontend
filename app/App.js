@@ -17,7 +17,7 @@ export default class App extends Component {
         return (
             <Navigator
                 initialRoute={{id: 'LoadingView', name: 'Index'}}
-                renderScene={this.renderScene.bind(this)}
+                renderScene={this.renderScene1.bind(this)}
                 configureScene={(route) => {
                     if(route.sceneConfig) {
                         return route.sceneConfig;
@@ -28,7 +28,7 @@ export default class App extends Component {
         );
     }
 
-    renderScene(route, navigator) {
+    renderScene1(route, navigator) {
         var routeID = route.id;
         if(routeID === 'LoadingView') {
             console.log("LoadingView");
@@ -36,8 +36,7 @@ export default class App extends Component {
                 <LoadingView
                     navigator={navigator}/>
             );
-        }
-        if(routeID === 'MapView') {
+        } else if (routeID === 'MapView') {
             console.log("MapView");
             return (
                 <MainMapView
