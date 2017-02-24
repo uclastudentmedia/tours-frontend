@@ -57,9 +57,13 @@ module.exports = StyleSheet.create({
     locations:{
         width: width - 40
     },
+    distText:{
+        fontSize:16,
+        color: '#B8B8B8'
+    },
     locText:{
         padding:20,
-        fontSize:17,
+        fontSize:18,
         color: '#5b73a4'
     },
     placeholder: {
