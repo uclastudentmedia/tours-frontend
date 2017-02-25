@@ -153,8 +153,22 @@ export default class MainMapView extends Component {
         }
         else {
             return (
-                <View style={{backgroundColor: 'white', flex: 1}}>
-                    <Text>Failed to get your location.</Text>
+                <View style={styles.container}>
+                    <MapView style={styles.map}
+                             initialRegion={{
+                latitude: 34.070286,
+                longitude: -118.443413,
+                latitudeDelta: 0.0122,
+                longitudeDelta: 0.0921,}}>
+                        <MapView.Marker
+                            image={require('../../assets/images/pin_shadow_40.png')}
+                            coordinate={{
+                latitude: 34.070984,
+                longitude: -118.444759,
+                latitudeDelta: 0.0122,
+                longitudeDelta: 0.0921,
+                }}/>
+                    </MapView>
                 </View>
             );
         }
