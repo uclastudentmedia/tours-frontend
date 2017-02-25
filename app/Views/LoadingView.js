@@ -7,7 +7,8 @@ import {
     Image,
     AsyncStorage,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    Button
 } from 'react-native';
 
 import MainMapView from './MainMapView';
@@ -23,7 +24,7 @@ export default class LoadingView extends Component {
       done: false,
     }
   }
-  
+
   componentDidMount(){
     this.getAPIData();
   }
@@ -76,9 +77,13 @@ export default class LoadingView extends Component {
     }
     else {
       return(
-          <TouchableOpacity onPress={this.gotoMapView.bind(this)} style={{backgroundColor: 'white', flex: 1}}>
-              <Text>Fail222222ed to get your location.</Text>
-          </TouchableOpacity>
+          <View style={styles.loading}>
+              <Image
+                  style={styles.loading_logo}
+                  source={require('../../assets/images/logo_1x.png')}/>
+              <Text style={styles.center}>BruinTours</Text>
+              <Button style={{paddingTop: 10}} onPress={this.gotoMapView.bind(this)} title="Launch App"></Button>
+          </View>
       );
     }
   }
