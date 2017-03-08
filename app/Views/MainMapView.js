@@ -8,15 +8,16 @@ import {
     View,
     AsyncStorage,
     ListView,
+    TouchableHighlight,
     Dimensions,
     Image,
     TouchableOpacity,
+    Navigator,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {DistancePrioritize,LocToData} from '../Utils'
 
 import ListItem from '../Components/ListItem';
-import LoadingView from './LoadingView';
 
 const styles = require( "../../assets/css/style");
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -30,7 +31,7 @@ export default class MainMapView extends Component {
 
     watchID: ?number = null;
 
-    componentDidMount(){
+    componentWillMount(){
         this.setupData();
         setInterval(function(){
             this.setupData();
@@ -50,11 +51,16 @@ export default class MainMapView extends Component {
                 this.setState({
                     data: val
                 });
-                LocToData("Kerckhoff Hall",val);
+                //LocToData("Kerckhoff Hall",val);
                 var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
+                dataPop = [];
                 for(var i = 0; i < temp.length; i++)
                 {
-                    dataPop.push(temp[i].location + " " + Math.round(temp[i].distanceAway) + " feet away");
+                    var locData = {loc:"", dist:0};
+                    var distance = Math.round(temp[i].distanceAway);
+                    locData.loc = temp[i].location;
+                    locData.dist = distance;
+                    dataPop.push(locData);
                 }
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
@@ -74,7 +80,7 @@ export default class MainMapView extends Component {
                 initialPosition = val;
             },
             (error) => alert(JSON.stringify(error)),
-            {enableHighAccuracty: true, timeout: 20000, maximumAge: 1000}
+            {enableHighAccuracty: true, timeout: 2000000, maximumAge: 500}
         );
         this.watchID = navigator.geolocation.watchPosition((position) => {
             var lastPosition = JSON.stringify(position);
@@ -96,6 +102,14 @@ export default class MainMapView extends Component {
         }
     }
 
+    gotoDescription(){
+        console.log("PRESS");
+        this.props.navigator.push({
+            id: 'Details',
+            name: 'More Details',
+        });
+    }
+
     render() {
         console.log(initialPosition);
         if(loaded && initialPosition != 'unknown'){
@@ -110,12 +124,13 @@ export default class MainMapView extends Component {
                 latitudeDelta: 0.0122,
                 longitudeDelta: 0.0921,}}>
                         <MapView.Marker
-                            image={require('../../assets/images/pin_25.png')}
+                            image={require('../../assets/images/pin_shadow_40.png')}
                             coordinate={{
                 latitude: initialPosition.coords.latitude,
                 longitude: initialPosition.coords.longitude,
                 latitudeDelta: 0.0122,
-                longitudeDelta: 0.0921,}}
+                longitudeDelta: 0.0921,
+                }}
                         />
                     </MapView>
                     <View style={styles.info}>
@@ -125,12 +140,13 @@ export default class MainMapView extends Component {
                             dataSource={this.state.dataSource}
                             renderRow={(rowData) =>
                                 <View>
-                                    <TouchableOpacity style={styles.wrapper}>
+                                    <TouchableOpacity onPress={this.gotoDescription.bind(this)} style={styles.wrapper}>
                                         <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
                                     </TouchableOpacity>
                                     <View style={styles.separator} />
                                 </View>}
                             enableEmptySections={true}
+                            showsVerticalScrollIndicator={false}
                         />
                     </View>
                 </View>
@@ -138,8 +154,30 @@ export default class MainMapView extends Component {
         }
         else {
             return (
-                <View style={{backgroundColor: 'white', flex: 1}}>
-                    <Text>Failed to get your location.</Text>
+                <View style={styles.loadMapContainer}>
+                    <MapView style={styles.map}
+                             initialRegion={{
+                                 latitude: 34.070286,
+                                 longitude: -118.443413,
+                                 latitudeDelta: 0.0122,
+                                 longitudeDelta: 0.0921,}}>
+                        <MapView.Marker
+                            image={require('../../assets/images/pin_shadow_40.png')}
+                            coordinate={{
+                                latitude: 34.070984,
+                                longitude: -118.444759,
+                                latitudeDelta: 0.0122,
+                                longitudeDelta: 0.0921,
+                            }}/>
+                    </MapView>
+                    <View style={styles.info}>
+                        <Text style={styles.loadingLocText}>
+                            Loading Data...
+                        </Text>
+                        <Text style={styles.loadingDistText}>
+                            We are loading your location data
+                        </Text>
+                    </View>
                 </View>
             );
         }
