@@ -111,7 +111,7 @@ export default class MainMapView extends Component {
 
     render() {
         console.log(initialPosition);
-        if(loaded && initialPosition != 'unknown'){
+        if(loaded && initialPosition != 'unknown' && false){
             //insert DistancePrioritize(lat,long) function here
             //console.log(DistancePrioritize(1,0));
             return (
@@ -153,22 +153,30 @@ export default class MainMapView extends Component {
         }
         else {
             return (
-                <View style={styles.container}>
+                <View style={styles.loadMapContainer}>
                     <MapView style={styles.map}
                              initialRegion={{
-                latitude: 34.070286,
-                longitude: -118.443413,
-                latitudeDelta: 0.0122,
-                longitudeDelta: 0.0921,}}>
+                                 latitude: 34.070286,
+                                 longitude: -118.443413,
+                                 latitudeDelta: 0.0122,
+                                 longitudeDelta: 0.0921,}}>
                         <MapView.Marker
                             image={require('../../assets/images/pin_shadow_40.png')}
                             coordinate={{
-                latitude: 34.070984,
-                longitude: -118.444759,
-                latitudeDelta: 0.0122,
-                longitudeDelta: 0.0921,
-                }}/>
+                                latitude: 34.070984,
+                                longitude: -118.444759,
+                                latitudeDelta: 0.0122,
+                                longitudeDelta: 0.0921,
+                            }}/>
                     </MapView>
+                    <View style={styles.info}>
+                        <Text style={styles.loadingLocText}>
+                            Loading Data...
+                        </Text>
+                        <Text style={styles.loadingDistText}>
+                            We are loading your location data
+                        </Text>
+                    </View>
                 </View>
             );
         }

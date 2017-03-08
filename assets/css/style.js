@@ -17,6 +17,11 @@ module.exports = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'black',
     },
+    loadMapContainer: {
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: 'black',
+    },
     loading:{
         backgroundColor: '#B2E4F7',
         flex:1,
@@ -47,7 +52,8 @@ module.exports = StyleSheet.create({
         padding: 20,
         paddingBottom:0,
         paddingTop:0,
-        backgroundColor:'#F5FCFF'
+        backgroundColor:'#F5FCFF',
+        width: width,
     },
     description: {
         flex: 3,
@@ -61,9 +67,18 @@ module.exports = StyleSheet.create({
         fontSize:16,
         color: '#B8B8B8'
     },
+    loadingDistText:{
+        fontSize:24,
+        color: '#B8B8B8'
+    },
     locText:{
         padding:20,
         fontSize:18,
+        color: '#5b73a4'
+    },
+    loadingLocText:{
+        paddingTop: 20,
+        fontSize: 30,
         color: '#5b73a4'
     },
     placeholder: {
@@ -82,7 +97,7 @@ module.exports = StyleSheet.create({
         top: 40
     },
     wrapper: {
-        flexWrap: 'wrap', 
+        flexWrap: 'wrap',
         alignItems: 'flex-start',
         flexDirection:'row'
     }
