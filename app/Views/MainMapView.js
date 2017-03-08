@@ -53,6 +53,7 @@ export default class MainMapView extends Component {
                 });
                 //LocToData("Kerckhoff Hall",val);
                 var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
+                dataPop = [];
                 for(var i = 0; i < temp.length; i++)
                 {
                     var locData = {loc:"", dist:0};
@@ -79,7 +80,7 @@ export default class MainMapView extends Component {
                 initialPosition = val;
             },
             (error) => alert(JSON.stringify(error)),
-            {enableHighAccuracty: true, timeout: 20000, maximumAge: 1000}
+            {enableHighAccuracty: true, timeout: 2000000, maximumAge: 500}
         );
         this.watchID = navigator.geolocation.watchPosition((position) => {
             var lastPosition = JSON.stringify(position);
@@ -111,7 +112,7 @@ export default class MainMapView extends Component {
 
     render() {
         console.log(initialPosition);
-        if(loaded && initialPosition != 'unknown' && false){
+        if(loaded && initialPosition != 'unknown'){
             //insert DistancePrioritize(lat,long) function here
             //console.log(DistancePrioritize(1,0));
             return (
