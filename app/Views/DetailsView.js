@@ -61,7 +61,7 @@ class DetailsView extends Component
 
      storeData(){
          let data = this.state.results;
-         AsyncStorage.setItem('data', JSON.stringify(data));
+         AsyncStorage.setItem('details', JSON.stringify(data));
      }
 
      render()

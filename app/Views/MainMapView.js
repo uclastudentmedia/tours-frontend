@@ -34,9 +34,17 @@ export default class MainMapView extends Component {
 
     componentWillMount(){
         this.setupData();
+
+    }
+
+    componentDidMount() {
         setInterval(function(){
             this.setupData();
         }.bind(this), 10000);
+
+        this.setState({
+            dataSource: ds.cloneWithRows(dataPop)
+        });
     }
 
     setupData(){
@@ -52,7 +60,6 @@ export default class MainMapView extends Component {
                 this.setState({
                     data: val
                 });
-                //LocToData("Kerckhoff Hall",val);
                 var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
                 dataPop = [];
                 for(var i = 0; i < temp.length; i++)
@@ -115,8 +122,6 @@ export default class MainMapView extends Component {
 
     render() {
         if(loaded && initialPosition != 'unknown'){
-            //insert DistancePrioritize(lat,long) function here
-            //console.log(DistancePrioritize(1,0));
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
@@ -128,8 +133,8 @@ export default class MainMapView extends Component {
                         <MapView.Marker
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
-                latitude: 34.070984, //initialPosition.coords.latitude,
-                longitude: -118.444759,//initialPosition.coords.longitude,
+                latitude: initialPosition.coords.latitude,
+                longitude: initialPosition.coords.longitude,
                 latitudeDelta: 0.0045,
                 longitudeDelta: 0.0345,
                 }}
