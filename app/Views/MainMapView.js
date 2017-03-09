@@ -10,6 +10,8 @@ import {
     ListView,
     TouchableHighlight,
     Dimensions,
+    PanResponder,
+    Animated,
     Image,
     TouchableOpacity,
     Navigator,
@@ -120,6 +122,30 @@ export default class MainMapView extends Component {
         });
     }
 
+    renderDragMenu(){
+        return (
+            <View style={styles.info}>
+                <View style={{alignItems: 'center', width: width, height: 30, backgroundColor: 'yellow'}}>
+                <Image
+                    source={require('../../assets/images/handle.png')}/>
+                </View>
+                <ListView
+                    style={styles.locations}
+                    dataSource={this.state.dataSource}
+                    renderRow={(rowData) =>
+                        <View>
+                            <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
+                                <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
+                            </TouchableOpacity>
+                            <View style={styles.separator} />
+                        </View>}
+                    enableEmptySections={true}
+                    showsVerticalScrollIndicator={false}
+                />
+            </View>
+        );
+    }
+
     render() {
         if(loaded && initialPosition != 'unknown'){
             return (
@@ -140,22 +166,7 @@ export default class MainMapView extends Component {
                 }}
                         />
                     </MapView>
-                    <View style={styles.info}>
-
-                        <ListView
-                            style={styles.locations}
-                            dataSource={this.state.dataSource}
-                            renderRow={(rowData) =>
-                                <View>
-                                    <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
-                                        <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
-                                    </TouchableOpacity>
-                                    <View style={styles.separator} />
-                                </View>}
-                            enableEmptySections={true}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    </View>
+                    {this.renderDragMenu()}
                 </View>
             );
         }
