@@ -123,15 +123,15 @@ export default class MainMapView extends Component {
                              initialRegion={{
                 latitude: 34.070286,
                 longitude: -118.443413,
-                latitudeDelta: 0.0122,
-                longitudeDelta: 0.0921,}}>
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,}}>
                         <MapView.Marker
-                            image={require('../../assets/images/pin_shadow_40.png')}
+                            image={require('../../assets/images/dot1.png')}
                             coordinate={{
-                latitude: initialPosition.coords.latitude,
-                longitude: initialPosition.coords.longitude,
-                latitudeDelta: 0.0122,
-                longitudeDelta: 0.0921,
+                latitude: 34.070984, //initialPosition.coords.latitude,
+                longitude: -118.444759,//initialPosition.coords.longitude,
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,
                 }}
                         />
                     </MapView>
@@ -161,15 +161,15 @@ export default class MainMapView extends Component {
                              initialRegion={{
                                  latitude: 34.070286,
                                  longitude: -118.443413,
-                                 latitudeDelta: 0.0122,
-                                 longitudeDelta: 0.0921,}}>
+                                 latitudeDelta: 0.0045,
+                                 longitudeDelta: 0.0345,}}>
                         <MapView.Marker
-                            image={require('../../assets/images/pin_shadow_40.png')}
+                            image={require('../../assets/images/dot1.png')}
                             coordinate={{
                                 latitude: 34.070984,
                                 longitude: -118.444759,
-                                latitudeDelta: 0.0122,
-                                longitudeDelta: 0.0921,
+                                latitudeDelta: 0.0045,
+                                longitudeDelta: 0.0345,
                             }}/>
                     </MapView>
                     <View style={styles.info}>
