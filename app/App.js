@@ -47,7 +47,9 @@ export default class App extends Component {
             console.log("Details");
             return (
                 <DetailsView
-                    navigator={navigator}/>
+                    navigator={navigator}
+                    rowData={route.rowDat}
+                    detID={route.locID}/>
             );
         }
     }
