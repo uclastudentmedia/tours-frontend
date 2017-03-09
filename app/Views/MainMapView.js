@@ -26,6 +26,7 @@ var {height, width} = Dimensions.get('window');
 var dataPop = [];
 var loaded = false;
 var initialPosition = {};
+var val = {};
 
 export default class MainMapView extends Component {
 
@@ -46,7 +47,7 @@ export default class MainMapView extends Component {
     async getData(){
         try {
             let value = await AsyncStorage.getItem('data');
-            let val = JSON.parse(value);
+            val = JSON.parse(value);
             if(val !== null){
                 this.setState({
                     data: val
@@ -102,16 +103,17 @@ export default class MainMapView extends Component {
         }
     }
 
-    gotoDescription(){
-        console.log("PRESS");
+    gotoDescription(rowData){
+        let id = LocToData(rowData.loc, val);
         this.props.navigator.push({
             id: 'Details',
             name: 'More Details',
+            rowDat: rowData,
+            locID: id,
         });
     }
 
     render() {
-        console.log(initialPosition);
         if(loaded && initialPosition != 'unknown'){
             //insert DistancePrioritize(lat,long) function here
             //console.log(DistancePrioritize(1,0));
@@ -140,7 +142,7 @@ export default class MainMapView extends Component {
                             dataSource={this.state.dataSource}
                             renderRow={(rowData) =>
                                 <View>
-                                    <TouchableOpacity onPress={this.gotoDescription.bind(this)} style={styles.wrapper}>
+                                    <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
                                         <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
                                     </TouchableOpacity>
                                     <View style={styles.separator} />
