@@ -109,7 +109,17 @@ export default class MainMapView extends Component {
             data: '',
             dataSource: ds.cloneWithRows(dataPop),
             lastPosition: 'unknown',
+            region: {
+                latitude: 34.070286,
+                longitude: -118.443413,
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,
+            },
         }
+    }
+
+    onRegionChange(region1) {
+        this.setState({ region: region1 });
     }
 
     gotoDescription(rowData){
@@ -151,11 +161,8 @@ export default class MainMapView extends Component {
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
-                             initialRegion={{
-                latitude: 34.070286,
-                longitude: -118.443413,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,}}>
+                             region={this.state.region}
+                             onRegionChange={this.onRegionChange}>
                         <MapView.Marker
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
@@ -174,11 +181,8 @@ export default class MainMapView extends Component {
             return (
                 <View style={styles.loadMapContainer}>
                     <MapView style={styles.map}
-                             initialRegion={{
-                                 latitude: 34.070286,
-                                 longitude: -118.443413,
-                                 latitudeDelta: 0.0045,
-                                 longitudeDelta: 0.0345,}}>
+                             region={this.state.region}
+                             onRegionChange={this.onRegionChange}>
                         <MapView.Marker
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
