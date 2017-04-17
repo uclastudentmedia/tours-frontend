@@ -29,6 +29,12 @@ var dataPop = [];
 var loaded = false;
 var initialPosition = {};
 var val = {};
+var region: {
+        latitude: 34.070286,
+        longitude: -118.443413,
+        latitudeDelta: 0.0045,
+        longitudeDelta: 0.0345,
+    };
 
 export default class MainMapView extends Component {
 
@@ -36,7 +42,6 @@ export default class MainMapView extends Component {
 
     componentWillMount(){
         this.setupData();
-
     }
 
     componentDidMount() {
@@ -45,7 +50,13 @@ export default class MainMapView extends Component {
         }.bind(this), 10000);
 
         this.setState({
-            dataSource: ds.cloneWithRows(dataPop)
+            dataSource: ds.cloneWithRows(dataPop),
+            region: {
+                latitude: 34.070286,
+                longitude: -118.443413,
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,
+            },
         });
     }
 
@@ -99,6 +110,17 @@ export default class MainMapView extends Component {
         });
     }
 
+    getInitialState(){
+        return{
+            region: {
+                latitude: 34.070286,
+                longitude: -118.443413,
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,
+            }
+        }
+    }
+
     componentWillUnmount(){
         navigator.geolocation.clearWatch(this.watchID);
     }
@@ -119,7 +141,7 @@ export default class MainMapView extends Component {
     }
 
     onRegionChange(region1) {
-        this.setState({ region: region1 });
+        this.setState(region: region1);
     }
 
     gotoDescription(rowData){
@@ -161,16 +183,33 @@ export default class MainMapView extends Component {
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
-                             region={this.state.region}
-                             onRegionChange={this.onRegionChange}>
+                        region={this.state.region}
+                        >
                         <MapView.Marker
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
-                latitude: initialPosition.coords.latitude,
-                longitude: initialPosition.coords.longitude,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,
-                }}
+                                latitude: initialPosition.coords.latitude,
+                                longitude: initialPosition.coords.longitude,
+                                latitudeDelta: 0.0045,
+                                longitudeDelta: 0.0345,
+                            }}
+                        />
+                        <MapView.Marker
+                            coordinate={{
+                                latitude: 34.072872,
+                                longitude: -118.441136
+                            }}
+                            title={"Haines Hall"}
+                            description={"Land of Smallberg"}
+                        />
+                        <MapView.Marker
+                            coordinate={{
+                                latitude:34.074685,
+                                longitude:-118.441416
+                            }}
+                            color={'#000000'}
+                            title={"YRL"}
+                            description={"I only go here to work on startup"}
                         />
                     </MapView>
                     {this.renderDragMenu()}
@@ -182,7 +221,7 @@ export default class MainMapView extends Component {
                 <View style={styles.loadMapContainer}>
                     <MapView style={styles.map}
                              region={this.state.region}
-                             onRegionChange={this.onRegionChange}>
+                             >
                         <MapView.Marker
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
