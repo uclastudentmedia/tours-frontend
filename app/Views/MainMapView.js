@@ -30,11 +30,15 @@ var loaded = false;
 var initialPosition = {};
 var val = {};
 var region: {
-        latitude: 34.070286,
-        longitude: -118.443413,
-        latitudeDelta: 0.0045,
-        longitudeDelta: 0.0345,
-    };
+    latitude: 34.070286,
+    longitude: -118.443413,
+    latitudeDelta: 0.0045,
+    longitudeDelta: 0.0345,
+};
+var polyLine: [
+    {latitude: 34.071335, longitude: -118.441864},
+    {latitude: 34.068822, longitude: -118.441349}
+];
 
 export default class MainMapView extends Component {
 
@@ -193,6 +197,10 @@ export default class MainMapView extends Component {
                                 latitudeDelta: 0.0045,
                                 longitudeDelta: 0.0345,
                             }}
+                        />
+                        <MapView.PolyLine
+                            coordinates={polyLine}
+                            strokeWidth={5}
                         />
                         <MapView.Marker
                             coordinate={{
