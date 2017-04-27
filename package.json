@@ -12,6 +12,7 @@
     "react-native-animatable": "^1.1.0",
     "react-native-loading-spinner-overlay": "^0.4.1",
     "react-native-maps": "^0.13.0",
+    "react-native-search-bar": "^3.0.0",
     "react-native-spinkit": "^1.0.2",
     "react-native-svg": "^5.1.5",
     "react-native-vector-icons": "^4.0.0"

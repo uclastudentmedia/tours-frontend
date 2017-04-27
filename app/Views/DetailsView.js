@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Navigator, TouchableHighlight, TouchableOpacity, AsyncStorage } from 'react-native';
+import { BackAndroid, Text, View, Navigator, TouchableHighlight, TouchableOpacity, AsyncStorage } from 'react-native';
 
 const styles = require( "../../assets/css/style");
 
@@ -77,6 +77,16 @@ class DetailsView extends Component
                  } />
         );
     }
+
+    /* Tried to make the back button work, but I'll save it for later.
+    componentWillMount() {
+      const { navigator } = this.props
+        BackAndroid.addEventListener('hardwareBackPress', function() {
+                 
+          return navigator.parentNavigator.pop();
+        });
+      }
+    */
 
     renderScene(route, navigator) {
         if(this.state.loaded){

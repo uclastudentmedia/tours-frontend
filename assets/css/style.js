@@ -15,12 +15,12 @@ module.exports = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'black',
+        backgroundColor: 'white',
     },
     loadMapContainer: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: 'black',
+        backgroundColor: 'white',
     },
     loading:{
         backgroundColor: '#B2E4F7',
@@ -39,7 +39,7 @@ module.exports = StyleSheet.create({
         bottom: 10
     },
     map: {
-        height: (height*2/3),
+        height: (height*0.45),
         width: width
     },
     instructions: {
@@ -92,6 +92,29 @@ module.exports = StyleSheet.create({
     },
     infoSection:{
 
+    },
+    input: {
+        height: 40,
+        borderRadius: 8,
+        backgroundColor: 'white',
+    },
+    inputWrapper1: {
+        alignSelf: "stretch",
+        paddingTop: 10,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: '#B2E4F7',
+        borderColor: 'red'
+    },
+    inputWrapper2: {
+        alignSelf: "stretch",
+        paddingTop: 5,
+        paddingBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: '#B2E4F7',
+        borderColor: 'red'
     },
     spin: {
         top: 40
