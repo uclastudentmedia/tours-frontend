@@ -17,7 +17,7 @@ import {
     Navigator,
 } from 'react-native';
 import MapView from 'react-native-maps';
-import {DistancePrioritize,LocToData} from '../Utils'
+import {DistancePrioritize,LocToData,LocToIcon} from '../Utils'
 
 import ListItem from '../Components/ListItem';
 
@@ -42,6 +42,7 @@ export default class MainMapView extends Component {
 
     componentWillMount(){
         this.setupData();
+
     }
 
     componentDidMount() {
@@ -73,15 +74,28 @@ export default class MainMapView extends Component {
                 this.setState({
                     data: val
                 });
+                //LocToData("Kerckhoff Hall",val);
+                //initialPosition.coords.latitude, initialPosition.coords.longitude
+                //34.070383, -118.443703
                 var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
                 dataPop = [];
                 for(var i = 0; i < temp.length; i++)
                 {
-                    var locData = {loc:"", dist:0};
+                    //push location data onto data
+                    var locData = {loc:"", dist:0,icon_src:""};
                     var distance = Math.round(temp[i].distanceAway);
                     locData.loc = temp[i].location;
                     locData.dist = distance;
+                    locData.icon_src=LocToIcon(temp[i].category);
                     dataPop.push(locData);
+
+                    //push coordinate data into this.markers
+                    var markersData = {lat:0,long:0,src:""};
+                    markersData.lat= temp[i].lat;
+                    markersData.long= temp[i].long;
+                    //console.log("markers category: " + temp[i].category);
+                    markersData.src=LocToIcon(temp[i].category);
+                    this.state.markers.push(markersData);
                 }
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
@@ -131,6 +145,7 @@ export default class MainMapView extends Component {
             data: '',
             dataSource: ds.cloneWithRows(dataPop),
             lastPosition: 'unknown',
+            markers:[{lat:0,long:0,src:""}],
             region: {
                 latitude: 34.070286,
                 longitude: -118.443413,
@@ -153,7 +168,7 @@ export default class MainMapView extends Component {
             locID: id,
         });
     }
-
+//'../../assets/images/icon_ph.png'
     renderDragMenu(){
         return (
             <View style={styles.info}>
@@ -167,7 +182,8 @@ export default class MainMapView extends Component {
                     renderRow={(rowData) =>
                         <View>
                             <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
-                                <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
+                                <ListItem imageSrc={require(  )} rowData={rowData}/>
+                                //load icon image here       ^
                             </TouchableOpacity>
                             <View style={styles.separator} />
                         </View>}
