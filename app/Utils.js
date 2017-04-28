@@ -50,8 +50,10 @@ export function DistancePrioritize(currentLat,currentLong, data){
                     location:val.results[i].name,
                     distanceAway: FeetConverter(haversine(
                         [currentLat,currentLong],
-                        [val.results[i].lat,val.results[i].long]
-                    ))
+                        [val.results[i].lat,val.results[i].long])),
+                    lat:val.results[i].lat,
+                    long:val.results[i].long,
+                    category:val.results[i].category_id
                 });
             }
             DistAway.sort(function(a,b){
@@ -78,9 +80,16 @@ export function LocToData(location,data){
         const value = data;
         if(value!==null){
             const results = value.results;
-            return results.find(function(loc){return loc.name === location});
+            return data.results.find(function(loc){return loc.name === location});
         }
     } catch (error) {
         console.log(error.message)
     }
+}
+
+//given location category, return image source for icon
+export function LocToIcon(location_cat){
+    var loc_file=location_cat-1000;
+    var imgSrc= "../../assets/images/loc_icons/" + loc_file +".png";
+    return imgSrc;
 }
