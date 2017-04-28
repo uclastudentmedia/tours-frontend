@@ -198,9 +198,12 @@ export default class MainMapView extends Component {
                                 longitudeDelta: 0.0345,
                             }}
                         />
-                        <MapView.PolyLine
-                            coordinates={polyLine}
-                            strokeWidth={5}
+                        <MapView.Polyline
+                            coordinates={[
+                                {latitude: 34.072872, longitude: -118.441136},
+                                {latitude: 34.074685, longitude: -118.441416}
+                            ]}
+                            strokeWidth={3}
                         />
                         <MapView.Marker
                             coordinate={{
