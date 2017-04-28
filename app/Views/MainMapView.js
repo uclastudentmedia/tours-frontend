@@ -15,6 +15,8 @@ import {
     Image,
     TouchableOpacity,
     Navigator,
+    TextInput,
+    Button,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {DistancePrioritize,LocToData} from '../Utils'
@@ -161,10 +163,12 @@ export default class MainMapView extends Component {
     renderDragMenu(){
         return (
             <View style={styles.info}>
+                {/*
                 <View style={{alignItems: 'center', width: width, height: 30, backgroundColor: 'yellow'}}>
                 <Image
-                    source={require('../../assets/images/handle.png')}/>
+                     source={require('../../assets/images/handle.png')}/>
                 </View>
+                */}
                 <ListView
                     style={styles.locations}
                     dataSource={this.state.dataSource}
@@ -186,6 +190,27 @@ export default class MainMapView extends Component {
         if(loaded && initialPosition != 'unknown'){
             return (
                 <View style={styles.container}>
+                    <View style={styles.inputWrapper1}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Start Destination"
+                            underlineColorAndroid="transparent"
+                            placeholderTextColor="#adadad"
+                        />
+                    </View>
+                    <View style={styles.inputWrapper2}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="End Destination"
+                            underlineColorAndroid="transparent"
+                            placeholderTextColor="#adadad"
+                        />
+                    </View>
+                    <View style={{alignSelf: "stretch"}}>
+                        <Button
+                            title="Begin Directions"
+                        />
+                    </View>
                     <MapView style={styles.map}
                         region={this.state.region}
                         >
