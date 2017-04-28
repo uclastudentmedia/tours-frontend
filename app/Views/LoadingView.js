@@ -6,53 +6,28 @@ import {
     View,
     Image,
     AsyncStorage,
-    ActivityIndicator
+    ActivityIndicator,
+    TouchableOpacity,
+    Button
 } from 'react-native';
 
 import MainMapView from './MainMapView';
 
 const styles = require("../../assets/css/style");
-const SIZES = ['small', 'normal', 'large'];
 
-export default class App extends Component {
+export default class LoadingView extends Component {
 
   constructor(props){
     super(props);
     this.state = {
       results: '',
       done: false,
-      visible: true,
-      visible: this.props.visible,
-      textContent: this.props.textContent
     }
   }
 
-  static propTypes = {
-    visible: React.PropTypes.bool,
-    textContent: React.PropTypes.string,
-    color: React.PropTypes.string,
-    size: React.PropTypes.oneOf(SIZES),
-    overlayColor: React.PropTypes.string
-  };
-
-  static defaultProps = {
-    visible: false,
-    textContent: "",
-    color: 'white',
-    size: 'large', // 'normal',
-    overlayColor: 'rgba(0, 0, 0, 0.25)',
-  };
-
   componentDidMount(){
     this.getAPIData();
-    setInterval(() => {
-      this.setState({
-        visible: !this.state.visible
-      });
-    }, 3000);
   }
-
-
 
   getAPIData(){
     return fetch("http://tours.bruinmobile.com/api/landmark/")
@@ -76,6 +51,14 @@ export default class App extends Component {
       AsyncStorage.setItem('data', JSON.stringify(data));
   }
 
+  gotoMapView(){
+      console.log(this.props.navigator);
+      this.props.navigator.push({
+          id: 'MapView',
+          name: 'MapView',
+      });
+  }
+
   render() {
     if(!this.state.done) {
       return (
@@ -94,9 +77,13 @@ export default class App extends Component {
     }
     else {
       return(
-        <View style={styles.container}>
-          <MainMapView/>
-        </View>
+          <View style={styles.loading}>
+              <Image
+                  style={styles.loading_logo}
+                  source={require('../../assets/images/logo_1x.png')}/>
+              <Text style={styles.center}>BruinTours</Text>
+              <Button style={{paddingTop: 10}} onPress={this.gotoMapView.bind(this)} title="Launch App"></Button>
+          </View>
       );
     }
   }

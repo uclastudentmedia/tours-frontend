@@ -10,11 +10,14 @@ import {
     ListView,
     TouchableHighlight,
     Dimensions,
+    PanResponder,
+    Animated,
     Image,
     TouchableOpacity,
+    Navigator,
 } from 'react-native';
 import MapView from 'react-native-maps';
-import {DistancePrioritize,LocToData,LocToIcon} from '../Utils'
+import {DistancePrioritize,LocToData} from '../Utils'
 
 import ListItem from '../Components/ListItem';
 
@@ -25,6 +28,13 @@ var {height, width} = Dimensions.get('window');
 var dataPop = [];
 var loaded = false;
 var initialPosition = {};
+var val = {};
+var region: {
+        latitude: 34.070286,
+        longitude: -118.443413,
+        latitudeDelta: 0.0045,
+        longitudeDelta: 0.0345,
+    };
 
 export default class MainMapView extends Component {
 
@@ -32,9 +42,22 @@ export default class MainMapView extends Component {
 
     componentWillMount(){
         this.setupData();
+    }
+
+    componentDidMount() {
         setInterval(function(){
             this.setupData();
         }.bind(this), 10000);
+
+        this.setState({
+            dataSource: ds.cloneWithRows(dataPop),
+            region: {
+                latitude: 34.070286,
+                longitude: -118.443413,
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,
+            },
+        });
     }
 
     setupData(){
@@ -45,13 +68,13 @@ export default class MainMapView extends Component {
     async getData(){
         try {
             let value = await AsyncStorage.getItem('data');
-            let val = JSON.parse(value);
+            val = JSON.parse(value);
             if(val !== null){
                 this.setState({
                     data: val
                 });
-                //LocToData("Kerckhoff Hall",val);
                 var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
+                dataPop = [];
                 for(var i = 0; i < temp.length; i++)
                 {
                     var locData = {loc:"", dist:0};
@@ -60,7 +83,6 @@ export default class MainMapView extends Component {
                     locData.dist = distance;
                     dataPop.push(locData);
                 }
-
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
                 });
@@ -79,13 +101,24 @@ export default class MainMapView extends Component {
                 initialPosition = val;
             },
             (error) => alert(JSON.stringify(error)),
-            {enableHighAccuracty: true, timeout: 20000, maximumAge: 1000}
+            {enableHighAccuracty: true, timeout: 2000000, maximumAge: 500}
         );
         this.watchID = navigator.geolocation.watchPosition((position) => {
             var lastPosition = JSON.stringify(position);
             var val = JSON.parse(lastPosition);
             this.setState({lastPosition: val});
         });
+    }
+
+    getInitialState(){
+        return{
+            region: {
+                latitude: 34.070286,
+                longitude: -118.443413,
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,
+            }
+        }
     }
 
     componentWillUnmount(){
@@ -98,71 +131,114 @@ export default class MainMapView extends Component {
             data: '',
             dataSource: ds.cloneWithRows(dataPop),
             lastPosition: 'unknown',
-            markers:[{lat:0,long:0,src:""}]
-        };
+            region: {
+                latitude: 34.070286,
+                longitude: -118.443413,
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,
+            },
+        }
+    }
+
+    onRegionChange(region1) {
+        this.setState(region: region1);
+    }
+
+    gotoDescription(rowData){
+        let id = LocToData(rowData.loc, val);
+        this.props.navigator.push({
+            id: 'Details',
+            name: 'More Details',
+            rowDat: rowData,
+            locID: id,
+        });
+    }
+
+    renderDragMenu(){
+        return (
+            <View style={styles.info}>
+                <View style={{alignItems: 'center', width: width, height: 30, backgroundColor: 'yellow'}}>
+                <Image
+                    source={require('../../assets/images/handle.png')}/>
+                </View>
+                <ListView
+                    style={styles.locations}
+                    dataSource={this.state.dataSource}
+                    renderRow={(rowData) =>
+                        <View>
+                            <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
+                                <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
+                            </TouchableOpacity>
+                            <View style={styles.separator} />
+                        </View>}
+                    enableEmptySections={true}
+                    showsVerticalScrollIndicator={false}
+                />
+            </View>
+        );
     }
 
     render() {
-       // console.log(initialPosition);
         if(loaded && initialPosition != 'unknown'){
-        //console.log(initialPosition);
-        if(loaded && initialPosition != 'unknown'){
-            //insert DistancePrioritize(lat,long) function here
-            //console.log(DistancePrioritize(1,0));
             return (
                 <View style={styles.container}>
                     <MapView style={styles.map}
-                             initialRegion={{
-                                latitude: 34.070286,
-                                longitude: -118.443413,
-                                latitudeDelta: 0.0122,
-                                longitudeDelta: 0.0921,}}>
-                        //marker for where you are
+                        region={this.state.region}
+                        >
                         <MapView.Marker
-                            image={require('../../assets/images/pin_80.png')}
+                            image={require('../../assets/images/dot1.png')}
                             coordinate={{
                                 latitude: initialPosition.coords.latitude,
                                 longitude: initialPosition.coords.longitude,
-                                latitudeDelta: 0.0122,
-                                longitudeDelta: 0.0921,}}
+                                latitudeDelta: 0.0045,
+                                longitudeDelta: 0.0345,
+                            }}
                         />
-                        //list of icons for nearby locations
-                        /*{this.state.markers.map(marker => (
-                            <MapView.Marker
-                                image={require(marker.src)}
-                                coordinate={{
-                                    latitutde: marker.lat,
-                                    longitutde: marker.long,
-                                    latitutdeDelta: 0.0122,
-                                    longitudeDelta: 0.0921
-                                }}
-                            />
-                        ))}*/
-
+                        <MapView.Marker
+                            coordinate={{
+                                latitude: 34.072872,
+                                longitude: -118.441136
+                            }}
+                            title={"Haines Hall"}
+                            description={"Land of Smallberg"}
+                        />
+                        <MapView.Marker
+                            coordinate={{
+                                latitude:34.074685,
+                                longitude:-118.441416
+                            }}
+                            color={'#000000'}
+                            title={"YRL"}
+                            description={"I only go here to work on startup"}
+                        />
                     </MapView>
-                    <View style={styles.info}>
-
-                        <ListView
-                            style={styles.locations}
-                            dataSource={this.state.dataSource}
-                            renderRow={(rowData) =>
-                                <View>
-                                    <TouchableOpacity style={styles.wrapper}>
-                                        <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
-                                    </TouchableOpacity>
-                                    <View style={styles.separator} />
-                                </View>}
-                            enableEmptySections={true}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    </View>
+                    {this.renderDragMenu()}
                 </View>
             );
         }
         else {
             return (
-                <View style={{backgroundColor: 'white', flex: 1}}>
-                    <Text>Failed to get your location.</Text>
+                <View style={styles.loadMapContainer}>
+                    <MapView style={styles.map}
+                             region={this.state.region}
+                             >
+                        <MapView.Marker
+                            image={require('../../assets/images/dot1.png')}
+                            coordinate={{
+                                latitude: 34.070984,
+                                longitude: -118.444759,
+                                latitudeDelta: 0.0045,
+                                longitudeDelta: 0.0345,
+                            }}/>
+                    </MapView>
+                    <View style={styles.info}>
+                        <Text style={styles.loadingLocText}>
+                            Loading Data...
+                        </Text>
+                        <Text style={styles.loadingDistText}>
+                            We are loading your location data
+                        </Text>
+                    </View>
                 </View>
             );
         }

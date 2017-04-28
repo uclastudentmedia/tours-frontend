@@ -19,9 +19,11 @@ export default class ListItem extends Component {
             <View style={styles.wrapper}>
                 <Image style={styles.placeholder} source={this.props.imageSrc}/>
                 <Text style={styles.locText}>
-                    {this.props.rowData}
+                    {this.props.rowData.loc}{'\n'}
+                    <Text style={styles.distText}>
+                        {this.props.rowData.dist} feet away
                     </Text>
-                <View style={styles.separator} />
+                </Text>
             </View>
         );
     }
