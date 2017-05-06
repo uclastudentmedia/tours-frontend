@@ -20,8 +20,11 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {DistancePrioritize,LocToData} from '../Utils'
-
 import ListItem from '../Components/ListItem';
+import SlidingUpPanel from 'react-native-sliding-up-panel';
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import { Kohana } from 'react-native-textinput-effects';
+
 
 const styles = require( "../../assets/css/style");
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -37,6 +40,8 @@ var region: {
         latitudeDelta: 0.0045,
         longitudeDelta: 0.0345,
     };
+var deviceHeight = Dimensions.get('window').height;
+var deviceWidth = Dimensions.get('window').width;
 
 export default class MainMapView extends Component {
 
@@ -187,25 +192,23 @@ export default class MainMapView extends Component {
             return (
                 <View style={styles.container}>
                     <View style={styles.inputWrapper1}>
+                    {/*
                         <TextInput
                             style={styles.input}
                             placeholder="Start Destination"
                             underlineColorAndroid="transparent"
                             placeholderTextColor="#adadad"
                         />
-                    </View>
-                    <View style={styles.inputWrapper2}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="End Destination"
-                            underlineColorAndroid="transparent"
-                            placeholderTextColor="#adadad"
-                        />
-                    </View>
-                    <View style={{alignSelf: "stretch"}}>
-                        <Button
-                            title="Begin Directions"
-                        />
+                    */}
+                      <Kohana
+                        style={{ backgroundColor: '#6495ed' }}
+                        label={'Tap to Search'}
+                        iconClass={MaterialsIcon}
+                        iconName={'search'}
+                        iconColor={'white'}
+                        labelStyle={{ color: 'white' }}
+                        inputStyle={{ color: 'white' }}
+                      />
                     </View>
                     <MapView style={styles.map}
                         region={this.state.region}
@@ -237,7 +240,14 @@ export default class MainMapView extends Component {
                             description={"I only go here to work on startup"}
                         />
                     </MapView>
-                    {this.renderDragMenu()}
+                    <SlidingUpPanel
+                        containerMaximumHeight={deviceHeight - 100}
+                        handlerBackgroundColor={'rgba(0,0,0,0)'}
+                        handlerHeight={33}
+                        allowStayMiddle={true}
+                        handlerDefaultView={<HandlerOne/>}>
+                            {this.renderDragMenu()}
+                     </SlidingUpPanel>
                 </View>
             );
         }
@@ -269,3 +279,14 @@ export default class MainMapView extends Component {
         }
     }
 }
+
+class HandlerOne extends Component{
+  render() {
+    return (
+        <View style={styles.container}>
+            <Image style={styles.image} source={require('../../assets/images/drag_bar.png')}>
+            </Image>
+        </View>
+    );
+  }
+};

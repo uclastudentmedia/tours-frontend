@@ -39,7 +39,7 @@ module.exports = StyleSheet.create({
         bottom: 10
     },
     map: {
-        height: (height*0.45),
+        height: (height * 0.87),
         width: width
     },
     instructions: {
@@ -99,13 +99,8 @@ module.exports = StyleSheet.create({
         backgroundColor: 'white',
     },
     inputWrapper1: {
-        alignSelf: "stretch",
-        paddingTop: 10,
-        paddingBottom: 5,
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: '#B2E4F7',
-        borderColor: 'red'
+        flex: 1,
+        alignSelf: "stretch"
     },
     inputWrapper2: {
         alignSelf: "stretch",
@@ -115,6 +110,9 @@ module.exports = StyleSheet.create({
         paddingRight: 10,
         backgroundColor: '#B2E4F7',
         borderColor: 'red'
+    },
+    image: {
+        paddingTop: 50,
     },
     spin: {
         top: 40
