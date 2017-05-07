@@ -29,6 +29,8 @@ var dataPop = [];
 var loaded = false;
 var initialPosition = {};
 var mapSetting=1;
+//var icon = this.props.active ? require('./my-icon-active.png') : require('./my-icon-inactive.png');
+var imgsourcestuff='../../assets/images/icon_ph.png';
 var val = {};
 var region: {
         latitude: 34.070286,
@@ -182,6 +184,7 @@ export default class MainMapView extends Component {
         });
     }
 //'../../assets/images/icon_ph.png'
+
     renderDragMenu(){
         return (
             <View style={styles.info}>
@@ -195,7 +198,7 @@ export default class MainMapView extends Component {
                     renderRow={(rowData) =>
                         <View>
                             <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
-                                <ListItem imageSrc={require('../../assets/images/loc_icons/1@1x.png')} rowData={rowData}/>
+                                <ListItem imageSrc={{uri:'../../assets/images/icon_ph.png'}} rowData={rowData}/>
                             </TouchableOpacity>
                             <View style={styles.separator} />
                         </View>}

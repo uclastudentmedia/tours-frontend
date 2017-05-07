@@ -97,43 +97,31 @@ export function popPrioritize(data,lat,long,latD,longD){
                 };
                 //if current location is within viewport
                 if( bottomRight.lat <currLoc.lat && currLoc.lat<topLeftCor.lat && topLeftCor.long <currLoc.long && currLoc.long<bottomRight.long){
-                    //create ranking for current location based on category + popularity
-                    rank=val.results[i].priority;
-                    //console.log("rank: " + rank);
-                        //catRank[val.results[i].category_id]*val.results[i].priority;
-                    //if current rank is greater than the lowest rank in locInView
-                    if(rank>locInView[locInView.length-1].rank){
-                        //console.log("current location is ranked high enough!")
-                        //add the current location to the list
-                        if(val.results[i].category_id){
-                            source="../../assets/images/loc_icons/" + val.results[i].category_id-1000 +".png"
-                        }
-                        else{
-                            source="../../assets/images/loc_icons/1.png"
-                        }
-                        locInView.push({
-                            location:val.results[i].name,
-                            lat:val.results[i].lat,
-                            long:val.results[i].long,
-                            rank:rank,
-                            distanceAway: FeetConverter(haversine(
-                                [lat,long],
-                                [val.results[i].lat,val.results[i].long])),
-                            category:val.results[i].category_id,
-                            imgSrc:source
-                        });
-                        //re-sort the list which includes the current location
-                        locInView=locInView.sort(function(a,b){return a.rank-b.rank;});
+                       //catRank[val.results[i].category_id]*val.results[i].priority;
+                    //add the current location to the list
+                    if(val.results[i].category_id){
+                        source="../../assets/loc_icons/" + val.results[i].category_id-1000 +".png"
                     }
+                    else{
+                        source="../../assets/loc_icons/1.png"
+                    }
+                    locInView.push({
+                        location:val.results[i].name,
+                        lat:val.results[i].lat,
+                        long:val.results[i].long,
+                        rank1:val.results[i].priority,
+                        distanceAway: FeetConverter(haversine(
+                            [lat,long],
+                            [val.results[i].lat,val.results[i].long])),
+                        category:val.results[i].category_id,
+                        imgSrc:source
+                    });
+                    //re-sort the list which includes the current location
+                    locInView=locInView.sort(function(a,b){return a.rank-b.rank;});
+
                 }
             }
-            // var blah=locInView.slice(0,10);
-            // for(var j=0;j<blah.length;j++){
-            //     console.log("Rank: "+blah[j].rank);
-            // }
-            // //return list of 10 locations
-            console.log("royce: " + locInView[0].location);
-            console.log("Image Source :" + locInView[2].imgSrc);
+            console.log(locInView.slice(0,10));
             return locInView.slice(0,10);
         }
     } catch (error) {
@@ -184,10 +172,10 @@ export function DistancePrioritize(currentLat,currentLong, data){
             var DistAway = [];
             for(var i = 0; i<val.results.length; i++){
                 if(val.results[i].category_id){
-                    source="../../assets/images/loc_icons/" + val.results[i].category_id-1000 +".png"
+                    source="../../assets/loc_icons/" + val.results[i].category_id-1000 +".png"
                 }
                 else{
-                    source="../../assets/images/loc_icons/1.png"
+                    source="../../assets/loc_icons/1.png"
                 }
                 DistAway.push({
                     location:val.results[i].name,
