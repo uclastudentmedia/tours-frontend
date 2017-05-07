@@ -17,7 +17,7 @@ import {
     Navigator,
 } from 'react-native';
 import MapView from 'react-native-maps';
-import {DistancePrioritize,LocToData,LocToIcon} from '../Utils'
+import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
 
 import ListItem from '../Components/ListItem';
 
@@ -28,6 +28,7 @@ var {height, width} = Dimensions.get('window');
 var dataPop = [];
 var loaded = false;
 var initialPosition = {};
+var mapSetting=1;
 var val = {};
 var region: {
         latitude: 34.070286,
@@ -74,10 +75,21 @@ export default class MainMapView extends Component {
                 this.setState({
                     data: val
                 });
-                //LocToData("Kerckhoff Hall",val);
-                //initialPosition.coords.latitude, initialPosition.coords.longitude
-                //34.070383, -118.443703
-                var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
+                var temp;
+                if(mapSetting===2){
+                    //if map setting is tours, display locations on the tour
+                }
+                else if(mapSetting===0){
+                    //if map setting is nearby, prioritize top 10 location by distance
+                    temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
+                }
+                else{
+                    //if map setting is campus map. prioritize top 10 locations by popularity/category
+                    //this is default
+                    temp = popPrioritize(value,initialPosition.coords.latitude, initialPosition.coords.longitude,
+                        0.0545,0.0145);
+                }
+                //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value).slice(0,10);
                 dataPop = [];
                 for(var i = 0; i < temp.length; i++)
                 {
@@ -86,7 +98,7 @@ export default class MainMapView extends Component {
                     var distance = Math.round(temp[i].distanceAway);
                     locData.loc = temp[i].location;
                     locData.dist = distance;
-                    locData.icon_src=LocToIcon(temp[i].category);
+                    locData.imSrc=temp[i].imgSrc;
                     dataPop.push(locData);
 
                     //push coordinate data into this.markers
@@ -94,9 +106,10 @@ export default class MainMapView extends Component {
                     markersData.lat= temp[i].lat;
                     markersData.long= temp[i].long;
                     //console.log("markers category: " + temp[i].category);
-                    markersData.src=LocToIcon(temp[i].category);
+                    markersData.src=temp[i].imgSrc;
                     this.state.markers.push(markersData);
                 }
+                this.state.markers.slice(0,10);
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop)
                 });
@@ -145,7 +158,7 @@ export default class MainMapView extends Component {
             data: '',
             dataSource: ds.cloneWithRows(dataPop),
             lastPosition: 'unknown',
-            markers:[{lat:0,long:0,src:""}],
+            markers:[{lat:34.070286,long:-118.443413,src:""}],
             region: {
                 latitude: 34.070286,
                 longitude: -118.443413,
@@ -182,8 +195,7 @@ export default class MainMapView extends Component {
                     renderRow={(rowData) =>
                         <View>
                             <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
-                                <ListItem imageSrc={require(  )} rowData={rowData}/>
-                                //load icon image here       ^
+                                <ListItem imageSrc={require('../../assets/images/loc_icons/1@1x.png')} rowData={rowData}/>
                             </TouchableOpacity>
                             <View style={styles.separator} />
                         </View>}
@@ -211,22 +223,33 @@ export default class MainMapView extends Component {
                             }}
                         />
                         <MapView.Marker
+                            image={require('../../assets/images/dot1.png')}
                             coordinate={{
-                                latitude: 34.072872,
-                                longitude: -118.441136
+                                latitude: initialPosition.coords.latitude+(0.0045/2),
+                                longitude: initialPosition.coords.longitude-(0.0345/2),
+                                latitudeDelta: 0.0045,
+                                longitudeDelta: 0.0345,
                             }}
-                            title={"Haines Hall"}
-                            description={"Land of Smallberg"}
                         />
                         <MapView.Marker
+                            image={require('../../assets/images/dot1.png')}
                             coordinate={{
-                                latitude:34.074685,
-                                longitude:-118.441416
+                                latitude: initialPosition.coords.latitude-(0.0045/2),
+                                longitude: initialPosition.coords.longitude+(0.0345/2),
+                                latitudeDelta: 0.0045,
+                                longitudeDelta: 0.0345,
                             }}
-                            color={'#000000'}
-                            title={"YRL"}
-                            description={"I only go here to work on startup"}
                         />
+                        {this.state.markers.map(marker => (
+                            <MapView.Marker
+                                coordinate={{
+                                    latitude:marker.lat,
+                                    longitude:marker.long,
+                                }}
+                                title={marker.title}
+                                description={marker.description}
+                            />
+                        ))}
                     </MapView>
                     {this.renderDragMenu()}
                 </View>
