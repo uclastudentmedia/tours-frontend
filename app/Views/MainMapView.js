@@ -46,6 +46,12 @@ var polyLine: [
     {latitude: 34.071335, longitude: -118.441864},
     {latitude: 34.068822, longitude: -118.441349}
 ];
+var route = [
+                {latitude: 34.072872, longitude: -118.441136},
+                {latitude: 34.074685, longitude: -118.441416}
+            ];
+var serverRoute = {};
+var serverRouteChecked = false;
 
 export default class MainMapView extends Component {
 
@@ -174,6 +180,48 @@ export default class MainMapView extends Component {
         });
     }
 
+    async search(text)
+    {
+        try
+        {
+            let tochirisukun = await AsyncStorage.getItem('data');
+            val = JSON.parse(tochirisukun);
+            text = text.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+            let location = LocToData(text, val);
+
+            let rowan = {
+                "locations": [{
+                    "lat": location.lat,
+//                    "lat": 34.071749,
+                    "lon": location.long,
+//                    "lon": -118.442166,
+                }, {
+                    "lat": initialPosition.coords.latitude,
+                    "lon": initialPosition.coords.longitude,
+                }],
+                "costing": "pedestrian"
+            };
+
+            let angelrooroo = {};
+
+            console.log("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan));
+            fetch("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan))
+              .then((response) => response.json())
+              .then((responseJson) => {
+                  angelrooroo = responseJson;
+                  serverRoute = responseJson;
+                  serverRouteChecked = false;
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+        }
+        catch (e)
+        {
+            console.log(e);
+        }
+    }
+
     renderDragMenu(){
         return (
             <View style={styles.info}>
@@ -194,8 +242,34 @@ export default class MainMapView extends Component {
         );
     }
 
+    extractRoute(){
+        console.log("EXTRACTED");
+        serverRouteChecked = true;
+
+        let ply = serverRoute.trip.legs[0].shape;
+
+        console.log(ply);
+
+        let troute = decode(ply);
+        route = [];
+        for(var i = 0; i < troute.length; i++)
+        {
+            let temp1 = troute[i][0];
+            let temp2 = troute[i][1];
+
+            route.push({
+                latitude: temp1,
+                longitude: temp2
+            });
+        }
+    }
+
     render() {
         if(loaded && initialPosition != 'unknown'){
+            if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
+            {
+                    this.extractRoute();
+            }
             return (
                 <View style={styles.container}>
                     <View style={styles.inputWrapper1}>
@@ -215,6 +289,7 @@ export default class MainMapView extends Component {
                         iconColor={'white'}
                         labelStyle={{ color: 'white' }}
                         inputStyle={{ color: 'white' }}
+                        onSubmitEditing={(event) => this.search(event.nativeEvent.text)}
                       />
                     </View>
                     <MapView style={styles.map}
@@ -230,10 +305,7 @@ export default class MainMapView extends Component {
                             }}
                         />
                         <MapView.Polyline
-                            coordinates={[
-                                {latitude: 34.072872, longitude: -118.441136},
-                                {latitude: 34.074685, longitude: -118.441416}
-                            ]}
+                            coordinates={route}
                             strokeWidth={3}
                         />
                         <MapView.Marker
@@ -303,4 +375,53 @@ class HandlerOne extends Component{
         </View>
     );
   }
+};
+
+decode = function(str, precision) {
+    var index = 0,
+        lat = 0,
+        lng = 0,
+        coordinates = [],
+        shift = 0,
+        result = 0,
+        byte = null,
+        latitude_change,
+        longitude_change,
+        factor = Math.pow(10, precision || 6);
+
+    // Coordinates have variable length when encoded, so just keep
+    // track of whether we've hit the end of the string. In each
+    // loop iteration, a single coordinate is decoded.
+    while (index < str.length) {
+
+        // Reset shift, result, and byte
+        byte = null;
+        shift = 0;
+        result = 0;
+
+        do {
+            byte = str.charCodeAt(index++) - 63;
+            result |= (byte & 0x1f) << shift;
+            shift += 5;
+        } while (byte >= 0x20);
+
+        latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+        shift = result = 0;
+
+        do {
+            byte = str.charCodeAt(index++) - 63;
+            result |= (byte & 0x1f) << shift;
+            shift += 5;
+        } while (byte >= 0x20);
+
+        longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+        lat += latitude_change;
+        lng += longitude_change;
+
+        coordinates.push([lat / factor, lng / factor]);
+    }
+
+    return coordinates;
 };
