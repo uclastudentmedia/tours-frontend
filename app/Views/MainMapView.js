@@ -151,6 +151,7 @@ export default class MainMapView extends Component {
         super(props);
         this.state = {
             data: '',
+            markers: [],
             dataSource: ds.cloneWithRows(dataPop),
             lastPosition: 'unknown',
             region: {
@@ -261,11 +262,23 @@ export default class MainMapView extends Component {
                 longitude: temp2
             });
         }
+
         flag1.latitude = initialPosition.coords.latitude;
         flag1.longitude = initialPosition.coords.longitude;
 
         flag2.latitude = initCoords.latitude;
         flag2.longitude = initCoords.longitude;
+
+        this.setState({
+            markers: [{
+                lat: flag1.latitude,
+                long: flag1.longitude
+             },
+             {
+                 lat: flag2.latitude,
+                 long: flag2.longitude
+             }]
+        });
     }
 
     render() {
@@ -312,16 +325,13 @@ export default class MainMapView extends Component {
                             coordinates={route}
                             strokeWidth={3}
                         />
-                        <MapView.Marker
-                            coordinate={flag1}
-                            title={"Haines Hall"}
-                            description={"Land of Smallberg"}
-                        />
-                        <MapView.Marker
-                            coordinate={flag2}
-                            title={"YRL"}
-                            description={"I only go here to work on startup"}
-                        />
+                        {this.state.markers.map(marker => (
+                            <MapView.Marker
+                              coordinate={{latitude: marker.lat, longitude: marker.long}}
+                              title={marker.title}
+                              description={marker.description}
+                            />
+                          ))}
                     </MapView>
                     <SlidingUpPanel
                         containerMaximumHeight={deviceHeight - 100}
