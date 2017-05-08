@@ -3,9 +3,6 @@
  */
 
 import React, { Component } from 'react';
-import {
-    AsyncStorage
-} from 'react-native';
 
 export function popPrioritize(data,lat,long,latD,longD){
     try{
@@ -14,32 +11,6 @@ export function popPrioritize(data,lat,long,latD,longD){
             //console.log("pop prioritize");
             // We have data!!
             let val = JSON.parse(value);
-            catRank={
-                1010:24,
-                1011:23,
-                1018:22,
-                1015:21,
-                1003:20,
-                1002:19,
-                1008:18,
-                1014:17,
-                1001:16,
-                1017:15,
-                1009:14,
-                1013:13,
-                1321:12,
-                2285:11,
-                1006:10,
-                1005:9,
-                1012:8,
-                1007:7,
-                1020:6,
-                1016:5,
-                1004:4,
-                1019:3,
-                1961:2,
-                2286:1
-            };
             //create rectangular area
             //est topLeft and bottomRight long/lat based on long,lat, long delta, and lat delta
             topLeftCor={
@@ -84,44 +55,39 @@ export function popPrioritize(data,lat,long,latD,longD){
                     location:'',
                     lat:0,
                     long:0,
-                    rank:1,
+                    rank:0,
                     distanceAway:0,
                     category:0
                 }];
-            var source;
-            for(var i=0;i<val.results.length;i++){
-                //bottomRight.lat <loc.lat<topLeftCor.lat && topLeft.long <loc.long<bottomRight.long
-                var currLoc={
-                   lat:val.results[i].lat,
-                    long:val.results[i].long
-                };
-                //if current location is within viewport
-                if( bottomRight.lat <currLoc.lat && currLoc.lat<topLeftCor.lat && topLeftCor.long <currLoc.long && currLoc.long<bottomRight.long){
-                       //catRank[val.results[i].category_id]*val.results[i].priority;
-                    //add the current location to the list
-                    if(val.results[i].category_id){
-                        source="../../assets/loc_icons/" + val.results[i].category_id-1000 +".png"
-                    }
-                    else{
-                        source="../../assets/loc_icons/1.png"
-                    }
-                    locInView.push({
-                        location:val.results[i].name,
-                        lat:val.results[i].lat,
-                        long:val.results[i].long,
-                        rank1:val.results[i].priority,
-                        distanceAway: FeetConverter(haversine(
-                            [lat,long],
-                            [val.results[i].lat,val.results[i].long])),
-                        category:val.results[i].category_id,
-                        imgSrc:source
-                    });
-                    //re-sort the list which includes the current location
-                    locInView=locInView.sort(function(a,b){return a.rank-b.rank;});
+            //sort everything in val.results
+            var tempRes=val.results.sort(function(a,b){return a.priority-b.priority;});
 
+            //loop through all locations to filter by: zoom level
+            for(j=0;j<tempRes.length;j++){
+                //remove if location is not within the mapview
+                if(topLeftCor.lat<tempRes[j].lat && tempRes[j].lat<bottomRight.lat
+                    && bottomRight.long<tempRes[j].long && tempRes[j]<bottomRight.long){
+                    tempRes.splice(j,1);
                 }
             }
-            console.log(locInView.slice(0,10));
+
+
+            //save top 10 results to locInView
+            for(var i=0;i<10;i++){
+                locInView.push({
+                    location:tempRes[i].name,
+                    lat:tempRes[i].lat,
+                    long:tempRes[i].long,
+                    rank:tempRes[i].priority,
+                    distanceAway:FeetConverter(haversine(
+                        [lat,long],
+                        [tempRes[i].lat,tempRes[i].long])),
+                    category:tempRes[i].category_id
+                });
+            }
+            if(locInView.length>=1){
+                locInView.splice(0,1);
+            }
             return locInView.slice(0,10);
         }
     } catch (error) {

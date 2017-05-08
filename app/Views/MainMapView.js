@@ -32,12 +32,6 @@ var mapSetting=1;
 //var icon = this.props.active ? require('./my-icon-active.png') : require('./my-icon-inactive.png');
 var imgsourcestuff='../../assets/images/icon_ph.png';
 var val = {};
-var region: {
-        latitude: 34.070286,
-        longitude: -118.443413,
-        latitudeDelta: 0.0045,
-        longitudeDelta: 0.0345,
-    };
 
 export default class MainMapView extends Component {
 
@@ -88,8 +82,9 @@ export default class MainMapView extends Component {
                 else{
                     //if map setting is campus map. prioritize top 10 locations by popularity/category
                     //this is default
+                    //initState=getInitialState();
                     temp = popPrioritize(value,initialPosition.coords.latitude, initialPosition.coords.longitude,
-                        0.0545,0.0145);
+                        0.0045, 0.0345);
                 }
                 //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value).slice(0,10);
                 dataPop = [];
@@ -139,17 +134,6 @@ export default class MainMapView extends Component {
         });
     }
 
-    getInitialState(){
-        return{
-            region: {
-                latitude: 34.070286,
-                longitude: -118.443413,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,
-            }
-        }
-    }
-
     componentWillUnmount(){
         navigator.geolocation.clearWatch(this.watchID);
     }
@@ -164,8 +148,6 @@ export default class MainMapView extends Component {
             region: {
                 latitude: 34.070286,
                 longitude: -118.443413,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,
             },
         }
     }
@@ -220,27 +202,7 @@ export default class MainMapView extends Component {
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
                                 latitude: initialPosition.coords.latitude,
-                                longitude: initialPosition.coords.longitude,
-                                latitudeDelta: 0.0045,
-                                longitudeDelta: 0.0345,
-                            }}
-                        />
-                        <MapView.Marker
-                            image={require('../../assets/images/dot1.png')}
-                            coordinate={{
-                                latitude: initialPosition.coords.latitude+(0.0045/2),
-                                longitude: initialPosition.coords.longitude-(0.0345/2),
-                                latitudeDelta: 0.0045,
-                                longitudeDelta: 0.0345,
-                            }}
-                        />
-                        <MapView.Marker
-                            image={require('../../assets/images/dot1.png')}
-                            coordinate={{
-                                latitude: initialPosition.coords.latitude-(0.0045/2),
-                                longitude: initialPosition.coords.longitude+(0.0345/2),
-                                latitudeDelta: 0.0045,
-                                longitudeDelta: 0.0345,
+                                longitude: initialPosition.coords.longitude
                             }}
                         />
                         {this.state.markers.map(marker => (
@@ -268,9 +230,7 @@ export default class MainMapView extends Component {
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
                                 latitude: 34.070984,
-                                longitude: -118.444759,
-                                latitudeDelta: 0.0045,
-                                longitudeDelta: 0.0345,
+                                longitude: -118.444759
                             }}/>
                     </MapView>
                     <View style={styles.info}>
