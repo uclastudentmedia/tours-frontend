@@ -88,10 +88,19 @@ export default class MainMapView extends Component {
                 dataPop = [];
                 for(var i = 0; i < temp.length; i++)
                 {
-                    var locData = {loc:"", dist:0};
+                    var locData = {loc:"", dist:0, catID:0};
                     var distance = Math.round(temp[i].distanceAway);
                     locData.loc = temp[i].location;
                     locData.dist = distance;
+                    var specLoc = LocToData(locData.loc, val);
+                    if(specLoc.category_id == null)
+                    {
+                        locData.catID = 1;
+                    }
+                    else
+                    {
+                        locData.catID = specLoc.category_id;
+                    }
                     dataPop.push(locData);
                 }
                 this.setState({
@@ -168,19 +177,13 @@ export default class MainMapView extends Component {
     renderDragMenu(){
         return (
             <View style={styles.info}>
-                {/*
-                <View style={{alignItems: 'center', width: width, height: 30, backgroundColor: 'yellow'}}>
-                <Image
-                     source={require('../../assets/images/handle.png')}/>
-                </View>
-                */}
                 <ListView
                     style={styles.locations}
                     dataSource={this.state.dataSource}
                     renderRow={(rowData) =>
                         <View>
                             <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
-                                <ListItem imageSrc={require('../../assets/images/icon_ph.png')} rowData={rowData}/>
+                                <ListItem rowData={rowData}/>
                             </TouchableOpacity>
                             <View style={styles.separator} />
                         </View>}

@@ -18,8 +18,7 @@
     "react-native-sliding-up-panel": "^1.1.12",
     "react-native-spinkit": "^1.0.2",
     "react-native-svg": "^5.1.5",
-    "react-native-textinput-effects": "^0.3.0",
-    "react-native-vector-icons": "^4.0.0"
+    "react-native-textinput-effects": "^0.3.0"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",
