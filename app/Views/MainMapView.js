@@ -42,14 +42,10 @@ var region: {
     latitudeDelta: 0.0045,
     longitudeDelta: 0.0345,
 };
-var polyLine: [
-    {latitude: 34.071335, longitude: -118.441864},
-    {latitude: 34.068822, longitude: -118.441349}
-];
-var route = [
-                {latitude: 34.072872, longitude: -118.441136},
-                {latitude: 34.074685, longitude: -118.441416}
-            ];
+let flag1 = {latitude: 0, longitude: 0};
+var flag2 = {latitude: 0, longitude: 0};
+var initCoords = {};
+var route = [ ];
 var serverRoute = {};
 var serverRouteChecked = false;
 
@@ -202,6 +198,9 @@ export default class MainMapView extends Component {
                 "costing": "pedestrian"
             };
 
+            initCoords.latitude = location.lat;
+            initCoords.longitude = location.long;
+
             let angelrooroo = {};
 
             console.log("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan));
@@ -262,6 +261,11 @@ export default class MainMapView extends Component {
                 longitude: temp2
             });
         }
+        flag1.latitude = initialPosition.coords.latitude;
+        flag1.longitude = initialPosition.coords.longitude;
+
+        flag2.latitude = initCoords.latitude;
+        flag2.longitude = initCoords.longitude;
     }
 
     render() {
@@ -309,19 +313,12 @@ export default class MainMapView extends Component {
                             strokeWidth={3}
                         />
                         <MapView.Marker
-                            coordinate={{
-                                latitude: 34.072872,
-                                longitude: -118.441136
-                            }}
+                            coordinate={flag1}
                             title={"Haines Hall"}
                             description={"Land of Smallberg"}
                         />
                         <MapView.Marker
-                            coordinate={{
-                                latitude:34.074685,
-                                longitude:-118.441416
-                            }}
-                            color={'#000000'}
+                            coordinate={flag2}
                             title={"YRL"}
                             description={"I only go here to work on startup"}
                         />
