@@ -15,11 +15,17 @@ import {
     Image,
     TouchableOpacity,
     Navigator,
+    TextInput,
+    Button,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
 
 import ListItem from '../Components/ListItem';
+import SlidingUpPanel from 'react-native-sliding-up-panel';
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import { Kohana } from 'react-native-textinput-effects';
+
 
 const styles = require( "../../assets/css/style");
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -29,9 +35,19 @@ var dataPop = [];
 var loaded = false;
 var initialPosition = {};
 var mapSetting=1;
-//var icon = this.props.active ? require('./my-icon-active.png') : require('./my-icon-inactive.png');
-var imgsourcestuff='../../assets/images/icon_ph.png';
 var val = {};
+var deviceHeight = Dimensions.get('window').height;
+var deviceWidth = Dimensions.get('window').width;
+var region: {
+    latitude: 34.070286,
+    longitude: -118.443413,
+    latitudeDelta: 0.0045,
+    longitudeDelta: 0.0345,
+};
+var polyLine: [
+    {latitude: 34.071335, longitude: -118.441864},
+    {latitude: 34.068822, longitude: -118.441349}
+];
 
 export default class MainMapView extends Component {
 
@@ -39,7 +55,6 @@ export default class MainMapView extends Component {
 
     componentWillMount(){
         this.setupData();
-
     }
 
     componentDidMount() {
@@ -165,15 +180,16 @@ export default class MainMapView extends Component {
             locID: id,
         });
     }
-//'../../assets/images/icon_ph.png'
 
     renderDragMenu(){
         return (
             <View style={styles.info}>
+                {/*
                 <View style={{alignItems: 'center', width: width, height: 30, backgroundColor: 'yellow'}}>
                 <Image
-                    source={require('../../assets/images/handle.png')}/>
+                     source={require('../../assets/images/handle.png')}/>
                 </View>
+                */}
                 <ListView
                     style={styles.locations}
                     dataSource={this.state.dataSource}
@@ -195,6 +211,25 @@ export default class MainMapView extends Component {
         if(loaded && initialPosition != 'unknown'){
             return (
                 <View style={styles.container}>
+                    <View style={styles.inputWrapper1}>
+                    {/*
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Start Destination"
+                            underlineColorAndroid="transparent"
+                            placeholderTextColor="#adadad"
+                        />
+                    */}
+                      <Kohana
+                        style={{ backgroundColor: '#6495ed' }}
+                        label={'Tap to Search'}
+                        iconClass={MaterialsIcon}
+                        iconName={'search'}
+                        iconColor={'white'}
+                        labelStyle={{ color: 'white' }}
+                        inputStyle={{ color: 'white' }}
+                      />
+                    </View>
                     <MapView style={styles.map}
                         region={this.state.region}
                         >
@@ -204,6 +239,30 @@ export default class MainMapView extends Component {
                                 latitude: initialPosition.coords.latitude,
                                 longitude: initialPosition.coords.longitude
                             }}
+                        />
+                        <MapView.Polyline
+                            coordinates={[
+                                {latitude: 34.072872, longitude: -118.441136},
+                                {latitude: 34.074685, longitude: -118.441416}
+                            ]}
+                            strokeWidth={3}
+                        />
+                        <MapView.Marker
+                            coordinate={{
+                                latitude: 34.072872,
+                                longitude: -118.441136
+                            }}
+                            title={"Haines Hall"}
+                            description={"Land of Smallberg"}
+                        />
+                        <MapView.Marker
+                            coordinate={{
+                                latitude:34.074685,
+                                longitude:-118.441416
+                            }}
+                            color={'#000000'}
+                            title={"YRL"}
+                            description={"I only go here to work on startup"}
                         />
                         {this.state.markers.map(marker => (
                             <MapView.Marker
@@ -216,7 +275,14 @@ export default class MainMapView extends Component {
                             />
                         ))}
                     </MapView>
-                    {this.renderDragMenu()}
+                    <SlidingUpPanel
+                        containerMaximumHeight={deviceHeight - 100}
+                        handlerBackgroundColor={'rgba(0,0,0,0)'}
+                        handlerHeight={33}
+                        allowStayMiddle={true}
+                        handlerDefaultView={<HandlerOne/>}>
+                            {this.renderDragMenu()}
+                     </SlidingUpPanel>
                 </View>
             );
         }
@@ -246,3 +312,14 @@ export default class MainMapView extends Component {
         }
     }
 }
+
+class HandlerOne extends Component{
+    render() {
+        return (
+            <View style={styles.container}>
+                <Image style={styles.image} source={require('../../assets/images/drag_bar.png')}>
+                </Image>
+            </View>
+        );
+    }
+};
