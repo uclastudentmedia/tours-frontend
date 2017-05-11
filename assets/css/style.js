@@ -121,5 +121,15 @@ module.exports = StyleSheet.create({
         flexWrap: 'wrap',
         alignItems: 'flex-start',
         flexDirection:'row'
+    },
+    btnContainer: {
+        flex: 1,
+        flexDirection:'row',
+        backgroundColor: 'transparent',
+    },
+    button:{
+        flex:1.2,
+        backgroundColor:'#dddddd',
+        padding:2
     }
 });
