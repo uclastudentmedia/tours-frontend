@@ -29,6 +29,31 @@ import { Kohana } from 'react-native-textinput-effects';
 const styles = require( "../../assets/css/style");
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
+const IMAGES = {
+  image1: require('../../assets/loc_icons/1.png'), // statically analyzed
+  image2: require('../../assets/loc_icons/2.png'), // statically analyzed
+  image3: require('../../assets/loc_icons/3.png'), // statically analyzed
+  image4: require('../../assets/loc_icons/4.png'), // statically analyzed
+  image5: require('../../assets/loc_icons/5.png'), // statically analyzed
+  image6: require('../../assets/loc_icons/6.png'), // statically analyzed
+  image7: require('../../assets/loc_icons/7.png'), // statically analyzed
+  image8: require('../../assets/loc_icons/8.png'), // statically analyzed
+  image9: require('../../assets/loc_icons/9.png'), // statically analyzed
+  image10: require('../../assets/loc_icons/10.png'), // statically analyzed
+  image11: require('../../assets/loc_icons/11.png'), // statically analyzed
+  image12: require('../../assets/loc_icons/12.png'), // statically analyzed
+  image13: require('../../assets/loc_icons/13.png'), // statically analyzed
+  image14: require('../../assets/loc_icons/14.png'), // statically analyzed
+  image15: require('../../assets/loc_icons/15.png'), // statically analyzed
+  image16: require('../../assets/loc_icons/17.png'), // statically analyzed
+  image18: require('../../assets/loc_icons/18.png'), // statically analyzed
+  image20: require('../../assets/loc_icons/20.png'), // statically analyzed
+  image61: require('../../assets/loc_icons/61.png'), // statically analyzed
+  image321: require('../../assets/loc_icons/321.png'), // statically analyzed
+  image961: require('../../assets/loc_icons/961.png'), // statically analyzed
+  image1285: require('../../assets/loc_icons/1285.png'), // statically analyzed
+}
+
 var {height, width} = Dimensions.get('window');
 var dataPop = [];
 var loaded = false;
@@ -106,11 +131,12 @@ export default class MainMapView extends Component {
                 }
                 //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value).slice(0,10);
                 dataPop = [];
+                console.log("BREAK");
                 markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
                 for(var i = 0; i < temp.length; i++)
                 {
                     //push location data onto data
-                    var locData = {loc:"", dist:0,icon_src:""};
+                    var locData = {loc:"", dist:0,catID:1};
                     var distance = Math.round(temp[i].distanceAway);
                     locData.loc = temp[i].location;
                     locData.dist = distance;
@@ -121,23 +147,22 @@ export default class MainMapView extends Component {
                     }
                     else
                     {
-                        locData.catID = specLoc.category_id;
+                        locData.catID = specLoc.category_id - 1000;
                     }
-                    locData.imSrc=temp[i].imgSrc;
                     dataPop.push(locData);
 
                     //push coordinate data into this.markers
-                    var markersData = {lat:0,long:0,src:""};
+                    var markersData = {title:'',lat:0,long:0,srcID:1};
+                    markersData.title = temp[i].location;
                     markersData.lat= temp[i].lat;
                     markersData.long= temp[i].long;
                     //console.log("markers category: " + temp[i].category);
-                    markersData.src=temp[i].imgSrc;
+                    markersData.srcID= specLoc.category_id - 1000;
                     markersData.location=temp[i].location;
                     markersTemp.push(markersData);
                 }
                 markersTemp.splice(0,1);
                 markersTemp.slice(0,10);
-                //console.log(markersTemp);
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop),
                     markers:markersTemp
@@ -199,12 +224,14 @@ export default class MainMapView extends Component {
 
     onRegionChange(region1) {
         this.setState({ region:region1 });
-        //this.getData();
+        this.getData();
     }
+
     changeMapSetting(setting){
         mapSettinger=setting;
         this.getData();
     }
+
     gotoDescription(rowData){
         let id = LocToData(rowData.loc, val);
         this.props.navigator.push({
@@ -227,9 +254,7 @@ export default class MainMapView extends Component {
             let rowan = {
                 "locations": [{
                     "lat": location.lat,
-//                    "lat": 34.071749,
                     "lon": location.long,
-//                    "lon": -118.442166,
                 }, {
                     "lat": initialPosition.coords.latitude,
                     "lon": initialPosition.coords.longitude,
@@ -328,14 +353,6 @@ export default class MainMapView extends Component {
             return (
                 <View style={styles.container}>
                     <View style={styles.inputWrapper1}>
-                    {/*
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Start Destination"
-                            underlineColorAndroid="transparent"
-                            placeholderTextColor="#adadad"
-                        />
-                    */}
                       <Kohana
                         style={{ backgroundColor: '#6495ed' }}
                         label={'Tap to Search'}
@@ -389,8 +406,10 @@ export default class MainMapView extends Component {
                               coordinate={{latitude: marker.lat, longitude: marker.long}}
                               title={marker.title}
                               description={marker.description}
+                              image={IMAGES['image' + marker.srcID]}
                             />
-                          ))}
+                          )
+                      )}
                     </MapView>
                     <SlidingUpPanel
                         containerMaximumHeight={deviceHeight - 100}
