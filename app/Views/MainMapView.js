@@ -88,6 +88,7 @@ export default class MainMapView extends Component {
                 });
                 var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
                 dataPop = [];
+                console.log("BREAK");
                 for(var i = 0; i < temp.length; i++)
                 {
                     var locData = {loc:"", dist:0, catID:0};
@@ -101,8 +102,10 @@ export default class MainMapView extends Component {
                     }
                     else
                     {
-                        locData.catID = specLoc.category_id;
+                        locData.catID = specLoc.category_id - 1000;
                     }
+                    console.log(locData.catID);
+
                     dataPop.push(locData);
                 }
                 this.setState({

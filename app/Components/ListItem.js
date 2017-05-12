@@ -102,10 +102,10 @@ export default class ListItem extends Component {
             //     return(
             //         <Image style={styles.placeholder} source={require('../../assets/loc_icons/16.png')}/>
             //     );
-            // case 17:
-            //     return(
-            //         <Image style={styles.placeholder} source={require('../../assets/loc_icons/17.png')}/>
-            // );
+            case 17:
+                return(
+                    <Image style={styles.placeholder} source={require('../../assets/loc_icons/17.png')}/>
+            );
             case 18:
                 return(
                     <Image style={styles.placeholder} source={require('../../assets/loc_icons/18.png')}/>
@@ -129,6 +129,11 @@ export default class ListItem extends Component {
             case 961:
                 return(
                     <Image style={styles.placeholder} source={require('../../assets/loc_icons/961.png')}/>
+                );
+                break;
+            case 1285:
+                return(
+                    <Image style={styles.placeholder} source={require('../../assets/loc_icons/1285.png')}/>
                 );
                 break;
         }
