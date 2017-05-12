@@ -84,8 +84,8 @@ export default class MainMapView extends Component {
             let value = await AsyncStorage.getItem('data');
             val = JSON.parse(value);
             if(val !== null){
-                console.log("initialposition",initialPosition);
-                console.log("region",this.state.region);
+                //console.log("initialposition",initialPosition);
+                //console.log("region",this.state.region);
                 this.setState({
                     data: val
                 });
@@ -100,8 +100,9 @@ export default class MainMapView extends Component {
                 else{
                     //if map setting is campus map. prioritize top 10 locations by popularity/category
                     //this is default
-                    temp = popPrioritize(value,initialPosition.coords.latitude, initialPosition.coords.longitude,
-                        0.0045, 0.0345);
+                    temp = popPrioritize(value,this.state.region.latitude, this.state.region.longitude,
+                        this.state.region.latitudeDelta, this.state.region.longitudeDelta);
+                    //console.log("region",this.state.region);
                 }
                 //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value).slice(0,10);
                 dataPop = [];
@@ -131,10 +132,12 @@ export default class MainMapView extends Component {
                     markersData.long= temp[i].long;
                     //console.log("markers category: " + temp[i].category);
                     markersData.src=temp[i].imgSrc;
+                    markersData.location=temp[i].location;
                     markersTemp.push(markersData);
                 }
                 markersTemp.splice(0,1);
                 markersTemp.slice(0,10);
+                //console.log(markersTemp);
                 this.setState({
                     dataSource: ds.cloneWithRows(dataPop),
                     markers:markersTemp
@@ -195,7 +198,8 @@ export default class MainMapView extends Component {
     }
 
     onRegionChange(region1) {
-        this.setState(region: region1);
+        this.setState({ region:region1 });
+        //this.getData();
     }
     changeMapSetting(setting){
         mapSettinger=setting;
@@ -367,6 +371,7 @@ export default class MainMapView extends Component {
                         region={this.state.region}
                          zoomEnabled
                              onRegionChangeComplete={(region) => this.setState({ region })}
+                             onRegionChange={this.onRegionChange.bind(this)}
                         >
                         <MapView.Marker
                             image={require('../../assets/images/dot1.png')}
