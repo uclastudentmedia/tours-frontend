@@ -19,7 +19,7 @@ import {
     Button,
 } from 'react-native';
 import MapView from 'react-native-maps';
-import {DistancePrioritize,LocToData} from '../Utils'
+import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
 import ListItem from '../Components/ListItem';
 import SlidingUpPanel from 'react-native-sliding-up-panel';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
@@ -33,6 +33,7 @@ var {height, width} = Dimensions.get('window');
 var dataPop = [];
 var loaded = false;
 var initialPosition = {};
+var mapSettinger=1;
 var val = {};
 var deviceHeight = Dimensions.get('window').height;
 var deviceWidth = Dimensions.get('window').width;
@@ -83,15 +84,33 @@ export default class MainMapView extends Component {
             let value = await AsyncStorage.getItem('data');
             val = JSON.parse(value);
             if(val !== null){
+                console.log("initialposition",initialPosition);
+                console.log("region",this.state.region);
                 this.setState({
                     data: val
                 });
-                var temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
+                var temp;
+                if(mapSettinger===2){
+                    //if map setting is tours, display locations on the tour
+                }
+                else if(mapSettinger===0){
+                    //if map setting is nearby, prioritize top 10 location by distance
+                    temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
+                }
+                else{
+                    //if map setting is campus map. prioritize top 10 locations by popularity/category
+                    //this is default
+                    temp = popPrioritize(value,initialPosition.coords.latitude, initialPosition.coords.longitude,
+                        0.0045, 0.0345);
+                }
+                //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value).slice(0,10);
                 dataPop = [];
                 console.log("BREAK");
+                markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
                 for(var i = 0; i < temp.length; i++)
                 {
-                    var locData = {loc:"", dist:0, catID:0};
+                    //push location data onto data
+                    var locData = {loc:"", dist:0,catID:1};
                     var distance = Math.round(temp[i].distanceAway);
                     locData.loc = temp[i].location;
                     locData.dist = distance;
@@ -105,11 +124,21 @@ export default class MainMapView extends Component {
                         locData.catID = specLoc.category_id - 1000;
                     }
                     console.log(locData.catID);
-
                     dataPop.push(locData);
+
+                    //push coordinate data into this.markers
+                    var markersData = {lat:0,long:0,src:""};
+                    markersData.lat= temp[i].lat;
+                    markersData.long= temp[i].long;
+                    //console.log("markers category: " + temp[i].category);
+                    markersData.src=temp[i].imgSrc;
+                    markersTemp.push(markersData);
                 }
+                markersTemp.splice(0,1);
+                markersTemp.slice(0,10);
                 this.setState({
-                    dataSource: ds.cloneWithRows(dataPop)
+                    dataSource: ds.cloneWithRows(dataPop),
+                    markers:markersTemp
                 });
                 loaded = true;
             }
@@ -169,7 +198,10 @@ export default class MainMapView extends Component {
     onRegionChange(region1) {
         this.setState(region: region1);
     }
-
+    changeMapSetting(setting){
+        mapSettinger=setting;
+        this.getData();
+    }
     gotoDescription(rowData){
         let id = LocToData(rowData.loc, val);
         this.props.navigator.push({
@@ -312,16 +344,36 @@ export default class MainMapView extends Component {
                         onSubmitEditing={(event) => this.search(event.nativeEvent.text)}
                       />
                     </View>
+                    <View style={styles.btnContainer}>
+                        <Button
+                            onPress={()=>this.changeMapSetting(0)}
+                            title="Nearby"
+                            accessibilityLabel="Learn more about this purple button"
+                            style={styles.button}
+                        />
+                        <Button
+                            onPress={()=>this.changeMapSetting(1)}
+                            title="Campus"
+                            accessibilityLabel="Learn more about this purple button"
+                            style={styles.button}
+                        />
+                        <Button
+                            onPress={()=>this.changeMapSetting(2)}
+                            title="Tours"
+                            accessibilityLabel="Learn more about this purple button"
+                            style={styles.button}
+                        />
+                    </View>
                     <MapView style={styles.map}
                         region={this.state.region}
+                         zoomEnabled
+                             onRegionChangeComplete={(region) => this.setState({ region })}
                         >
                         <MapView.Marker
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
                                 latitude: initialPosition.coords.latitude,
-                                longitude: initialPosition.coords.longitude,
-                                latitudeDelta: 0.0045,
-                                longitudeDelta: 0.0345,
+                                longitude: initialPosition.coords.longitude
                             }}
                         />
                         <MapView.Polyline
@@ -357,9 +409,7 @@ export default class MainMapView extends Component {
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
                                 latitude: 34.070984,
-                                longitude: -118.444759,
-                                latitudeDelta: 0.0045,
-                                longitudeDelta: 0.0345,
+                                longitude: -118.444759
                             }}/>
                     </MapView>
                     <View style={styles.info}>
@@ -377,14 +427,14 @@ export default class MainMapView extends Component {
 }
 
 class HandlerOne extends Component{
-  render() {
-    return (
-        <View style={styles.container}>
-            <Image style={styles.image} source={require('../../assets/images/drag_bar.png')}>
-            </Image>
-        </View>
-    );
-  }
+    render() {
+        return (
+            <View style={styles.container}>
+                <Image style={styles.image} source={require('../../assets/images/drag_bar.png')}>
+                    </Image>
+            </View>
+        );
+    }
 };
 
 decode = function(str, precision) {

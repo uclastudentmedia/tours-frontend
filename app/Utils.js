@@ -3,9 +3,98 @@
  */
 
 import React, { Component } from 'react';
-import {
-    AsyncStorage
-} from 'react-native';
+
+export function popPrioritize(data,lat,long,latD,longD){
+    try{
+        const value=data;
+        if(value!==null){
+            //console.log("pop prioritize");
+            // We have data!!
+            let val = JSON.parse(value);
+            //create rectangular area
+            //est topLeft and bottomRight long/lat based on long,lat, long delta, and lat delta
+            topLeftCor={
+                lat:lat+(latD*2),
+                long:long-(longD*2)
+            };
+            bottomRight={
+                lat:lat-(latD*2),
+                long:long+(longD*2)
+            };
+            // haversine :: (Num, Num) -> (Num, Num) -> Num
+            let haversine = ([lat1, lon1], [lat2, lon2]) => {
+                // Math lib function names
+                let [pi, asin, sin, cos, sqrt, pow, round] =
+                        ['PI', 'asin', 'sin', 'cos', 'sqrt', 'pow', 'round']
+                            .map(k => Math[k]),
+
+                    // degrees as radians
+                    [rlat1, rlat2, rlon1, rlon2] = [lat1, lat2, lon1, lon2]
+                        .map(x => x / 180 * pi),
+
+                    dLat = rlat2 - rlat1,
+                    dLon = rlon2 - rlon1,
+                    radius = 6372.8; // km
+
+                // km
+                return round(
+                        radius * 2 * asin(
+                            sqrt(
+                                pow(sin(dLat / 2), 2) +
+                                pow(sin(dLon / 2), 2) *
+                                cos(rlat1) * cos(rlat2)
+                            )
+                        ) * 100
+                    ) / 100;
+            };
+
+            // Return in feet (converts km to ft)
+            function FeetConverter(km){return km * 3280.84;}
+            //filter out locations outside of viewport
+            var locInView=[{
+                    location:'',
+                    lat:0,
+                    long:0,
+                    rank:0,
+                    distanceAway:0,
+                    category:0
+                }];
+            //sort everything in val.results
+            var tempRes=val.results.sort(function(a,b){return a.priority-b.priority;});
+
+            //loop through all locations to filter by: zoom level
+            for(j=0;j<tempRes.length;j++){
+                //remove if location is not within the mapview
+                if(topLeftCor.lat<tempRes[j].lat && tempRes[j].lat<bottomRight.lat
+                    && bottomRight.long<tempRes[j].long && tempRes[j]<bottomRight.long){
+                    tempRes.splice(j,1);
+                }
+            }
+
+
+            //save top 10 results to locInView
+            for(var i=0;i<10;i++){
+                locInView.push({
+                    location:tempRes[i].name,
+                    lat:tempRes[i].lat,
+                    long:tempRes[i].long,
+                    rank:tempRes[i].priority,
+                    distanceAway:FeetConverter(haversine(
+                        [lat,long],
+                        [tempRes[i].lat,tempRes[i].long])),
+                    category:tempRes[i].category_id
+                });
+            }
+            if(locInView.length>=1){
+                locInView.splice(0,1);
+            }
+            return locInView.slice(0,10);
+        }
+    } catch (error) {
+        // Error retrieving data
+        console.log(error.message)
+    }
+}
 
 export function DistancePrioritize(currentLat,currentLong, data){
     try {
@@ -44,14 +133,25 @@ export function DistancePrioritize(currentLat,currentLong, data){
             // Return in feet (converts km to ft)
             function FeetConverter(km){return km * 3280.84;}
 
+            var source;
+
             var DistAway = [];
             for(var i = 0; i<val.results.length; i++){
+                if(val.results[i].category_id){
+                    source="../../assets/loc_icons/" + val.results[i].category_id-1000 +".png"
+                }
+                else{
+                    source="../../assets/loc_icons/1.png"
+                }
                 DistAway.push({
                     location:val.results[i].name,
                     distanceAway: FeetConverter(haversine(
                         [currentLat,currentLong],
-                        [val.results[i].lat,val.results[i].long]
-                    ))
+                        [val.results[i].lat,val.results[i].long])),
+                    lat:val.results[i].lat,
+                    long:val.results[i].long,
+                    category:val.results[i].category_id,
+                    imgSrc:source
                 });
             }
             DistAway.sort(function(a,b){
@@ -78,9 +178,16 @@ export function LocToData(location,data){
         const value = data;
         if(value!==null){
             const results = value.results;
-            return results.find(function(loc){return loc.name === location});
+            return data.results.find(function(loc){return loc.name === location});
         }
     } catch (error) {
         console.log(error.message)
     }
+}
+
+//given location category, return image source for icon
+export function LocToIcon(location_cat){
+    var loc_file=location_cat-1000;
+    var imgSrc= "../../assets/images/loc_icons/" + loc_file +".png";
+    return imgSrc;
 }

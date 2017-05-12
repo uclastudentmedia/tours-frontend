@@ -44,10 +44,10 @@ export default class ListItem extends Component {
                     <Image style={styles.placeholder} source={require('../../assets/loc_icons/4.png')}/>
                 );
                 break;
-            // case 5:
-            //     return(
-            //         <Image style={styles.placeholder} source={require('../../assets/loc_icons/5.png')}/>
-            //     );
+            case 5:
+                return(
+                    <Image style={styles.placeholder} source={require('../../assets/loc_icons/5.png')}/>
+                );
             case 6:
                 return(
                     <Image style={styles.placeholder} source={require('../../assets/loc_icons/6.png')}/>
