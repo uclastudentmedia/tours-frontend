@@ -82,10 +82,6 @@ export function popPrioritize(data,lat,long,latD,longD){
                     category:tempRes[i].category_id
                 });
             }
-            console.log(topLeftCor,bottomRight);
-            for(var k=0;k<locInView.length;k++){
-                console.log(locInView[k].lat,locInView[k].long);
-            }
 
             return locInView.slice(0,10);
         }
