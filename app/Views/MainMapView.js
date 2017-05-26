@@ -402,7 +402,7 @@ export default class MainMapView extends Component {
                               coordinate={{latitude: marker.lat, longitude: marker.long}}
                               title={marker.title}
                               description={marker.description}
-                              image={IMAGES['image' + marker.srcID]}
+                              image={require('../../assets/new_sizes/1.png')}
                             />
                           )
                       )}
