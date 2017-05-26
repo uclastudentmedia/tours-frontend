@@ -14,13 +14,14 @@ export function popPrioritize(data,lat,long,latD,longD){
             //create rectangular area
             //est topLeft and bottomRight long/lat based on long,lat, long delta, and lat delta
             topLeftCor={
-                lat:lat+(latD*2),
-                long:long-(longD*2)
+                lat:lat-(latD/2),
+                long:long+(longD/2)
             };
             bottomRight={
-                lat:lat-(latD*2),
-                long:long+(longD*2)
+                lat:lat+(latD/2),
+                long:long-(longD/2)
             };
+
             // haversine :: (Num, Num) -> (Num, Num) -> Num
             let haversine = ([lat1, lon1], [lat2, lon2]) => {
                 // Math lib function names
@@ -51,25 +52,21 @@ export function popPrioritize(data,lat,long,latD,longD){
             // Return in feet (converts km to ft)
             function FeetConverter(km){return km * 3280.84;}
             //filter out locations outside of viewport
-            var locInView=[{
-                    location:'',
-                    lat:0,
-                    long:0,
-                    rank:0,
-                    distanceAway:0,
-                    category:0
-                }];
+            var locInView=[];
             //sort everything in val.results
             var tempRes=val.results.sort(function(a,b){return a.priority-b.priority;});
 
             //loop through all locations to filter by: zoom level
-            for(j=0;j<tempRes.length;j++){
-                //remove if location is not within the mapview
-                if(topLeftCor.lat<tempRes[j].lat && tempRes[j].lat<bottomRight.lat
-                    && bottomRight.long<tempRes[j].long && tempRes[j]<bottomRight.long){
-                    tempRes.splice(j,1);
+
+            tempRes=tempRes.filter(function(loc){
+                if(loc.long>topLeftCor.long||loc.long<bottomRight.long
+                    || loc.lat>bottomRight.lat||loc.lat<topLeftCor.lat){
+                    return false;
                 }
-            }
+                else{
+                    return true;
+                }
+            });
 
 
             //save top 10 results to locInView
@@ -85,9 +82,7 @@ export function popPrioritize(data,lat,long,latD,longD){
                     category:tempRes[i].category_id
                 });
             }
-            if(locInView.length>=1){
-                locInView.splice(0,1);
-            }
+
             return locInView.slice(0,10);
         }
     } catch (error) {
