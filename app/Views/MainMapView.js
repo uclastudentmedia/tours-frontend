@@ -21,6 +21,7 @@ import {
 import MapView from 'react-native-maps';
 import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
 import ListItem from '../Components/ListItem';
+import TBTItem from '../Components/TBTItem';
 import SlidingUpPanel from 'react-native-sliding-up-panel';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { Kohana } from 'react-native-textinput-effects';
@@ -29,31 +30,7 @@ import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
 
 const styles = require( "../../assets/css/style");
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
-const IMAGES = {
-  image1: require('../../assets/loc_icons/1.png'), // statically analyzed
-  image2: require('../../assets/loc_icons/2.png'), // statically analyzed
-  image3: require('../../assets/loc_icons/3.png'), // statically analyzed
-  image4: require('../../assets/loc_icons/4.png'), // statically analyzed
-  image5: require('../../assets/loc_icons/5.png'), // statically analyzed
-  image6: require('../../assets/loc_icons/6.png'), // statically analyzed
-  image7: require('../../assets/loc_icons/7.png'), // statically analyzed
-  image8: require('../../assets/loc_icons/8.png'), // statically analyzed
-  image9: require('../../assets/loc_icons/9.png'), // statically analyzed
-  image10: require('../../assets/loc_icons/10.png'), // statically analyzed
-  image11: require('../../assets/loc_icons/11.png'), // statically analyzed
-  image12: require('../../assets/loc_icons/12.png'), // statically analyzed
-  image13: require('../../assets/loc_icons/13.png'), // statically analyzed
-  image14: require('../../assets/loc_icons/14.png'), // statically analyzed
-  image15: require('../../assets/loc_icons/15.png'), // statically analyzed
-  image16: require('../../assets/loc_icons/17.png'), // statically analyzed
-  image18: require('../../assets/loc_icons/18.png'), // statically analyzed
-  image20: require('../../assets/loc_icons/20.png'), // statically analyzed
-  image61: require('../../assets/loc_icons/61.png'), // statically analyzed
-  image321: require('../../assets/loc_icons/321.png'), // statically analyzed
-  image961: require('../../assets/loc_icons/961.png'), // statically analyzed
-  image1285: require('../../assets/loc_icons/1285.png'), // statically analyzed
-}
+const dsTBT = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 const MAPIMAGES = {
   image1: require('../../assets/new_sizes/1.png'), // statically analyzed
@@ -100,6 +77,7 @@ var initCoords = {};
 var route = [ ];
 var serverRoute = {};
 var serverRouteChecked = false;
+let tbt = false;
 
 export default class MainMapView extends Component {
 
@@ -260,6 +238,7 @@ export default class MainMapView extends Component {
             data: '',
             markers: [],
             dataSource: ds.cloneWithRows(dataPop),
+            dataSourceTBT: dsTBT.cloneWithRows(dataPop),
             lastPosition: 'unknown',
             region: {
                 latitude: 34.070286,
@@ -268,6 +247,7 @@ export default class MainMapView extends Component {
                 longitudeDelta: 0.0345,
             },
             viewIDG: 2,
+            bTBT: [],
         }
     }
 
@@ -291,8 +271,7 @@ export default class MainMapView extends Component {
         });
     }
 
-    async search(text)
-    {
+    async search(text) {
         try
         {
             let tochirisukun = await AsyncStorage.getItem('data');
@@ -392,7 +371,6 @@ export default class MainMapView extends Component {
     }
 
     extractRoute(){
-        console.log("EXTRACTED");
         serverRouteChecked = true;
 
         let ply = serverRoute.trip.legs[0].shape;
@@ -426,12 +404,14 @@ export default class MainMapView extends Component {
              {
                  lat: flag2.latitude,
                  long: flag2.longitude
-             }]
+             }],
+             dataSourceTBT: dsTBT.cloneWithRows(serverRoute.trip.legs[0].maneuvers),
         });
+        tbt = true;
     }
 
     render() {
-        if(loaded && initialPosition != 'unknown'){
+        if(loaded && initialPosition != 'unknown' && tbt != true){
             if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
             {
                     this.extractRoute();
@@ -506,6 +486,37 @@ export default class MainMapView extends Component {
                             {this.renderDragMenu()}
                      </SlidingUpPanel>
                      {this.renderGlobalNav()}
+                </View>
+            );
+        }
+        else if(loaded && tbt == true){
+            return (
+                <View style={styles.loadMapContainer}>
+                    <MapView style={styles.map}
+                             region={this.state.region}
+                             >
+                        <MapView.Marker
+                            image={require('../../assets/images/dot1.png')}
+                            coordinate={{
+                                latitude: 34.070984,
+                                longitude: -118.444759
+                            }}/>
+                    </MapView>
+                    <View style={styles.info}>
+                        <ListView
+                            style={styles.locations}
+                            dataSource={this.state.dataSourceTBT}
+                            renderRow={(rowData) =>
+                                <View>
+                                    <TouchableOpacity style={styles.wrapper}>
+                                        <TBTItem rowData={rowData}/>
+                                        </TouchableOpacity>
+                                        <View style={styles.separator} />
+                                </View>}
+                            enableEmptySections={true}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    </View>
                 </View>
             );
         }
