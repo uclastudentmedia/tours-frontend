@@ -49,7 +49,9 @@ export default class App extends Component {
                 <DetailsView
                     navigator={navigator}
                     rowData={route.rowDat}
-                    detID={route.locID}/>
+                    detID={route.locID}
+                    lastLoc={route.lastPos}
+                />
             );
         }
     }

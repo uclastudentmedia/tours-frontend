@@ -136,8 +136,6 @@ export default class MainMapView extends Component {
             let value = await AsyncStorage.getItem('data');
             val = JSON.parse(value);
             if(val !== null){
-                //console.log("initialposition",initialPosition);
-                //console.log("region",this.state.region);
                 this.setState({
                     data: val
                 });
@@ -154,9 +152,7 @@ export default class MainMapView extends Component {
                     //this is default
                     temp = popPrioritize(value,this.state.region.latitude, this.state.region.longitude,
                         this.state.region.latitudeDelta, this.state.region.longitudeDelta);
-                    //console.log("region",this.state.region);
                 }
-                //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value).slice(0,10);
                 dataPop = [];
                 console.log("BREAK");
                 markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
@@ -176,6 +172,7 @@ export default class MainMapView extends Component {
                     {
                         locData.catID = specLoc.category_id - 1000;
                     }
+                    locData.all=specLoc;
                     dataPop.push(locData);
 
                     //push coordinate data into this.markers
@@ -183,7 +180,6 @@ export default class MainMapView extends Component {
                     markersData.title = temp[i].location;
                     markersData.lat= temp[i].lat;
                     markersData.long= temp[i].long;
-                    //console.log("markers category: " + temp[i].category);
                     markersData.srcID= specLoc.category_id - 1000;
                     markersData.location=temp[i].location;
                     markersTemp.push(markersData);
@@ -273,7 +269,39 @@ export default class MainMapView extends Component {
 
     onRegionChange(region1) {
         this.setState({ region:region1 });
-        this.getData();
+        var value = this.state.data;
+        if(value!==null){
+            var temp;
+            if(mapSettinger===2){
+                //if map setting is tours, display locations on the tour
+            }
+            else if(mapSettinger===0){
+                //if map setting is nearby, prioritize top 10 location by distance
+                temp = DistancePrioritize(this.state.region.latitude, this.state.region.longitude, value);
+            }
+            else{
+                //if map setting is campus map. prioritize top 10 locations by popularity/category
+                temp = popPrioritize(value,this.state.region.latitude, this.state.region.longitude,
+                    this.state.region.latitudeDelta, this.state.region.longitudeDelta);
+            }
+            markersTemp=[];
+            if(temp!=null){
+                for(var i = 0; i < temp.length; i++)
+                {
+                    //push coordinate data into this.markers
+                    var markersData = {title:'',lat:0,long:0,srcID:1};
+                    markersData.title = temp[i].location;
+                    markersData.lat= temp[i].lat;
+                    markersData.long= temp[i].long;
+                    markersData.srcID= specLoc.category_id - 1000;
+                    markersData.location=temp[i].location;
+                    markersTemp.push(markersData);
+                }
+                this.setState({
+                    markers:markersTemp
+                });
+            }
+        }
     }
 
     changeMapSetting(setting){
@@ -288,6 +316,7 @@ export default class MainMapView extends Component {
             name: 'More Details',
             rowDat: rowData,
             locID: id,
+            lastPos:this.state.lastPosition
         });
     }
 

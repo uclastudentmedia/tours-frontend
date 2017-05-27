@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { BackAndroid, Text, View, Navigator, TouchableHighlight, TouchableOpacity, AsyncStorage } from 'react-native';
+import {renderImage, feetCalc} from '../Utils';
+import DetailItem from '../Components/DetailItem';
+import ListItem from '../Components/ListItem';
 
 const styles = require( "../../assets/css/style");
+const dstyles= require('../../assets/css/detailStyle');
 
 class DetailsView extends Component
  {
@@ -20,13 +24,7 @@ class DetailsView extends Component
              return null;
          },
          Title(route, navigator, index, navState) {
-             return (
-               <TouchableOpacity style={{flex: 1, justifyContent: 'center'}}>
-                 <Text style={{color: 'white', margin: 10, fontSize: 16}}>
-                    {props.rowData.loc}
-                 </Text>
-               </TouchableOpacity>
-             );
+             return null;
          },
      })
 
@@ -34,7 +32,8 @@ class DetailsView extends Component
        super(props);
        this.state = {
          results: '',
-         loaded: false
+         loaded: false,
+         curLocation:this.props.lastLoc.coords
        }
      }
 
@@ -66,7 +65,7 @@ class DetailsView extends Component
 
      render()
      {
-         console.log(this.state.results);
+
          return (
              <Navigator
                  renderScene={this.renderScene.bind(this)}
@@ -87,13 +86,25 @@ class DetailsView extends Component
         });
       }
     */
-
+    /*
+<Text style={{flex:1}}>
+{this.state.results.results.text_description}
+</Text>*/
     renderScene(route, navigator) {
         if(this.state.loaded){
+            console.log(this.state.curLocation.latitude);
+            //make modules into ListView, each module will have an id, based on which id, the ListView will render that module
             return (
-                <View style={{flex: 1, alignItems: 'center', justifyContent:'center'}}>
-                    <Text style={styles.locText}>
-                        {this.state.results.results.text_description}
+                <View style={styles.container}>
+                    <View style={dstyles.titleSec}>
+                        {renderImage(this.state.results.results.category,'details')}
+                        <Text style={dstyles.title}>
+                            {this.state.results.results.name}
+                        </Text>
+                    </View>
+                    <Text style={dstyles.dist}>
+                        {feetCalc(this.state.curLocation.latitude,this.state.curLocation.longitude,this.state.results.results.lat,
+                        this.state.results.results.long)} feet away
                     </Text>
                 </View>
             );

@@ -11,6 +11,9 @@ import MapView from 'react-native-maps'
 var {height, width} = Dimensions.get('window');
 
 module.exports = StyleSheet.create({
+    baseText:{
+        fontFamily:'sans-serif-thin'
+    },
     container: {
         flex: 1,
         justifyContent: 'flex-end',
@@ -23,7 +26,7 @@ module.exports = StyleSheet.create({
         backgroundColor: 'white',
     },
     loading:{
-        backgroundColor: '#B2E4F7',
+        backgroundColor: '#0066CC',
         flex:1,
         width:width,
         justifyContent:'center',
@@ -32,6 +35,7 @@ module.exports = StyleSheet.create({
     },
     center:{
         fontSize: 50,
+        color:'white',
     },
     loading_logo:{
         width:200,

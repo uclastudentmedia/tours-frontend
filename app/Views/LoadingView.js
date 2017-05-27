@@ -81,7 +81,9 @@ export default class LoadingView extends Component {
               <Image
                   style={styles.loading_logo}
                   source={require('../../assets/images/logo_1x.png')}/>
-              <Text style={styles.center}>BruinTours</Text>
+              <Text style={styles.baseText}>
+                  <Text style={styles.center}>BruinTours</Text>
+              </Text>
               <View style={{paddingTop: 30}}>
                 <Button onPress={this.gotoMapView.bind(this)} title="Launch App"></Button>
               </View>
