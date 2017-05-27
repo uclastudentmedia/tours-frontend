@@ -13,13 +13,15 @@
     "react-native-animatable": "^1.1.0",
     "react-native-loading-spinner-overlay": "^0.4.1",
     "react-native-maps": "^0.13.0",
+    "react-native-material-bottom-navigation": "^0.5.1",
     "react-native-material-design-searchbar": "^1.1.2",
     "react-native-search-bar": "^3.0.0",
     "react-native-search-box": "0.0.8",
     "react-native-sliding-up-panel": "^1.1.12",
     "react-native-spinkit": "^1.0.2",
     "react-native-svg": "^5.1.5",
-    "react-native-textinput-effects": "^0.3.0"
+    "react-native-textinput-effects": "^0.3.0",
+    "react-native-vector-icons": "^4.1.1"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",

@@ -25,6 +25,7 @@ import SlidingUpPanel from 'react-native-sliding-up-panel';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { Kohana } from 'react-native-textinput-effects';
 
+import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
 
 const styles = require( "../../assets/css/style");
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -96,6 +97,7 @@ export default class MainMapView extends Component {
                 latitudeDelta: 0.0045,
                 longitudeDelta: 0.0345,
             },
+            viewIDG: 2,
         });
     }
 
@@ -206,6 +208,27 @@ export default class MainMapView extends Component {
         navigator.geolocation.clearWatch(this.watchID);
     }
 
+    gotoView(viewID){
+        switch(viewID)
+        {
+          case 0:
+            this.setState({viewIDG: 0});
+            break;
+          case 1:
+            this.setState({viewIDG: 1});
+            break;
+          case 2:
+            this.setState({viewIDG: 2});
+            break;
+          case 3:
+            this.setState({viewIDG: 3});
+            break;
+          case 4:
+            this.setState({viewIDG: 4});
+            break;
+        }
+    }
+
     constructor(props){
         super(props);
         this.state = {
@@ -219,6 +242,7 @@ export default class MainMapView extends Component {
                 latitudeDelta: 0.0045,
                 longitudeDelta: 0.0345,
             },
+            viewIDG: 2,
         }
     }
 
@@ -302,6 +326,43 @@ export default class MainMapView extends Component {
                     showsVerticalScrollIndicator={false}
                 />
             </View>
+        );
+    }
+
+    renderGlobalNav(){
+        return(
+            <BottomNavigation
+                labelColor="grey"
+                style={{ height: 56, elevation: 8, position: 'absolute', left: 0, bottom: 0, right: 0 }}
+                onTabChange={(newTabIndex) => this.gotoView(newTabIndex)}
+                activeTab={this.state.viewIDG}
+            >
+                <Tab
+                    barBackgroundColor="white"
+                    label="Maps"
+                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="tv" />}
+                />
+                <Tab
+                    barBackgroundColor="white"
+                    label="Tours"
+                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="music-note" />}
+                />
+                <Tab
+                    barBackgroundColor="white"
+                    label="Schedule"
+                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="music-note" />}
+                />
+                <Tab
+                    barBackgroundColor="white"
+                    label="Favorites"
+                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="book" />}
+                />
+                <Tab
+                    barBackgroundColor="white"
+                    label="Nearby"
+                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="account-box" />}
+                />
+            </BottomNavigation>
         );
     }
 
@@ -419,6 +480,7 @@ export default class MainMapView extends Component {
                         handlerDefaultView={<HandlerOne/>}>
                             {this.renderDragMenu()}
                      </SlidingUpPanel>
+                     {this.renderGlobalNav()}
                 </View>
             );
         }
