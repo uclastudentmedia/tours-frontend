@@ -287,7 +287,10 @@ export default class MainMapView extends Component {
                     "lat": initialPosition.coords.latitude,
                     "lon": initialPosition.coords.longitude,
                 }],
-                "costing": "pedestrian"
+                "costing": "pedestrian",
+                "directions_options": {
+                    "units": "miles"
+                }
             };
 
             initCoords.latitude = location.lat;
