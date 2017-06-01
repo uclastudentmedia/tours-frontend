@@ -40,7 +40,7 @@ module.exports = StyleSheet.create({
         bottom: 10
     },
     map: {
-        height: (height * 0.80),
+        height: (height * 0.8),
         width: width
     },
     instructions: {
@@ -116,6 +116,14 @@ module.exports = StyleSheet.create({
         paddingTop: 50,
         width: width + 20
     },
+    icon: {
+        height: 30,
+        width: 30
+    },
+    icon2: {
+        height: 50,
+        width: 50
+    },
     spin: {
         top: 40
     },
@@ -125,8 +133,9 @@ module.exports = StyleSheet.create({
         flexDirection:'row'
     },
     btnContainer: {
+        flex: 1,
         flexDirection:'row',
-        height: 50
+        backgroundColor: 'transparent',
     },
     button:{
         justifyContent: 'center',

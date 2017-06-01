@@ -24,6 +24,10 @@ import ListItem from '../Components/ListItem';
 import SlidingUpPanel from 'react-native-sliding-up-panel';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { Kohana } from 'react-native-textinput-effects';
+import RNAnimatedTabs from 'rn-animated-tabs';
+import TabNavigator from 'react-native-animated-tabbar';
+import { Container, Navbar } from 'navbar-native';
+import SearchBar from 'react-native-searchbar';
 
 
 const styles = require( "../../assets/css/style");
@@ -222,6 +226,8 @@ export default class MainMapView extends Component {
         }
     }
 
+    handleTabChange = (value) => this.setState({ currentTab: value });
+
     onRegionChange(region1) {
         this.setState({ region:region1 });
         this.getData();
@@ -352,55 +358,54 @@ export default class MainMapView extends Component {
             }
             return (
                 <View style={styles.container}>
-                    <View style={styles.inputWrapper1}>
-                      <Kohana
-                        style={{ backgroundColor: '#6495ed' }}
-                        label={'Tap to Search'}
-                        iconClass={MaterialsIcon}
-                        iconName={'search'}
-                        iconColor={'white'}
-                        labelStyle={{ color: 'white' }}
-                        inputStyle={{ color: 'white' }}
-                        onSubmitEditing={(event) => this.search(event.nativeEvent.text)}
-                      />
-                    </View>
-                    <MapView style={styles.map}
-                        region={this.state.region}
-                         zoomEnabled
-                             onRegionChangeComplete={(region) => this.setState({ region })}
-                             onRegionChange={this.onRegionChange.bind(this)}
-                        >
-                        <MapView.Marker
-                            image={require('../../assets/images/dot1.png')}
-                            coordinate={{
-                                latitude: initialPosition.coords.latitude,
-                                longitude: initialPosition.coords.longitude
+                    <Container>
+                        <Navbar
+                            title={"UCLA Tours"}
+                            left={{
+                                icon: "md-menu"
+                            }}
+                            right={{
+                                icon: "md-search"
                             }}
                         />
-                        <MapView.Polyline
-                            coordinates={route}
-                            strokeWidth={3}
-                        />
-                        {this.state.markers.map(marker => (
+                        <MapView style={styles.map}
+                            region={this.state.region}
+                             zoomEnabled
+                                 onRegionChangeComplete={(region) => this.setState({ region })}
+                                 onRegionChange={this.onRegionChange.bind(this)}
+                            >
                             <MapView.Marker
-                              coordinate={{latitude: marker.lat, longitude: marker.long}}
-                              title={marker.title}
-                              description={marker.description}
-                              image={IMAGES['image' + marker.srcID]}
+                                image={require('../../assets/images/dot1.png')}
+                                coordinate={{
+                                    latitude: initialPosition.coords.latitude,
+                                    longitude: initialPosition.coords.longitude
+                                }}
                             />
-                          )
-                      )}
-                    </MapView>
-                    <SlidingUpPanel
-                        containerMaximumHeight={deviceHeight - 100}
-                        handlerBackgroundColor={'rgba(0,0,0,0)'}
-                        handlerHeight={33}
-                        allowStayMiddle={true}
-                        handlerDefaultView={<HandlerOne/>}>
-                            {this.renderDragMenu()}
-                     </SlidingUpPanel>
-                    <View style={styles.btnContainer}>
-                    </View>
+                            <MapView.Polyline
+                                coordinates={route}
+                                strokeWidth={3}
+                            />
+                            {this.state.markers.map(marker => (
+                                <MapView.Marker
+                                  coordinate={{latitude: marker.lat, longitude: marker.long}}
+                                  title={marker.title}
+                                  description={marker.description}
+                                  image={IMAGES['image' + marker.srcID]}
+                                />
+                              )
+                          )}
+                        </MapView>
+                        <View style={styles.slideContainer}>
+                            <SlidingUpPanel
+                                containerMaximumHeight={deviceHeight - 120}
+                                handlerBackgroundColor={'rgba(0,0,0,0)'}
+                                handlerHeight={33}
+                                allowStayMiddle={true}
+                                handlerDefaultView={<HandlerOne/>}>
+                                    {this.renderDragMenu()}
+                             </SlidingUpPanel>
+                         </View>
+                    </Container>
                 </View>
             );
         }
