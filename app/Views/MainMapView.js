@@ -252,10 +252,16 @@ export default class MainMapView extends Component {
             },
             viewIDG: 2,
             bTBT: [],
-        }
+            results: []
+        };
+        this._handleResults = this._handleResults.bind(this);
     }
 
     handleTabChange = (value) => this.setState({ currentTab: value });
+
+    _handleResults(results) {
+        this.setState({ results });
+    }
 
     onRegionChange(region1) {
         this.setState({ region:region1 });
@@ -427,15 +433,29 @@ export default class MainMapView extends Component {
             }
             return (
                 <View style={styles.container}>
+                    <SearchBar
+                        ref={(ref) => this.searchBar = ref}
+                        handleResults={this._handleResults}
+                        autoCorrect
+                    />
                     <Container>
                         <Navbar
-                            title={"UCLA Tours"}
+                            bgColor={"white"}
+                            user={true}
+                            title={
+                                    <Text>      UCLA Tours</Text>
+                            }
+                            titleColor={"grey"}
                             left={{
-                                icon: "md-menu"
+                                icon: "md-menu",
+                                iconColor: "#CCCCCC"
                             }}
                             right={{
-                                icon: "md-search"
+                                icon: "md-search",
+                                iconColor: "#CCCCCC",
+                                onPress: () => {this.searchBar.show()}
                             }}
+                            style={styles.navbar}
                         />
                         <MapView style={styles.map}
                             region={this.state.region}
@@ -459,7 +479,7 @@ export default class MainMapView extends Component {
                                   coordinate={{latitude: marker.lat, longitude: marker.long}}
                                   title={marker.title}
                                   description={marker.description}
-                                  image={IMAGES['image' + marker.srcID]}
+                                  image={MAPIMAGES['image' + marker.srcID]}
                                 />
                               )
                           )}

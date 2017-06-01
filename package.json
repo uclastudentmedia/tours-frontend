@@ -24,14 +24,10 @@
     "react-native-sliding-up-panel": "^1.1.12",
     "react-native-spinkit": "^1.0.2",
     "react-native-svg": "^5.1.5",
-<<<<<<< HEAD
     "react-native-tabbar-navigator": "^0.4.3",
     "react-native-textinput-effects": "^0.3.0",
+    "react-native-vector-icons": "^4.1.1",
     "rn-animated-tabs": "^1.0.2"
-=======
-    "react-native-textinput-effects": "^0.3.0",
-    "react-native-vector-icons": "^4.1.1"
->>>>>>> 9db01942ae400df5722f260f94289fdd24969cff
   },
   "devDependencies": {
     "babel-jest": "18.0.0",

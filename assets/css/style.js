@@ -165,6 +165,13 @@ module.exports = StyleSheet.create({
         width: width / 3,
         height: 50
     },
+    title: {
+        textAlignVertical: "center", 
+        textAlign: "center",
+        fontSize:18,
+        justifyContent: 'center',
+        flex: 1
+    },
     slideContainer: {
         paddingRight: 359
     }
