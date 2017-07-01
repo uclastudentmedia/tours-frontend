@@ -117,11 +117,13 @@ export default class MainMapView extends Component {
         this.setState({
             dataSource: ds.cloneWithRows(dataPop),
             region: {
+
                 latitude: 34.070286,
                 longitude: -118.443413,
                 latitudeDelta: 0.0045,
                 longitudeDelta: 0.0345,
-            },
+
+                },
             viewIDG: 2,
         });
     }
