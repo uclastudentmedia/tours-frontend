@@ -58,35 +58,6 @@ export function popPrioritize(data,lat,long,latD,longD){
                 long:long-(longD/2)
             };
 
-            // haversine :: (Num, Num) -> (Num, Num) -> Num
-            let haversine = ([lat1, lon1], [lat2, lon2]) => {
-                // Math lib function names
-                let [pi, asin, sin, cos, sqrt, pow, round] =
-                        ['PI', 'asin', 'sin', 'cos', 'sqrt', 'pow', 'round']
-                            .map(k => Math[k]),
-
-                    // degrees as radians
-                    [rlat1, rlat2, rlon1, rlon2] = [lat1, lat2, lon1, lon2]
-                        .map(x => x / 180 * pi),
-
-                    dLat = rlat2 - rlat1,
-                    dLon = rlon2 - rlon1,
-                    radius = 6372.8; // km
-
-                // km
-                return round(
-                        radius * 2 * asin(
-                            sqrt(
-                                pow(sin(dLat / 2), 2) +
-                                pow(sin(dLon / 2), 2) *
-                                cos(rlat1) * cos(rlat2)
-                            )
-                        ) * 100
-                    ) / 100;
-            };
-
-            // Return in feet (converts km to ft)
-            function FeetConverter(km){return km * 3280.84;}
             //filter out locations outside of viewport
             var locInView=[];
             //sort everything in val.results
@@ -103,8 +74,6 @@ export function popPrioritize(data,lat,long,latD,longD){
                     return true;
                 }
             });
-            //console.log(tempRes);
-
             //save top 10 results to locInView
             for(var i=0;i<20;i++){
                 locInView.push({

@@ -86,10 +86,6 @@ class DetailsView extends Component
         });
       }
     */
-    /*
-<Text style={{flex:1}}>
-{this.state.results.results.text_description}
-</Text>*/
     renderScene(route, navigator) {
         if(this.state.loaded){
             console.log(this.state.curLocation.latitude);

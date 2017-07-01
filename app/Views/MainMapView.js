@@ -285,7 +285,7 @@ export default class MainMapView extends Component {
                     this.state.region.latitudeDelta, this.state.region.longitudeDelta);
             }
             markersTemp=[];
-            if(temp!=null){
+            if(temp){
                 for(var i = 0; i < temp.length; i++)
                 {
                     //push coordinate data into this.markers
@@ -293,13 +293,10 @@ export default class MainMapView extends Component {
                     markersData.title = temp[i].location;
                     markersData.lat= temp[i].lat;
                     markersData.long= temp[i].long;
-                    markersData.srcID= specLoc.category_id - 1000;
                     markersData.location=temp[i].location;
                     markersTemp.push(markersData);
                 }
-                this.setState({
-                    markers:markersTemp
-                });
+                this.setState({markers:markersTemp});
             }
         }
     }

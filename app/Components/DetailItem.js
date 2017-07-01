@@ -12,7 +12,7 @@ import {
 
 const styles = require( "../../assets/css/style");
 
-export default class detailItem extends Component {
+export default class DetailItem extends Component {
 
     constructor(props){
         super(props);
@@ -24,20 +24,38 @@ export default class detailItem extends Component {
     renderImage(){
         switch(this.props.rowData.catID)
         {
+            //description
             case 1:
                 return(
                     <Image style={styles.placeholder} source={require('../../assets/loc_icons/1.png')}/>
                 );
                 break;
+            //image
             case 2:
                 return(
                     <Image style={styles.placeholder} source={require('../../assets/loc_icons/2.png')}/>
                 );
                 break;
+            //parking
             case 3:
                 return(
                     <Image style={styles.placeholder} source={require('../../assets/loc_icons/3.png')}/>
                 );
+                break;
+            //menu
+            case 4:
+                return(
+                    <Text></Text>
+                );
+                break;
+            //priority
+            case 5:
+                return(<Text></Text>);
+                break;
+            //hours
+            case 6:
+                return(<Text></Text>);
+                break;
         }
     }
 
@@ -56,4 +74,4 @@ export default class detailItem extends Component {
     }
 }
 
-module.exports = ListItem;
+module.exports = DetailItem;
