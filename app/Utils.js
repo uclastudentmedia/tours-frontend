@@ -79,7 +79,8 @@ export function popPrioritize(data,lat,long,latD,longD){
                     distanceAway:FeetConverter(haversine(
                         [lat,long],
                         [tempRes[i].lat,tempRes[i].long])),
-                    category:tempRes[i].category_id
+                    category:tempRes[i].category_id,
+                    id:tempRes[i].id
                 });
             }
 

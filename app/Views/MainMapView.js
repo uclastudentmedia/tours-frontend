@@ -167,6 +167,7 @@ export default class MainMapView extends Component {
                     //console.log("markers category: " + temp[i].category);
                     markersData.srcID= specLoc.category_id - 1000;
                     markersData.location=temp[i].location;
+                    markersData.id = temp[i].id;
                     markersTemp.push(markersData);
                 }
                 markersTemp.splice(0,1);
@@ -197,17 +198,6 @@ export default class MainMapView extends Component {
             var val = JSON.parse(lastPosition);
             this.setState({lastPosition: val});
         });
-    }
-
-    getInitialState(){
-        return{
-            region: {
-                latitude: 34.070286,
-                longitude: -118.443413,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,
-            }
-        }
     }
 
     componentWillUnmount(){
@@ -475,6 +465,7 @@ export default class MainMapView extends Component {
                             />
                             {this.state.markers.map(marker => (
                                 <MapView.Marker
+                                  key={marker.id}
                                   coordinate={{latitude: marker.lat, longitude: marker.long}}
                                   title={marker.title}
                                   description={marker.description}
