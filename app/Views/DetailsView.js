@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BackAndroid, Text, View, Navigator, TouchableHighlight, TouchableOpacity, AsyncStorage } from 'react-native';
+import { BackAndroid, Button, Text, View, Navigator, TouchableHighlight, TouchableOpacity, AsyncStorage } from 'react-native';
 
 const styles = require( "../../assets/css/style");
 
@@ -82,11 +82,17 @@ class DetailsView extends Component
     componentWillMount() {
       const { navigator } = this.props
         BackAndroid.addEventListener('hardwareBackPress', function() {
-                 
+
           return navigator.parentNavigator.pop();
         });
       }
     */
+
+    findRoute(){
+        console.log(this.props.navigator);
+        this.props.navigator.parentNavigator.pop();
+        console.log("WENT BACK");
+    }
 
     renderScene(route, navigator) {
         if(this.state.loaded){
@@ -95,6 +101,7 @@ class DetailsView extends Component
                     <Text style={styles.locText}>
                         {this.state.results.results.text_description}
                     </Text>
+                    <Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
                 </View>
             );
         }

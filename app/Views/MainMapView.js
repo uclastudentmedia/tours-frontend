@@ -140,7 +140,6 @@ export default class MainMapView extends Component {
                 }
                 //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value).slice(0,10);
                 dataPop = [];
-                console.log("BREAK");
                 markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
                 for(var i = 0; i < temp.length; i++)
                 {
