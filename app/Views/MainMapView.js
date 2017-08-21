@@ -64,7 +64,7 @@ const MAPIMAGES = {
 var {height, width} = Dimensions.get('window');
 var dataPop = [];
 var loaded = false;
-var initialPosition = {};
+var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 var mapSettinger=1;
 var val = {};
 var deviceHeight = Dimensions.get('window').height;
@@ -114,72 +114,67 @@ export default class MainMapView extends Component {
     }
 
     async getData(){
+        var val = null;
         try {
             let value = await AsyncStorage.getItem('data');
             val = JSON.parse(value);
-            if(val !== null){
-                //console.log("initialposition",initialPosition);
-                //console.log("region",this.state.region);
-                this.setState({
-                    data: val
-                });
-                var temp;
-                if(mapSettinger===2){
-                    //if map setting is tours, display locations on the tour
-                }
-                else if(mapSettinger===0){
-                    //if map setting is nearby, prioritize top 10 location by distance
-                    temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value);
-                }
-                else{
-                    //if map setting is campus map. prioritize top 10 locations by popularity/category
-                    //this is default
-                    temp = popPrioritize(value,this.state.region.latitude, this.state.region.longitude,
-                        this.state.region.latitudeDelta, this.state.region.longitudeDelta);
-                    //console.log("region",this.state.region);
-                }
-                //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, value).slice(0,10);
-                dataPop = [];
-                markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
-                for(var i = 0; i < temp.length; i++)
-                {
-                    //push location data onto data
-                    var locData = {loc:"", dist:0,catID:1};
-                    var distance = Math.round(temp[i].distanceAway);
-                    locData.loc = temp[i].location;
-                    locData.dist = distance;
-                    var specLoc = LocToData(locData.loc, val);
-                    if(specLoc.category_id == null)
-                    {
-                        locData.catID = 1;
-                    }
-                    else
-                    {
-                        locData.catID = specLoc.category_id - 1000;
-                    }
-                    dataPop.push(locData);
-
-                    //push coordinate data into this.markers
-                    var markersData = {title:'',lat:0,long:0,srcID:1};
-                    markersData.title = temp[i].location;
-                    markersData.lat= temp[i].lat;
-                    markersData.long= temp[i].long;
-                    //console.log("markers category: " + temp[i].category);
-                    markersData.srcID= specLoc.category_id - 1000;
-                    markersData.location=temp[i].location;
-                    markersData.id = temp[i].id;
-                    markersTemp.push(markersData);
-                }
-                markersTemp.splice(0,1);
-                markersTemp.slice(0,10);
-                this.setState({
-                    dataSource: ds.cloneWithRows(dataPop),
-                    markers:markersTemp
-                });
-                loaded = true;
-            }
         } catch (e) {
             console.log(e);
+        }
+        if(val !== null){
+            //console.log("initialposition",initialPosition);
+            //console.log("region",this.state.region);
+            var temp;
+            if(mapSettinger===2){
+                //if map setting is tours, display locations on the tour
+            }
+            else if(mapSettinger===0){
+                //if map setting is nearby, prioritize top 10 location by distance
+                temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, val);
+            }
+            else{
+                //if map setting is campus map. prioritize top 10 locations by popularity/category
+                //this is default
+                temp = popPrioritize(val,this.state.region.latitude, this.state.region.longitude,
+                    this.state.region.latitudeDelta, this.state.region.longitudeDelta);
+                //console.log("region",this.state.region);
+            }
+            //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, val).slice(0,10);
+            dataPop = [];
+            markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
+            for(var i = 0; i < temp.length; i++)
+            {
+                //push location data onto data
+                var locData = {loc:"", dist:0,catID:1};
+                var distance = Math.round(temp[i].distanceAway);
+                locData.loc = temp[i].location;
+                locData.dist = distance;
+                var specLoc = LocToData(locData.loc, val);
+                if (specLoc && specLoc.category_id)
+                {
+                    locData.catID = specLoc.category_id;
+                }
+                dataPop.push(locData);
+
+                //push coordinate data into this.markers
+                var markersData = {title:'',lat:0,long:0,srcID:1};
+                markersData.title = temp[i].location;
+                markersData.lat= temp[i].lat;
+                markersData.long= temp[i].long;
+                //console.log("markers category: " + temp[i].category);
+                markersData.srcID= locData.catID;
+                markersData.location=temp[i].location;
+                markersData.id = temp[i].id;
+                markersTemp.push(markersData);
+            }
+            markersTemp.splice(0,1);
+            markersTemp.slice(0,10);
+            this.setState({
+                data: val,
+                dataSource: ds.cloneWithRows(dataPop),
+                markers:markersTemp
+            });
+            loaded = true;
         }
     }
 
@@ -263,7 +258,7 @@ export default class MainMapView extends Component {
     }
 
     gotoDescription(rowData){
-        let id = LocToData(rowData.loc, val);
+        let id = LocToData(rowData.loc, this.state.data);
         this.props.navigator.push({
             id: 'Details',
             name: 'More Details',
