@@ -9,6 +9,7 @@ import {
 import MapView from 'react-native-maps'
 
 var {height, width} = Dimensions.get('window');
+var windowWidth = Dimensions.get('window').width;
 
 module.exports = StyleSheet.create({
     baseText:{
@@ -16,8 +17,8 @@ module.exports = StyleSheet.create({
     },
     container: {
         flex: 1,
-        justifyContent: 'flex-end',
         alignItems: 'center',
+        justifyContent:'flex-end',
         backgroundColor: 'white',
     },
     loadMapContainer: {
@@ -43,7 +44,7 @@ module.exports = StyleSheet.create({
         bottom: 10
     },
     map: {
-        height: (height * 0.87),
+        height: (height * 0.8),
         width: width
     },
     instructions: {
@@ -52,12 +53,12 @@ module.exports = StyleSheet.create({
         marginBottom: 5,
     },
     info: {
-        flex:1,
+
         padding: 20,
         paddingBottom:0,
         paddingTop:0,
         backgroundColor:'#F5FCFF',
-        width: width,
+
     },
     description: {
         flex: 3,
@@ -117,6 +118,15 @@ module.exports = StyleSheet.create({
     },
     image: {
         paddingTop: 50,
+        width: width + 20
+    },
+    icon: {
+        height: 30,
+        width: 30
+    },
+    icon2: {
+        height: 50,
+        width: 50
     },
     spin: {
         top: 40
@@ -132,8 +142,41 @@ module.exports = StyleSheet.create({
         backgroundColor: 'transparent',
     },
     button:{
-        flex:1.2,
+        justifyContent: 'center',
+        width: windowWidth,
         backgroundColor:'#dddddd',
         padding:2
+    },
+    handlerText: {
+        color: 'white',
+        fontSize: 15,
+        fontWeight: '700',
+        textAlign: 'center'
+    },
+    handBtn: {
+        justifyContent: 'center',
+        alignItems: 'stretch',
+        backgroundColor:'#dddddd',
+        padding:2,
+        width: width / 3,
+        height: 50
+      },
+    handBtnPress: {
+        justifyContent: 'center',
+        alignItems: 'stretch',
+        backgroundColor:'#B2E4F7',
+        padding:2,
+        width: width / 3,
+        height: 50
+    },
+    title: {
+        textAlignVertical: "center", 
+        textAlign: "center",
+        fontSize:18,
+        justifyContent: 'center',
+        flex: 1
+    },
+    slideContainer: {
+        paddingRight: 359
     }
 });

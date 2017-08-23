@@ -21,39 +21,20 @@ import {
 import MapView from 'react-native-maps';
 import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
 import ListItem from '../Components/ListItem';
+import TBTItem from '../Components/TBTItem';
 import SlidingUpPanel from 'react-native-sliding-up-panel';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { Kohana } from 'react-native-textinput-effects';
+import RNAnimatedTabs from 'rn-animated-tabs';
+import TabNavigator from 'react-native-animated-tabbar';
+import { Container, Navbar } from 'navbar-native';
+import SearchBar from 'react-native-searchbar';
 
 import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
 
 const styles = require( "../../assets/css/style");
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
-const IMAGES = {
-  image1: require('../../assets/loc_icons/1.png'), // statically analyzed
-  image2: require('../../assets/loc_icons/2.png'), // statically analyzed
-  image3: require('../../assets/loc_icons/3.png'), // statically analyzed
-  image4: require('../../assets/loc_icons/4.png'), // statically analyzed
-  image5: require('../../assets/loc_icons/5.png'), // statically analyzed
-  image6: require('../../assets/loc_icons/6.png'), // statically analyzed
-  image7: require('../../assets/loc_icons/7.png'), // statically analyzed
-  image8: require('../../assets/loc_icons/8.png'), // statically analyzed
-  image9: require('../../assets/loc_icons/9.png'), // statically analyzed
-  image10: require('../../assets/loc_icons/10.png'), // statically analyzed
-  image11: require('../../assets/loc_icons/11.png'), // statically analyzed
-  image12: require('../../assets/loc_icons/12.png'), // statically analyzed
-  image13: require('../../assets/loc_icons/13.png'), // statically analyzed
-  image14: require('../../assets/loc_icons/14.png'), // statically analyzed
-  image15: require('../../assets/loc_icons/15.png'), // statically analyzed
-  image16: require('../../assets/loc_icons/17.png'), // statically analyzed
-  image18: require('../../assets/loc_icons/18.png'), // statically analyzed
-  image20: require('../../assets/loc_icons/20.png'), // statically analyzed
-  image61: require('../../assets/loc_icons/61.png'), // statically analyzed
-  image321: require('../../assets/loc_icons/321.png'), // statically analyzed
-  image961: require('../../assets/loc_icons/961.png'), // statically analyzed
-  image1285: require('../../assets/loc_icons/1285.png'), // statically analyzed
-}
+const dsTBT = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 const MAPIMAGES = {
   image1: require('../../assets/new_sizes/1.png'), // statically analyzed
@@ -100,6 +81,7 @@ var initCoords = {};
 var route = [ ];
 var serverRoute = {};
 var serverRouteChecked = false;
+let tbt = false;
 
 export default class MainMapView extends Component {
 
@@ -156,7 +138,6 @@ export default class MainMapView extends Component {
                         this.state.region.latitudeDelta, this.state.region.longitudeDelta);
                 }
                 dataPop = [];
-                console.log("BREAK");
                 markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
                 for(var i = 0; i < temp.length; i++)
                 {
@@ -258,6 +239,7 @@ export default class MainMapView extends Component {
             data: '',
             markers: [],
             dataSource: ds.cloneWithRows(dataPop),
+            dataSourceTBT: dsTBT.cloneWithRows(dataPop),
             lastPosition: 'unknown',
             region: {
                 latitude: 34.070286,
@@ -266,7 +248,16 @@ export default class MainMapView extends Component {
                 longitudeDelta: 0.0345,
             },
             viewIDG: 2,
-        }
+            bTBT: [],
+            results: []
+        };
+        this._handleResults = this._handleResults.bind(this);
+    }
+
+    handleTabChange = (value) => this.setState({ currentTab: value });
+
+    _handleResults(results) {
+        this.setState({ results });
     }
 
     onRegionChange(region1) {
@@ -319,8 +310,7 @@ export default class MainMapView extends Component {
         });
     }
 
-    async search(text)
-    {
+    async search(text) {
         try
         {
             let tochirisukun = await AsyncStorage.getItem('data');
@@ -336,7 +326,10 @@ export default class MainMapView extends Component {
                     "lat": initialPosition.coords.latitude,
                     "lon": initialPosition.coords.longitude,
                 }],
-                "costing": "pedestrian"
+                "costing": "pedestrian",
+                "directions_options": {
+                    "units": "miles"
+                }
             };
 
             initCoords.latitude = location.lat;
@@ -420,7 +413,6 @@ export default class MainMapView extends Component {
     }
 
     extractRoute(){
-        console.log("EXTRACTED");
         serverRouteChecked = true;
 
         let ply = serverRoute.trip.legs[0].shape;
@@ -454,86 +446,114 @@ export default class MainMapView extends Component {
              {
                  lat: flag2.latitude,
                  long: flag2.longitude
-             }]
+             }],
+             dataSourceTBT: dsTBT.cloneWithRows(serverRoute.trip.legs[0].maneuvers),
         });
+        tbt = true;
     }
 
     render() {
-        if(loaded && initialPosition != 'unknown'){
+        if(loaded && initialPosition != 'unknown' && tbt != true){
             if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
             {
                     this.extractRoute();
             }
             return (
                 <View style={styles.container}>
-                    <View style={styles.inputWrapper1}>
-                      <Kohana
-                        style={{ backgroundColor: '#6495ed' }}
-                        label={'Tap to Search'}
-                        iconClass={MaterialsIcon}
-                        iconName={'search'}
-                        iconColor={'white'}
-                        labelStyle={{ color: 'white' }}
-                        inputStyle={{ color: 'white' }}
-                        onSubmitEditing={(event) => this.search(event.nativeEvent.text)}
-                      />
-                    </View>
-                    <View style={styles.btnContainer}>
-                        <Button
-                            onPress={()=>this.changeMapSetting(0)}
-                            title="Nearby"
-                            accessibilityLabel="Learn more about this purple button"
-                            style={styles.button}
+                    <SearchBar
+                        ref={(ref) => this.searchBar = ref}
+                        handleResults={this._handleResults}
+                        autoCorrect
+                    />
+                    <Container>
+                        <Navbar
+                            bgColor={"white"}
+                            user={true}
+                            title={
+                                    <Text>      UCLA Tours</Text>
+                            }
+                            titleColor={"grey"}
+                            left={{
+                                icon: "md-menu",
+                                iconColor: "#CCCCCC"
+                            }}
+                            right={{
+                                icon: "md-search",
+                                iconColor: "#CCCCCC",
+                                onPress: () => {this.searchBar.show()}
+                            }}
+                            style={styles.navbar}
                         />
-                        <Button
-                            onPress={()=>this.changeMapSetting(1)}
-                            title="Campus"
-                            accessibilityLabel="Learn more about this purple button"
-                            style={styles.button}
-                        />
-                        <Button
-                            onPress={()=>this.changeMapSetting(2)}
-                            title="Tours"
-                            accessibilityLabel="Learn more about this purple button"
-                            style={styles.button}
-                        />
-                    </View>
+                        <MapView style={styles.map}
+                            region={this.state.region}
+                             zoomEnabled
+                                 onRegionChangeComplete={(region) => this.setState({ region })}
+                                 onRegionChange={this.onRegionChange.bind(this)}
+                            >
+                            <MapView.Marker
+                                image={require('../../assets/images/dot1.png')}
+                                coordinate={{
+                                    latitude: initialPosition.coords.latitude,
+                                    longitude: initialPosition.coords.longitude
+                                }}
+                            />
+                            <MapView.Polyline
+                                coordinates={route}
+                                strokeWidth={3}
+                            />
+                            {this.state.markers.map(marker => (
+                                <MapView.Marker
+                                  coordinate={{latitude: marker.lat, longitude: marker.long}}
+                                  title={marker.title}
+                                  description={marker.description}
+                                  image={MAPIMAGES['image' + marker.srcID]}
+                                />
+                              )
+                          )}
+                        </MapView>
+                        <View style={styles.slideContainer}>
+                            <SlidingUpPanel
+                                containerMaximumHeight={deviceHeight - 120}
+                                handlerBackgroundColor={'rgba(0,0,0,0)'}
+                                handlerHeight={33}
+                                allowStayMiddle={true}
+                                handlerDefaultView={<HandlerOne/>}>
+                                    {this.renderDragMenu()}
+                             </SlidingUpPanel>
+                         </View>
+                         {this.renderGlobalNav()}
+                    </Container>
+                </View>
+            );
+        }
+        else if(loaded && tbt == true){
+            return (
+                <View style={styles.loadMapContainer}>
                     <MapView style={styles.map}
-                        region={this.state.region}
-                         zoomEnabled
-                             onRegionChangeComplete={(region) => this.setState({ region })}
-                             onRegionChange={this.onRegionChange.bind(this)}
-                        >
+                             region={this.state.region}
+                             >
                         <MapView.Marker
                             image={require('../../assets/images/dot1.png')}
                             coordinate={{
-                                latitude: initialPosition.coords.latitude,
-                                longitude: initialPosition.coords.longitude
-                            }}
-                        />
-                        <MapView.Polyline
-                            coordinates={route}
-                            strokeWidth={3}
-                        />
-                        {this.state.markers.map(marker => (
-                            <MapView.Marker
-                              coordinate={{latitude: marker.lat, longitude: marker.long}}
-                              title={marker.title}
-                              description={marker.description}
-                              image={MAPIMAGES['image' + marker.srcID]}
-                            />
-                          )
-                      )}
+                                latitude: 34.070984,
+                                longitude: -118.444759
+                            }}/>
                     </MapView>
-                    <SlidingUpPanel
-                        containerMaximumHeight={deviceHeight - 100}
-                        handlerBackgroundColor={'rgba(0,0,0,0)'}
-                        handlerHeight={33}
-                        allowStayMiddle={true}
-                        handlerDefaultView={<HandlerOne/>}>
-                            {this.renderDragMenu()}
-                     </SlidingUpPanel>
-                     {this.renderGlobalNav()}
+                    <View style={styles.info}>
+                        <ListView
+                            style={styles.locations}
+                            dataSource={this.state.dataSourceTBT}
+                            renderRow={(rowData) =>
+                                <View>
+                                    <TouchableOpacity style={styles.wrapper}>
+                                        <TBTItem rowData={rowData}/>
+                                        </TouchableOpacity>
+                                        <View style={styles.separator} />
+                                </View>}
+                            enableEmptySections={true}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    </View>
                 </View>
             );
         }

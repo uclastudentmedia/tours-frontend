@@ -81,11 +81,17 @@ class DetailsView extends Component
     componentWillMount() {
       const { navigator } = this.props
         BackAndroid.addEventListener('hardwareBackPress', function() {
-                 
+
           return navigator.parentNavigator.pop();
         });
       }
     */
+
+    findRoute(){
+        console.log(this.props.navigator);
+        this.props.navigator.parentNavigator.pop();
+        console.log("WENT BACK");
+    }
     renderScene(route, navigator) {
         if(this.state.loaded){
             console.log(this.state.curLocation.latitude);
@@ -102,6 +108,7 @@ class DetailsView extends Component
                         {feetCalc(this.state.curLocation.latitude,this.state.curLocation.longitude,this.state.results.results.lat,
                         this.state.results.results.long)} feet away
                     </Text>
+                    <Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
                 </View>
             );
         }
