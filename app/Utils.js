@@ -4,185 +4,167 @@
 
 import React, { Component } from 'react';
 
-export function popPrioritize(data,lat,long,latD,longD){
-    try{
-        const value=data;
-        if(value!==null){
-            //console.log("pop prioritize");
-            // We have data!!
-            let val = JSON.parse(value);
-            //create rectangular area
-            //est topLeft and bottomRight long/lat based on long,lat, long delta, and lat delta
-            topLeftCor={
-                lat:lat-(latD/2),
-                long:long+(longD/2)
-            };
-            bottomRight={
-                lat:lat+(latD/2),
-                long:long-(longD/2)
-            };
+export function popPrioritize(val,lat,long,latD,longD){
+    if(val !== null) {
+        //console.log("pop prioritize");
+        // We have data!!
+        //create rectangular area
+        //est topLeft and bottomRight long/lat based on long,lat, long delta, and lat delta
+        topLeftCor={
+            lat:lat-(latD/2),
+            long:long+(longD/2)
+        };
+        bottomRight={
+            lat:lat+(latD/2),
+            long:long-(longD/2)
+        };
 
-            // haversine :: (Num, Num) -> (Num, Num) -> Num
-            let haversine = ([lat1, lon1], [lat2, lon2]) => {
-                // Math lib function names
-                let [pi, asin, sin, cos, sqrt, pow, round] =
-                        ['PI', 'asin', 'sin', 'cos', 'sqrt', 'pow', 'round']
-                            .map(k => Math[k]),
+        // haversine :: (Num, Num) -> (Num, Num) -> Num
+        let haversine = ([lat1, lon1], [lat2, lon2]) => {
+            // Math lib function names
+            let [pi, asin, sin, cos, sqrt, pow, round] =
+                    ['PI', 'asin', 'sin', 'cos', 'sqrt', 'pow', 'round']
+                        .map(k => Math[k]),
 
-                    // degrees as radians
-                    [rlat1, rlat2, rlon1, rlon2] = [lat1, lat2, lon1, lon2]
-                        .map(x => x / 180 * pi),
+                // degrees as radians
+                [rlat1, rlat2, rlon1, rlon2] = [lat1, lat2, lon1, lon2]
+                    .map(x => x / 180 * pi),
 
-                    dLat = rlat2 - rlat1,
-                    dLon = rlon2 - rlon1,
-                    radius = 6372.8; // km
+                dLat = rlat2 - rlat1,
+                dLon = rlon2 - rlon1,
+                radius = 6372.8; // km
 
-                // km
-                return round(
-                        radius * 2 * asin(
-                            sqrt(
-                                pow(sin(dLat / 2), 2) +
-                                pow(sin(dLon / 2), 2) *
-                                cos(rlat1) * cos(rlat2)
-                            )
-                        ) * 100
-                    ) / 100;
-            };
+            // km
+            return round(
+                    radius * 2 * asin(
+                        sqrt(
+                            pow(sin(dLat / 2), 2) +
+                            pow(sin(dLon / 2), 2) *
+                            cos(rlat1) * cos(rlat2)
+                        )
+                    ) * 100
+                ) / 100;
+        };
 
-            // Return in feet (converts km to ft)
-            function FeetConverter(km){return km * 3280.84;}
-            //filter out locations outside of viewport
-            var locInView=[];
-            //sort everything in val.results
-            var tempRes=val.results.sort(function(a,b){return a.priority-b.priority;});
+        // Return in feet (converts km to ft)
+        function FeetConverter(km){return km * 3280.84;}
+        //filter out locations outside of viewport
+        var locInView=[];
+        //sort everything in val
+        var tempRes=val.sort(function(a,b){return a.priority-b.priority;});
 
-            //loop through all locations to filter by: zoom level
+        //loop through all locations to filter by: zoom level
 
-            tempRes=tempRes.filter(function(loc){
-                if(loc.long>topLeftCor.long||loc.long<bottomRight.long
-                    || loc.lat>bottomRight.lat||loc.lat<topLeftCor.lat){
-                    return false;
-                }
-                else{
-                    return true;
-                }
-            });
-
-
-            //save top 10 results to locInView
-            for(var i=0;i<10;i++){
-                locInView.push({
-                    location:tempRes[i].name,
-                    lat:tempRes[i].lat,
-                    long:tempRes[i].long,
-                    rank:tempRes[i].priority,
-                    distanceAway:FeetConverter(haversine(
-                        [lat,long],
-                        [tempRes[i].lat,tempRes[i].long])),
-                    category:tempRes[i].category_id
-                });
+        tempRes=tempRes.filter(function(loc){
+            if(loc.long>topLeftCor.long||loc.long<bottomRight.long
+                || loc.lat>bottomRight.lat||loc.lat<topLeftCor.lat){
+                return false;
             }
+            else{
+                return true;
+            }
+        });
 
-            return locInView.slice(0,10);
+
+        //save top 10 results to locInView
+        for(var i=0;i<10;i++){
+            locInView.push({
+                location:tempRes[i].name,
+                lat:tempRes[i].lat,
+                long:tempRes[i].long,
+                rank:tempRes[i].priority,
+                distanceAway:FeetConverter(haversine(
+                    [lat,long],
+                    [tempRes[i].lat,tempRes[i].long])),
+                category:tempRes[i].category_id,
+                id:tempRes[i].id
+            });
         }
-    } catch (error) {
-        // Error retrieving data
-        console.log(error.message)
+
+        return locInView.slice(0,10);
     }
 }
 
-export function DistancePrioritize(currentLat,currentLong, data){
-    try {
-        const value = data
-        if (value !== null){
-            // We have data!!
-            let val = JSON.parse(value);
+export function DistancePrioritize(currentLat,currentLong, val){
+    if (val !== null) {
+        // We have data!!
 
-            // haversine :: (Num, Num) -> (Num, Num) -> Num
-            let haversine = ([lat1, lon1], [lat2, lon2]) => {
-                // Math lib function names
-                let [pi, asin, sin, cos, sqrt, pow, round] =
-                        ['PI', 'asin', 'sin', 'cos', 'sqrt', 'pow', 'round']
-                            .map(k => Math[k]),
+        // haversine :: (Num, Num) -> (Num, Num) -> Num
+        let haversine = ([lat1, lon1], [lat2, lon2]) => {
+            // Math lib function names
+            let [pi, asin, sin, cos, sqrt, pow, round] =
+                    ['PI', 'asin', 'sin', 'cos', 'sqrt', 'pow', 'round']
+                        .map(k => Math[k]),
 
-                // degrees as radians
-                    [rlat1, rlat2, rlon1, rlon2] = [lat1, lat2, lon1, lon2]
-                        .map(x => x / 180 * pi),
+            // degrees as radians
+                [rlat1, rlat2, rlon1, rlon2] = [lat1, lat2, lon1, lon2]
+                    .map(x => x / 180 * pi),
 
-                    dLat = rlat2 - rlat1,
-                    dLon = rlon2 - rlon1,
-                    radius = 6372.8; // km
+                dLat = rlat2 - rlat1,
+                dLon = rlon2 - rlon1,
+                radius = 6372.8; // km
 
-                // km
-                return round(
-                        radius * 2 * asin(
-                            sqrt(
-                                pow(sin(dLat / 2), 2) +
-                                pow(sin(dLon / 2), 2) *
-                                cos(rlat1) * cos(rlat2)
-                            )
-                        ) * 100
-                    ) / 100;
-            };
+            // km
+            return round(
+                    radius * 2 * asin(
+                        sqrt(
+                            pow(sin(dLat / 2), 2) +
+                            pow(sin(dLon / 2), 2) *
+                            cos(rlat1) * cos(rlat2)
+                        )
+                    ) * 100
+                ) / 100;
+        };
 
-            // Return in feet (converts km to ft)
-            function FeetConverter(km){return km * 3280.84;}
+        // Return in feet (converts km to ft)
+        function FeetConverter(km){return km * 3280.84;}
 
-            var source;
+        var source;
 
-            var DistAway = [];
-            for(var i = 0; i<val.results.length; i++){
-                if(val.results[i].category_id){
-                    source="../../assets/loc_icons/" + val.results[i].category_id-1000 +".png"
-                }
-                else{
-                    source="../../assets/loc_icons/1.png"
-                }
-                DistAway.push({
-                    location:val.results[i].name,
-                    distanceAway: FeetConverter(haversine(
-                        [currentLat,currentLong],
-                        [val.results[i].lat,val.results[i].long])),
-                    lat:val.results[i].lat,
-                    long:val.results[i].long,
-                    category:val.results[i].category_id,
-                    imgSrc:source
-                });
+        var DistAway = [];
+        for(var i = 0; i<val.length; i++){
+            if (val[i].category_id) {
+                source = LocToIcon(val[i].category_id);
             }
-            DistAway.sort(function(a,b){
-                if(a.distanceAway<b.distanceAway){
-                    return -1;
-                }
-                if(a.distanceAway>b.distanceAway){
-                    return 1;
-                }
-                return 0;
+            else {
+                source = LocToIcon(1);
+            }
+            DistAway.push({
+                location:val[i].name,
+                distanceAway: FeetConverter(haversine(
+                    [currentLat,currentLong],
+                    [val[i].lat,val[i].long])),
+                lat:val[i].lat,
+                long:val[i].long,
+                category:val[i].category_id,
+                imgSrc:source
             });
-            var stuff = DistAway.slice(0,10);
-            return stuff;
         }
-    } catch (error) {
-        // Error retrieving data
-        console.log(error.message)
+        DistAway.sort(function(a,b){
+            if(a.distanceAway<b.distanceAway){
+                return -1;
+            }
+            if(a.distanceAway>b.distanceAway){
+                return 1;
+            }
+            return 0;
+        });
+        var stuff = DistAway.slice(0,10);
+        return stuff;
     }
 }
 
 //given a location name (string), returns data object
 export function LocToData(location,data){
-    try{
-        const value = data;
-        if(value!==null){
-            const results = value.results;
-            return data.results.find(function(loc){return loc.name === location});
-        }
-    } catch (error) {
-        console.log(error.message)
-    }
+      if(data) {
+          return data.find(function(loc){return loc.name === location});
+      }
+      return null;
 }
 
 //given location category, return image source for icon
 export function LocToIcon(location_cat){
-    var loc_file=location_cat-1000;
-    var imgSrc= "../../assets/images/loc_icons/" + loc_file +".png";
+    var loc_file=location_cat;
+    var imgSrc= "../../assets/loc_icons/" + loc_file +".png";
     return imgSrc;
 }
