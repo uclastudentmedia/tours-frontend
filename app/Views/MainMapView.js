@@ -515,7 +515,7 @@ export default class MainMapView extends Component {
                             <SlidingUpPanel
                                 containerMaximumHeight={deviceHeight - 120}
                                 handlerBackgroundColor={'rgba(0,0,0,0)'}
-                                handlerHeight={33}
+                                handlerHeight={25}
                                 allowStayMiddle={true}
                                 handlerDefaultView={<HandlerOne/>}>
                                     {this.renderDragMenu()}
