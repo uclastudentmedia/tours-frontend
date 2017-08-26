@@ -27,21 +27,16 @@ module.exports = StyleSheet.create({
         backgroundColor: 'white',
     },
     loading:{
-        backgroundColor: '#0066CC',
-        flex:1,
         width:width,
+        height:height,
         justifyContent:'center',
         alignItems:'center',
-        bottom: 0
+        paddingTop:250,
+        paddingRight:15,
     },
     center:{
         fontSize: 50,
         color:'white',
-    },
-    loading_logo:{
-        width:200,
-        height:175,
-        bottom: 10
     },
     map: {
         height: (height * 0.8),
@@ -170,7 +165,7 @@ module.exports = StyleSheet.create({
         height: 50
     },
     title: {
-        textAlignVertical: "center", 
+        textAlignVertical: "center",
         textAlign: "center",
         fontSize:18,
         justifyContent: 'center',

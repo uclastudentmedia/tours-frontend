@@ -62,32 +62,28 @@ export default class LoadingView extends Component {
   render() {
     if(!this.state.done) {
       return (
-          <View style={styles.loading}>
-              <Image
-                  style={styles.loading_logo}
-                  source={require('../../assets/images/logo_1x.png')}/>
-              <Text style={styles.center}>BruinTours</Text>
+            <Image
+                style={styles.container}
+                source={require('../../assets/images/logoArtboard.png')}>
               <ActivityIndicator
                 color={'yellow'}
                 size={'large'}
-                style={styles.spin}
+                style={styles.loading}
               />
-          </View>
+            </Image>
+
       );
     }
     else {
       return(
-          <View style={styles.loading}>
-              <Image
-                  style={styles.loading_logo}
-                  source={require('../../assets/images/logo_1x.png')}/>
-              <Text style={styles.baseText}>
-                  <Text style={styles.center}>BruinTours</Text>
-              </Text>
-              <View style={{paddingTop: 30}}>
+            <Image
+                style={styles.container}
+                source={require('../../assets/images/logoArtboard.png')}>
+              <View style={styles.loading}>
                 <Button onPress={this.gotoMapView.bind(this)} title="Launch App"></Button>
               </View>
-          </View>
+            </Image>
+
       );
     }
   }
