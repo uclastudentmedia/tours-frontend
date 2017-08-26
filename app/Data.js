@@ -6,7 +6,8 @@ const API_DOMAIN = 'https://tours.bruinmobile.com';
 const ENDPOINTS = {
   LANDMARKS: '/api/landmark/',
   CATEGORIES: '/api/category/',
-  TOURS: '/api/tour/'
+  TOURS: '/api/tour/',
+  INDOOR_BUILDINGS: '/indoor/building/',
 };
 
 
@@ -103,4 +104,20 @@ export async function GetTour(id) {
    */
   return getData(ENDPOINTS.TOURS)
     .then(tours => find(tours, 'id', id));
+}
+
+export async function GetIndoorBuildingList() {
+  /**
+   * @return Array of Building object
+   */
+  return getData(ENDPOINTS.INDOOR_BUILDINGS);
+}
+
+export async function GetIndoorBuilding(id) {
+  /**
+   * @param id int landmark id
+   * @return Building object
+   */
+  return getData(ENDPOINTS.INDOOR_BUILDINGS)
+    .then(buildings => find(building, 'landmark_id', id));
 }
