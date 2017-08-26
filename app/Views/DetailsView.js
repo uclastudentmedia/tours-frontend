@@ -92,6 +92,7 @@ class DetailsView extends Component
         this.props.navigator.parentNavigator.pop();
         console.log("WENT BACK");
     }
+//<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
     renderScene(route, navigator) {
         if(this.state.loaded){
             console.log(this.state.curLocation.latitude);
@@ -108,7 +109,7 @@ class DetailsView extends Component
                         {feetCalc(this.state.curLocation.latitude,this.state.curLocation.longitude,this.state.results.results.lat,
                         this.state.results.results.long)} feet away
                     </Text>
-                    <Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
+
                 </View>
             );
         }

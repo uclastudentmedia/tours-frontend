@@ -27,19 +27,19 @@ export default class DetailItem extends Component {
             //description
             case 1:
                 return(
-                    <Image style={styles.placeholder} source={require('../../assets/loc_icons/1.png')}/>
+                    <Image style={styles.placeholder} source={require('../../assets/new_sizes/1.png')}/>
                 );
                 break;
             //image
             case 2:
                 return(
-                    <Image style={styles.placeholder} source={require('../../assets/loc_icons/2.png')}/>
+                    <Image style={styles.placeholder} source={require('../../assets/new_sizes/2.png')}/>
                 );
                 break;
             //parking
             case 3:
                 return(
-                    <Image style={styles.placeholder} source={require('../../assets/loc_icons/3.png')}/>
+                    <Image style={styles.placeholder} source={require('../../assets/new_sizes/3.png')}/>
                 );
                 break;
             //menu

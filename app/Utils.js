@@ -194,114 +194,114 @@ export function renderImage(category,view){
     {
         case 1:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/1.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/1.png')}/>
             );
             break;
         case 2:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/2.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/2.png')}/>
             );
             break;
         case 3:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/3.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/3.png')}/>
             );
             break;
         case 4:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/4.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/4.png')}/>
             );
             break;
-        case 5:
+        /*case 5:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/5.png')}/>
-            );
+                <Image style={styleClass} source={require('../assets/new_sizes/5.png')}/>
+            );*/
         case 6:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/6.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/6.png')}/>
             );
             break;
         case 7:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/7.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/7.png')}/>
             );
             break;
         case 8:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/8.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/8.png')}/>
             );
             break;
         case 9:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/9.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/9.png')}/>
             );
             break;
         case 10:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/10.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/10.png')}/>
             );
             break;
         case 11:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/11.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/11.png')}/>
             );
             break;
         case 12:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/12.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/12.png')}/>
             );
             break;
         case 13:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/13.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/13.png')}/>
             );
             break;
         case 14:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/14.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/14.png')}/>
             );
             break;
         case 15:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/15.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/15.png')}/>
             );
             break;
         // case 16:
         //     return(
         //         <Image style={styles.placeholder} source={require('../../assets/loc_icons/16.png')}/>
         //     );
-        case 17:
-            return(
-                <Image style={styleClass} source={require('../assets/loc_icons/17.png')}/>
-            );
+        //case 17:
+          //  return(
+            //    <Image style={styleClass} source={require('../assets/new_sizes /17.png')}/>
+            //);
         case 18:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/18.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/18.png')}/>
             );
             break;
         case 20:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/20.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/20.png')}/>
             );
             break;
         case 61:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/61.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/61.png')}/>
             );
             break;
         case 321:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/321.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/321.png')}/>
             );
             break;
         case 961:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/961.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/961.png')}/>
             );
             break;
         case 1285:
             return(
-                <Image style={styleClass} source={require('../assets/loc_icons/1285.png')}/>
+                <Image style={styleClass} source={require('../assets/new_sizes/1285.png')}/>
             );
             break;
     }

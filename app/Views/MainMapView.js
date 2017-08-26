@@ -526,7 +526,7 @@ export default class MainMapView extends Component {
                 </View>
             );
         }
-        else if(loaded && tbt == true){
+        else if(loaded && tbt === true){
             return (
                 <View style={styles.loadMapContainer}>
                     <MapView style={styles.map}
