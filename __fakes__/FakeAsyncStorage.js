@@ -8,8 +8,19 @@ function notImplemented() {
     });
 };
 
+const TRACE = true;
 function trace(func, key, value) {
-  console.info(`AsyncStorage.${func}('${key}', '${value}')`);
+  if (TRACE) {
+    if (value) {
+      console.info(`AsyncStorage.${func}('${key}', '${value.substr(0, 20)}')`);
+    }
+    else if (key) {
+      console.info(`AsyncStorage.${func}('${key}')`);
+    }
+    else {
+      console.info(`AsyncStorage.${func}()`);
+    }
+  }
 };
 
 export const AsyncStorage = {

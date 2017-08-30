@@ -1,4 +1,18 @@
+'use strict';
+
 import 'isomorphic-fetch';
+
+// TODO: import real AsyncStorage for running on device
+//import { AsyncStorage } from 'react-native';
+import { AsyncStorage } from '../__fakes__/FakeAsyncStorage';
+
+/**
+ * Constants
+ */
+
+const CACHE_PREFIX = '@tours:';
+const TIMESTAMP_PREFIX = CACHE_PREFIX + 'timestamp:';
+const CACHE_EXPIRY = 20 * 60 * 60 * 1000; // 20 hours
 
 const API_DOMAIN = 'https://tours.bruinmobile.com';
 
@@ -15,12 +29,96 @@ const ENDPOINTS = {
  * Helper functions
  */
 
+function find(data, key, value) {
+  /**
+   * @param data Array{Object}
+   * @return the first matching Object, or null if no matches
+   */
+
+  let matches = data.filter(obj => obj[key] === value);
+
+  if (matches.length == 0) {
+    return null;
+  }
+  return matches[0];
+}
+
+
+/**
+ * Storage management functions
+ */
+
+async function getCacheTime(endpoint) {
+  /**
+   * Get the time this API call was cached
+   */
+
+  let key = TIMESTAMP_PREFIX + endpoint;
+  try {
+    const data = await AsyncStorage.getItem(key);
+    if (data !== null) {
+      return parseInt(data);
+    }
+  } catch(error) {
+    console.error(error);
+  }
+
+  // not found, force cache update
+  return 0;
+}
+
+async function updateCacheTime(endpoint) {
+  /**
+   * Update the endpoint's cache timestamp
+   */
+
+  let key = TIMESTAMP_PREFIX + endpoint;
+  let timestamp = Date.now();
+  try {
+    await AsyncStorage.setItem(key, timestamp.toString());
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+async function getCachedData(endpoint) {
+  /**
+   * Get cached API response from AsyncStorage
+   */
+
+  let key = CACHE_PREFIX + endpoint;
+  try {
+    const data = await AsyncStorage.getItem(key);
+    if (data !== null) {
+      return JSON.parse(data);
+    }
+  } catch(error) {
+    console.error(error);
+  }
+  return null;
+}
+
+async function setCachedData(endpoint, data) {
+  /**
+   * Cache API response in AsyncStorage
+   */
+
+  let key = CACHE_PREFIX + endpoint;
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(data));
+  } catch(error) {
+    console.error(error);
+  }
+}
+
 async function queryEndpoint(endpoint) {
   /**
    * Fetch data from the server
    * @param endpoint string
    * @return Promise
    */
+
+  //console.info(`queryEndpoint('${endpoint}')`);
 
   let url = API_DOMAIN + endpoint;
   return fetch(url)
@@ -35,22 +133,37 @@ async function getData(endpoint) {
    * @return Promise
    */
 
-  // TODO: check if cached
-  return queryEndpoint(endpoint);
+  let currentTime = Date.now();
+  let cacheTime = await getCacheTime(endpoint);
+
+  if (currentTime - cacheTime < CACHE_EXPIRY) {
+    // this request was updated recently, try to use the cached value
+    let cachedData = await getCachedData(endpoint);
+    if (cachedData !== null) {
+      return cachedData;
+    }
+  }
+
+  // there is no up-to-date cached data, need to query server
+  let newData = await queryEndpoint(endpoint);
+
+  // save the data in the cache (asynchronously)
+  setCachedData(endpoint, newData);
+  updateCacheTime(endpoint);
+
+  return newData;
 }
 
-function find(data, key, value) {
+async function clearCache() {
   /**
-   * @param data Array{Object}
-   * @return the first matching Object, or null if no matches
+   * Remove everything from the cache
    */
-
-  let matches = data.filter(obj => obj[key] === value);
-
-  if (matches.length == 0) {
-    return null;
-  }
-  return matches[0];
+  let keys = await AsyncStorage.getAllKeys();
+  keys.forEach(key => {
+    if (key.startsWith(CACHE_PREFIX)) {
+      AsyncStorage.removeItem(key);
+    }
+  });
 }
 
 
@@ -119,5 +232,5 @@ export async function GetIndoorBuilding(id) {
    * @return Building object
    */
   return getData(ENDPOINTS.INDOOR_BUILDINGS)
-    .then(buildings => find(building, 'landmark_id', id));
+    .then(buildings => find(buildings, 'landmark_id', id));
 }
