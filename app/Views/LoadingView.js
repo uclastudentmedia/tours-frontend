@@ -33,11 +33,10 @@ export default class LoadingView extends Component {
     return fetch("http://tours.bruinmobile.com/api/landmark/")
       .then((response) => response.json())
       .then((responseJson) => {
+        let results = this.formatData(responseJson.results);
+        this.storeData(results);
         this.setState({
-          results: responseJson
-        });
-        this.storeData();
-        this.setState({
+          results: results,
           done: true
         });
       })
@@ -46,8 +45,19 @@ export default class LoadingView extends Component {
       });
   }
 
-  storeData(){
-      let data = this.state.results;
+  formatData(results) {
+    return results.map(landmark => {
+      if (landmark.category_id) {
+        landmark.category_id -= 1000;
+      }
+      else {
+        landmark.category_id = 1;
+      }
+      return landmark;
+    });
+  }
+
+  storeData(data){
       AsyncStorage.setItem('data', JSON.stringify(data));
   }
 
