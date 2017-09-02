@@ -114,12 +114,12 @@ export default class MainMapView extends Component {
         try {
             let value = await AsyncStorage.getItem('data');
             val = JSON.parse(value);
+            console.log("hello we got data")
         } catch (e) {
             console.log(e);
         }
         if(val !== null){
-            //console.log("initialposition",initialPosition);
-            //console.log("region",this.state.region);
+            console.log("val isn't null!", val);
             var temp;
             if(mapSettinger===2){
                 //if map setting is tours, display locations on the tour
