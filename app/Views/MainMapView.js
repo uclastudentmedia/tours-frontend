@@ -22,11 +22,7 @@ import MapView from 'react-native-maps';
 import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
 import ListItem from '../Components/ListItem';
 import TBTItem from '../Components/TBTItem';
-import SlidingUpPanel from 'react-native-sliding-up-panel';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
-import { Kohana } from 'react-native-textinput-effects';
-import RNAnimatedTabs from 'rn-animated-tabs';
-import TabNavigator from 'react-native-animated-tabbar';
 import { Container, Navbar } from 'navbar-native';
 import SearchBar from 'react-native-searchbar';
 
@@ -469,16 +465,6 @@ export default class MainMapView extends Component {
                               )
                           )}
                         </MapView>
-                        <View style={styles.slideContainer}>
-                            <SlidingUpPanel
-                                containerMaximumHeight={deviceHeight - 120}
-                                handlerBackgroundColor={'rgba(0,0,0,0)'}
-                                handlerHeight={33}
-                                allowStayMiddle={true}
-                                handlerDefaultView={<HandlerOne/>}>
-                                    {this.renderDragMenu()}
-                             </SlidingUpPanel>
-                         </View>
                          {this.renderGlobalNav()}
                     </Container>
                 </View>
