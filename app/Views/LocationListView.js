@@ -82,7 +82,6 @@ class LocationListView extends Component
                 this.props.navigator.push({
                     id: 'LocationListView',
                     name: 'Nearby Locations',
-                    locations: ds.cloneWithRows(dataPop)
                 });
                 break;
             case 1:

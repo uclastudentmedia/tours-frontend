@@ -30,7 +30,7 @@ export default class LoadingView extends Component {
   }
 
   getAPIData(){
-    return fetch("http://tours.bruinmobile.com/api/landmark/")
+    return fetch("https://tours.bruinmobile.com/api/landmark/")
       .then((response) => response.json())
       .then((responseJson) => {
         let results = this.formatData(responseJson.results);

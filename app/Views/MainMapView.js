@@ -28,8 +28,6 @@ import SearchBar from 'react-native-searchbar';
 import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
 
 const styles = require( "../../assets/css/style");
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-const dsTBT = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 const MAPIMAGES = {
   image1: require('../../assets/new_sizes/1.png'), // statically analyzed
@@ -57,7 +55,6 @@ const MAPIMAGES = {
 }
 
 var {height, width} = Dimensions.get('window');
-var dataPop = [];
 var loaded = false;
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 var mapSettinger=1;
@@ -80,33 +77,49 @@ let tbt = false;
 
 export default class MainMapView extends Component {
 
-    watchID: ?number = null;
 
-    componentWillMount(){
-        this.setupData();
-    }
+    constructor(props){
+        super(props);
 
-    componentDidMount() {
-        setInterval(function(){
-            this.setupData();
-        }.bind(this), 10000);
+        this.watchID = null;
+        this.dataSourceTBT = new ListView.DataSource({
+          rowHasChanged: (r1, r2) => r1 !== r2
+        });
 
-        this.setState({
-            dataSource: ds.cloneWithRows(dataPop),
+        this.state = {
+            data: '',
+            markers: [],
             region: {
                 latitude: 34.070286,
                 longitude: -118.443413,
                 latitudeDelta: 0.0045,
                 longitudeDelta: 0.0345,
+            },
+            viewIDG: 0,
+            results: []
+        };
+        this._handleResults = this._handleResults.bind(this);
+    }
 
+
+    componentDidMount() {
+
+        this.setState({
+            region: {
+                latitude: 34.070286,
+                longitude: -118.443413,
+                latitudeDelta: 0.0045,
+                longitudeDelta: 0.0345,
                 },
             viewIDG: 0,
         });
+
+        this.getPosition();
+        this.getData();
     }
 
-    setupData(){
-        this.getData();
-        this.getPosition();
+    componentWillUnmount(){
+        navigator.geolocation.clearWatch(this.watchID);
     }
 
     async getData(){
@@ -114,12 +127,10 @@ export default class MainMapView extends Component {
         try {
             let value = await AsyncStorage.getItem('data');
             val = JSON.parse(value);
-            console.log("hello we got data")
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
         if(val !== null){
-            console.log("val isn't null!", val);
             var temp;
             if(mapSettinger===2){
                 //if map setting is tours, display locations on the tour
@@ -135,8 +146,7 @@ export default class MainMapView extends Component {
                     this.state.region.latitudeDelta, this.state.region.longitudeDelta);
                 //console.log("region",this.state.region);
             }
-            //temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, val).slice(0,10);
-            dataPop = [];
+            var dataPop = [];
             markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
             for(var i = 0; i < temp.length; i++)
             {
@@ -159,14 +169,13 @@ export default class MainMapView extends Component {
                 markersData.long= temp[i].long;
                 markersData.srcID= specLoc.category_id - 1000;
                 markersData.location=temp[i].location;
-                markersTemp.push(markersData);
+                markersData.id = temp[i].id;
                 markersTemp.push(markersData);
             }
             markersTemp.splice(0,1);
             markersTemp.slice(0,10);
             this.setState({
                 data: val,
-                dataSource: ds.cloneWithRows(dataPop),
                 markers:markersTemp
             });
             loaded = true;
@@ -184,14 +193,11 @@ export default class MainMapView extends Component {
             {enableHighAccuracty: true, timeout: 2000000, maximumAge: 500}
         );
         this.watchID = navigator.geolocation.watchPosition((position) => {
+            console.log('watchPosition');
             var lastPosition = JSON.stringify(position);
             var val = JSON.parse(lastPosition);
             this.setState({lastPosition: val});
         });
-    }
-
-    componentWillUnmount(){
-        navigator.geolocation.clearWatch(this.watchID);
     }
 
     //function to go to a different view
@@ -210,7 +216,6 @@ export default class MainMapView extends Component {
               this.props.navigator.push({
                   id: 'LocationListView',
                   name: 'Nearby Locations',
-                  locations: ds.cloneWithRows(dataPop)
               });
             break;
           case 1:
@@ -223,27 +228,6 @@ export default class MainMapView extends Component {
         }
     }
 
-    constructor(props){
-        super(props);
-        this.state = {
-            data: '',
-            markers: [],
-            dataSource: ds.cloneWithRows(dataPop),
-            dataSourceTBT: dsTBT.cloneWithRows(dataPop),
-            lastPosition: 'unknown',
-            region: {
-                latitude: 34.070286,
-                longitude: -118.443413,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,
-            },
-            viewIDG: 0,
-            bTBT: [],
-            results: []
-        };
-        this._handleResults = this._handleResults.bind(this);
-    }
-
     handleTabChange = (value) => this.setState({ currentTab: value });
 
     _handleResults(results) {
@@ -252,36 +236,7 @@ export default class MainMapView extends Component {
 
     onRegionChange(region1) {
         this.setState({ region:region1 });
-        var value = this.state.dataSource;
-        if(value!==null){
-            var temp;
-            if(mapSettinger===2){
-                //if map setting is tours, display locations on the tour
-            }
-            else if(mapSettinger===0){
-                //if map setting is nearby, prioritize top 10 location by distance
-                temp = DistancePrioritize(this.state.region.latitude, this.state.region.longitude, value);
-            }
-            else{
-                //if map setting is campus map. prioritize top 10 locations by popularity/category
-                temp = popPrioritize(value,this.state.region.latitude, this.state.region.longitude,
-                    this.state.region.latitudeDelta, this.state.region.longitudeDelta);
-            }
-            markersTemp=[];
-            if(temp){
-                for(var i = 0; i < temp.length; i++)
-                {
-                    //push coordinate data into this.markers
-                    var markersData = {title:'',lat:0,long:0,srcID:1};
-                    markersData.title = temp[i].location;
-                    markersData.lat= temp[i].lat;
-                    markersData.long= temp[i].long;
-                    markersData.location=temp[i].location;
-                    markersTemp.push(markersData);
-                }
-                this.setState({markers:markersTemp});
-            }
-        }
+        this.getData();
     }
 
     changeMapSetting(setting){
@@ -297,7 +252,6 @@ export default class MainMapView extends Component {
             name: 'More Details',
             rowDat: rowData,
             locID: id,
-            lastPos:this.state.lastPosition
         });
     }
 
@@ -342,7 +296,7 @@ export default class MainMapView extends Component {
         }
         catch (e)
         {
-            console.log(e);
+            console.error(e);
         }
     }
 
@@ -408,8 +362,8 @@ export default class MainMapView extends Component {
                  lat: flag2.latitude,
                  long: flag2.longitude
              }],
-             dataSourceTBT: dsTBT.cloneWithRows(serverRoute.trip.legs[0].maneuvers),
         });
+        this.dataSourceTBT.cloneWithRows(serverRoute.trip.legs[0].maneuvers),
         tbt = true;
     }
 
@@ -492,7 +446,7 @@ export default class MainMapView extends Component {
                     <View style={styles.info}>
                         <ListView
                             style={styles.locations}
-                            dataSource={this.state.dataSourceTBT}
+                            dataSource={this.dataSourceTBT}
                             renderRow={(rowData) =>
                                 <View>
                                     <TouchableOpacity style={styles.wrapper}>
