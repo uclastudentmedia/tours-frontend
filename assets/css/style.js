@@ -20,6 +20,8 @@ module.exports = StyleSheet.create({
         alignItems: 'center',
         justifyContent:'flex-end',
         backgroundColor: 'white',
+        width:width,
+        height:height
     },
     loadMapContainer: {
         flex: 1,

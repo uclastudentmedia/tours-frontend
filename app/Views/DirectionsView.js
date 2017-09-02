@@ -1,4 +1,7 @@
 /**
+ * Created by danielhuang on 9/2/17.
+ */
+/**
  * Created by danielhuang on 9/1/17.
  */
 import React, { Component } from 'react';
@@ -12,7 +15,7 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 const styles = require( "../../assets/css/style");
 const dstyles= require('../../assets/css/detailStyle');
 
-class LocationListView extends Component
+class DirectionsView extends Component
 {
     static NavigationBarRouteMapper = props => ({
         LeftButton(route, navigator, index, navState) {
@@ -31,7 +34,34 @@ class LocationListView extends Component
         Title(route, navigator, index, navState) {
             return null;
         },
-    })
+    });
+    //function to go to a different view
+    gotoView(viewID){
+        switch(viewID)
+        {
+            case 0:
+                this.setState({viewIDG: 0});
+                this.props.navigator.push({
+                    id: 'MainMapView',
+                    name: 'Home',
+                });
+                break;
+            case 2:
+                this.setState({viewIDG: 2});
+                this.props.navigator.push({
+                    id: 'LocationListView',
+                    name: 'Nearby Locations',
+                });
+                break;
+            case 1:
+                this.setState({viewIDG: 1});
+                this.props.navigator.push({
+                    id: 'DirectionsView',
+                    name: 'GPS Navigation',
+                });
+                break;
+        }
+    }
 
     constructor(props){
         super(props);
@@ -52,7 +82,7 @@ class LocationListView extends Component
                 navigator={this.props.navigator}
                 navigationBar={
                     <Navigator.NavigationBar style={{backgroundColor: '#246dd5'}}
-                                             routeMapper={LocationListView.NavigationBarRouteMapper(this.props)} />
+                                             routeMapper={DirectionsView.NavigationBarRouteMapper(this.props)} />
                 } />
         );
     }
@@ -66,34 +96,6 @@ class LocationListView extends Component
      });
      }
      */
-    //function to go to a different view
-    gotoView(viewID){
-        switch(viewID)
-        {
-            case 0:
-                this.setState({viewIDG: 0});
-                this.props.navigator.push({
-                    id: 'MainMapView',
-                    name: 'Home',
-                });
-                break;
-            case 2:
-                this.setState({viewIDG: 2});
-                this.props.navigator.push({
-                    id: 'LocationListView',
-                    name: 'Nearby Locations',
-                    locations: ds.cloneWithRows(dataPop)
-                });
-                break;
-            case 1:
-                this.setState({viewIDG: 1});
-                this.props.navigator.push({
-                    id: 'DirectionsView',
-                    name: 'GPS Navigation',
-                });
-                break;
-        }
-    }
 
     renderScene(route, navigator) {
         if(this.state.loaded){
@@ -101,7 +103,7 @@ class LocationListView extends Component
             //make modules into ListView, each module will have an id, based on which id, the ListView will render that module
             return (
                 <View style={styles.container}>
-                    <Text style={styles.title}>This is the Locations List View</Text>
+                    <Text style={styles.title}>This is the Directions View</Text>
                     {this.renderGlobalNav()}
                 </View>
             );
@@ -142,25 +144,4 @@ class LocationListView extends Component
         );
     }
 }
-/*
- renderDragMenu(){
- return (
- <View style={styles.info}>
- <ListView
- style={styles.locations}
- dataSource={this.state.dataSource}
- renderRow={(rowData) =>
- <View>
- <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
- <ListItem rowData={rowData}/>
- </TouchableOpacity>
- <View style={styles.separator} />
- </View>}
- enableEmptySections={true}
- showsVerticalScrollIndicator={false}
- />
- </View>
- );
- }
-* */
-module.exports = LocationListView;
+module.exports = DirectionsView;

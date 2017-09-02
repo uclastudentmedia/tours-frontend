@@ -10,6 +10,7 @@ import LoadingView from './Views/LoadingView';
 import MainMapView from'./Views/MainMapView';
 import LocationListView from './Views/LocationListView';
 import DetailsView from './Views/DetailsView';
+import DirectionsView from './Views/DirectionsView'
 
 
 const styles = require( "../assets/css/style");
@@ -57,11 +58,18 @@ export default class App extends Component {
             );
         } else if (routeID === 'LocationListView') {
             console.log("LocationListView");
-            console.log(route.locations)
+            console.log(route.locations);
             return (
                 <LocationListView
                     navigator={navigator}
                     locations={route.locations}
+                />
+            );
+        }else if (routeID === 'DirectionsView') {
+            console.log("DirectionsView");
+            return (
+                <DirectionsView
+                    navigator={navigator}
                 />
             );
         }

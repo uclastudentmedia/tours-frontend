@@ -10,13 +10,8 @@ import {
     ListView,
     TouchableHighlight,
     Dimensions,
-    PanResponder,
-    Animated,
-    Image,
     TouchableOpacity,
-    Navigator,
     TextInput,
-    Button,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
@@ -24,9 +19,6 @@ import ListItem from '../Components/ListItem';
 import TBTItem from '../Components/TBTItem';
 import SlidingUpPanel from 'react-native-sliding-up-panel';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
-import { Kohana } from 'react-native-textinput-effects';
-import RNAnimatedTabs from 'rn-animated-tabs';
-import TabNavigator from 'react-native-animated-tabbar';
 import { Container, Navbar } from 'navbar-native';
 import SearchBar from 'react-native-searchbar';
 
@@ -218,17 +210,25 @@ export default class MainMapView extends Component {
         {
           case 0:
             this.setState({viewIDG: 0});
+              this.props.navigator.push({
+                  id: 'MainMapView',
+                  name: 'Home',
+              });
             break;
-          case 1:
-            this.setState({viewIDG: 1});
+          case 2:
+            this.setState({viewIDG: 2});
               this.props.navigator.push({
                   id: 'LocationListView',
                   name: 'Nearby Locations',
                   locations: ds.cloneWithRows(dataPop)
               });
             break;
-          case 2:
-            this.setState({viewIDG: 2});
+          case 1:
+            this.setState({viewIDG: 1});
+            this.props.navigator.push({
+                id: 'DirectionsView',
+                name: 'GPS Navigation',
+            });
             break;
         }
     }
@@ -356,26 +356,6 @@ export default class MainMapView extends Component {
         }
     }
 
-    renderDragMenu(){
-        return (
-            <View style={styles.info}>
-                <ListView
-                    style={styles.locations}
-                    dataSource={this.state.dataSource}
-                    renderRow={(rowData) =>
-                        <View>
-                            <TouchableOpacity onPress={this.gotoDescription.bind(this, rowData)} style={styles.wrapper}>
-                                <ListItem rowData={rowData}/>
-                            </TouchableOpacity>
-                            <View style={styles.separator} />
-                        </View>}
-                    enableEmptySections={true}
-                    showsVerticalScrollIndicator={false}
-                />
-            </View>
-        );
-    }
-
     renderGlobalNav(){
         return(
             <BottomNavigation
@@ -460,9 +440,7 @@ export default class MainMapView extends Component {
                         <Navbar
                             bgColor={"white"}
                             user={true}
-                            title={
-                                    <Text>      UCLA Tours</Text>
-                            }
+                            title={<Text>      UCLA Tours</Text>}
                             titleColor={"grey"}
                             left={{
                                 icon: "md-menu",
@@ -502,16 +480,6 @@ export default class MainMapView extends Component {
                               )
                           )}
                         </MapView>
-                        <View style={styles.slideContainer}>
-                            <SlidingUpPanel
-                                containerMaximumHeight={deviceHeight - 120}
-                                handlerBackgroundColor={'rgba(0,0,0,0)'}
-                                handlerHeight={25}
-                                allowStayMiddle={true}
-                                handlerDefaultView={<HandlerOne/>}>
-                                    {this.renderDragMenu()}
-                             </SlidingUpPanel>
-                         </View>
                          {this.renderGlobalNav()}
                     </Container>
                 </View>
@@ -574,17 +542,6 @@ export default class MainMapView extends Component {
         }
     }
 }
-
-class HandlerOne extends Component{
-    render() {
-        return (
-            <View style={styles.container}>
-                <Image style={styles.image} source={require('../../assets/images/drag_bar.png')}>
-                    </Image>
-            </View>
-        );
-    }
-};
 
 decode = function(str, precision) {
     var index = 0,
