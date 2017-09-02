@@ -33,7 +33,6 @@ class DetailsView extends Component
        this.state = {
          results: '',
          loaded: false,
-         curLocation:this.props.lastLoc.coords
        }
      }
 
@@ -42,7 +41,7 @@ class DetailsView extends Component
      }
 
      getAPIData(){
-       return fetch("http://tours.bruinmobile.com/api/landmark/" + this.props.detID.id)
+       /*return fetch("https://tours.bruinmobile.com/api/landmark/" + this.props.locID.id)
          .then((response) => response.json())
          .then((responseJson) => {
            this.setState({
@@ -55,7 +54,7 @@ class DetailsView extends Component
          })
          .catch((error) => {
            console.error(error);
-         });
+         });*/
      }
 
      storeData(){
@@ -93,6 +92,7 @@ class DetailsView extends Component
         console.log("WENT BACK");
     }
 //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
+    //{this.state.results.results.name}
     renderScene(route, navigator) {
         if(this.state.loaded){
             console.log(this.state.curLocation.latitude);
@@ -102,7 +102,7 @@ class DetailsView extends Component
                     <View style={dstyles.titleSec}>
                         {renderImage(this.state.results.results.category,'details')}
                         <Text style={dstyles.title}>
-                            {this.state.results.results.name}
+                            blah
                         </Text>
                     </View>
                     <Text style={dstyles.dist}>

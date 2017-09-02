@@ -8,7 +8,9 @@ import {
 import MapView from 'react-native-maps';
 import LoadingView from './Views/LoadingView';
 import MainMapView from'./Views/MainMapView';
+import LocationListView from './Views/LocationListView';
 import DetailsView from './Views/DetailsView';
+
 
 const styles = require( "../assets/css/style");
 
@@ -51,6 +53,15 @@ export default class App extends Component {
                     rowData={route.rowDat}
                     detID={route.locID}
                     lastLoc={route.lastPos}
+                />
+            );
+        } else if (routeID === 'LocationListView') {
+            console.log("LocationListView");
+            console.log(route.locations)
+            return (
+                <LocationListView
+                    navigator={navigator}
+                    locations={route.locations}
                 />
             );
         }

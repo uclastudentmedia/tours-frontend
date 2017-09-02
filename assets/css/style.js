@@ -39,7 +39,7 @@ module.exports = StyleSheet.create({
         color:'white',
     },
     map: {
-        height: (height * 0.8),
+        height: (height * 0.9),
         width: width
     },
     instructions: {

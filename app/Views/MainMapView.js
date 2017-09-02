@@ -106,7 +106,7 @@ export default class MainMapView extends Component {
                 longitudeDelta: 0.0345,
 
                 },
-            viewIDG: 2,
+            viewIDG: 0,
         });
     }
 
@@ -212,6 +212,7 @@ export default class MainMapView extends Component {
         navigator.geolocation.clearWatch(this.watchID);
     }
 
+    //function to go to a different view
     gotoView(viewID){
         switch(viewID)
         {
@@ -220,15 +221,14 @@ export default class MainMapView extends Component {
             break;
           case 1:
             this.setState({viewIDG: 1});
+              this.props.navigator.push({
+                  id: 'LocationListView',
+                  name: 'Nearby Locations',
+                  locations: ds.cloneWithRows(dataPop)
+              });
             break;
           case 2:
             this.setState({viewIDG: 2});
-            break;
-          case 3:
-            this.setState({viewIDG: 3});
-            break;
-          case 4:
-            this.setState({viewIDG: 4});
             break;
         }
     }
@@ -247,7 +247,7 @@ export default class MainMapView extends Component {
                 latitudeDelta: 0.0045,
                 longitudeDelta: 0.0345,
             },
-            viewIDG: 2,
+            viewIDG: 0,
             bTBT: [],
             results: []
         };
@@ -262,7 +262,7 @@ export default class MainMapView extends Component {
 
     onRegionChange(region1) {
         this.setState({ region:region1 });
-        var value = this.state.data;
+        var value = this.state.dataSource;
         if(value!==null){
             var temp;
             if(mapSettinger===2){
@@ -299,6 +299,7 @@ export default class MainMapView extends Component {
         this.getData();
     }
 
+    //function to switch to descriptions view
     gotoDescription(rowData){
         let id = LocToData(rowData.loc, val);
         this.props.navigator.push({
@@ -390,23 +391,13 @@ export default class MainMapView extends Component {
                 />
                 <Tab
                     barBackgroundColor="white"
-                    label="Tours"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="music-note" />}
-                />
-                <Tab
-                    barBackgroundColor="white"
-                    label="Schedule"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="music-note" />}
-                />
-                <Tab
-                    barBackgroundColor="white"
-                    label="Favorites"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="book" />}
+                    label="Directions"
+                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="music-note"/>}
                 />
                 <Tab
                     barBackgroundColor="white"
                     label="Nearby"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="account-box" />}
+                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="account-box"/>}
                 />
             </BottomNavigation>
         );

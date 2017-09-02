@@ -19,7 +19,7 @@ module.exports = StyleSheet.create({
     },
     title: {
         color:'rgb(95,115,139)',
-        fontSize:30,
+        fontSize:50,
         marginLeft:10
     },
     icon:{height: 40, width: 40},
