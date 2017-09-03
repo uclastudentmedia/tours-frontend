@@ -178,7 +178,7 @@ export async function GetLandmarkList() {
   return getData(ENDPOINTS.LANDMARKS);
 }
 
-export async function GetLandmark(id) {
+export async function GetLandmarkById(id) {
   /**
    * @param id int
    * @return Landmark object
@@ -194,7 +194,7 @@ export async function GetCategoryList() {
   return getData(ENDPOINTS.CATEGORIES);
 }
 
-export async function GetCategory(id) {
+export async function GetCategoryById(id) {
   /**
    * @param id int
    * @return Category object
@@ -210,7 +210,7 @@ export async function GetTourList() {
   return getData(ENDPOINTS.TOURS);
 }
 
-export async function GetTour(id) {
+export async function GetTourById(id) {
   /**
    * @param id int
    * @return Tour object
@@ -226,7 +226,7 @@ export async function GetIndoorBuildingList() {
   return getData(ENDPOINTS.INDOOR_BUILDINGS);
 }
 
-export async function GetIndoorBuilding(id) {
+export async function GetIndoorBuildingById(id) {
   /**
    * @param id int landmark id
    * @return Building object
