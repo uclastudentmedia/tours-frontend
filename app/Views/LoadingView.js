@@ -47,12 +47,8 @@ export default class LoadingView extends Component {
 
   formatData(results) {
     return results.map(landmark => {
-      if (landmark.category_id) {
-        landmark.category_id -= 1000;
-      }
-      else {
-        landmark.category_id = 1;
-      }
+      landmark.category_id = landmark.category_id || 1;
+
       return landmark;
     });
   }
