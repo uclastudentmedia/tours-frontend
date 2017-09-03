@@ -17,11 +17,7 @@ import MapView from 'react-native-maps';
 import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
 import ListItem from '../Components/ListItem';
 import TBTItem from '../Components/TBTItem';
-import SlidingUpPanel from 'react-native-sliding-up-panel';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
-import { Kohana } from 'react-native-textinput-effects';
-import RNAnimatedTabs from 'rn-animated-tabs';
-import TabNavigator from 'react-native-animated-tabbar';
 import { Container, Navbar } from 'navbar-native';
 import SearchBar from 'react-native-searchbar';
 
@@ -167,7 +163,7 @@ export default class MainMapView extends Component {
                 markersData.title = temp[i].location;
                 markersData.lat= temp[i].lat;
                 markersData.long= temp[i].long;
-                markersData.srcID= specLoc.category_id - 1000;
+                markersData.srcID= specLoc.category_id;
                 markersData.location=temp[i].location;
                 markersData.id = temp[i].id;
                 markersTemp.push(markersData);
