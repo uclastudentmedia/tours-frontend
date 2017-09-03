@@ -147,9 +147,9 @@ async function getData(endpoint) {
   // there is no up-to-date cached data, need to query server
   let newData = await queryEndpoint(endpoint);
 
-  // save the data in the cache (asynchronously)
-  setCachedData(endpoint, newData);
-  updateCacheTime(endpoint);
+  // save the data in the cache
+  await setCachedData(endpoint, newData);
+  await updateCacheTime(endpoint);
 
   return newData;
 }
