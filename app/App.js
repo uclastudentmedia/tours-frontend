@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import LoadingView from './Views/LoadingView';
+import LocationsView from './Views/LocationsView';
 import MainMapView from'./Views/MainMapView';
 import DetailsView from './Views/DetailsView';
 
@@ -17,7 +18,7 @@ export default class App extends Component {
     render() {
         return (
             <Navigator
-                initialRoute={{id: 'LoadingView', name: 'Index'}}
+                initialRoute={{id: 'LocationsView', name: 'Index'}}
                 renderScene={this.renderScene1.bind(this)}
                 configureScene={(route) => {
                     if(route.sceneConfig) {
@@ -35,6 +36,12 @@ export default class App extends Component {
             console.log("LoadingView");
             return(
                 <LoadingView
+                    navigator={navigator}/>
+            );
+        } else if (routeID === 'LocationsView') {
+            console.log("LocationsView");
+            return (
+                <LocationsView
                     navigator={navigator}/>
             );
         } else if (routeID === 'MapView') {
