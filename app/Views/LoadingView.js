@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 
 import { GetLandmarkList } from '../DataManager';
-import MainMapView from './MainMapView';
 
 const styles = require("../../assets/css/style");
 
@@ -31,7 +30,7 @@ export default class LoadingView extends Component {
           done: true
         });
       })
-      .catch(error => console.error);
+      .catch(console.error);
   }
 
   gotoMapView() {
