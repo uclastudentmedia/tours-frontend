@@ -16,10 +16,10 @@ module.exports = StyleSheet.create({
         fontFamily:'sans-serif-thin'
     },
     container: {
+        width:width,
+        height:height,
         flex: 1,
         alignItems: 'center',
-        justifyContent:'flex-end',
-        backgroundColor: 'white',
     },
     loadMapContainer: {
         flex: 1,
