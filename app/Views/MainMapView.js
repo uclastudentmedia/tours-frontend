@@ -23,6 +23,8 @@ import SearchBar from 'react-native-searchbar';
 
 import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
 
+import { GetLandmarkList } from '../DataManager';
+
 const styles = require( "../../assets/css/style");
 
 const MAPIMAGES = {
@@ -97,36 +99,26 @@ export default class MainMapView extends Component {
         this._handleResults = this._handleResults.bind(this);
     }
 
-
     componentDidMount() {
 
-        this.setState({
-            region: {
-                latitude: 34.070286,
-                longitude: -118.443413,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,
-                },
-            viewIDG: 0,
-        });
-
         this.getPosition();
-        this.getData();
+
+        this.getData()
+            .then(() => this.updateMapIcons())
+            .catch(console.error);
+    }
+
+    async getData() {
+        this.landmarks = await GetLandmarkList();
     }
 
     componentWillUnmount(){
         navigator.geolocation.clearWatch(this.watchID);
     }
 
-    async getData(){
-        var val = null;
-        try {
-            let value = await AsyncStorage.getItem('data');
-            val = JSON.parse(value);
-        } catch (e) {
-            console.error(e);
-        }
-        if(val !== null){
+    updateMapIcons() {
+        var val = this.landmarks;
+        if(val) {
             var temp;
             if(mapSettinger===2){
                 //if map setting is tours, display locations on the tour
@@ -232,12 +224,12 @@ export default class MainMapView extends Component {
 
     onRegionChange(region1) {
         this.setState({ region:region1 });
-        this.getData();
+        this.updateMapIcons();
     }
 
     changeMapSetting(setting){
         mapSettinger=setting;
-        this.getData();
+        this.updateMapIcons();
     }
 
     //function to switch to descriptions view

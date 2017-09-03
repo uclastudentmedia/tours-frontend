@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "isomorphic-fetch": "2.2.1",
     "navbar-native": "1.6.1",
     "react": "15.4.2",
     "react-native": "0.41.1",
