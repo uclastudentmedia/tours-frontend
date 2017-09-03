@@ -163,7 +163,7 @@ export default class MainMapView extends Component {
                 markersData.title = temp[i].location;
                 markersData.lat= temp[i].lat;
                 markersData.long= temp[i].long;
-                markersData.srcID= specLoc.category_id - 1000;
+                markersData.srcID= specLoc.category_id;
                 markersData.location=temp[i].location;
                 markersData.id = temp[i].id;
                 markersTemp.push(markersData);
