@@ -27,6 +27,7 @@
     "react-native-tabbar-navigator": "^0.4.3",
     "react-native-textinput-effects": "^0.3.0",
     "react-native-vector-icons": "^4.1.1",
+    "react-navigation": "^1.0.0-beta.11",
     "rn-animated-tabs": "^1.0.2"
   },
   "devDependencies": {

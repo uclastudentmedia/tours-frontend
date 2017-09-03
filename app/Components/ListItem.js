@@ -16,9 +16,6 @@ export default class ListItem extends Component {
 
     constructor(props){
         super(props);
-        this.state = {
-            cateID: this.props.rowData.catID
-        };
     }
 
     render() {
