@@ -41,10 +41,8 @@ class DirectionsView extends Component
         {
             case 0:
                 this.setState({viewIDG: 0});
-                this.props.navigator.push({
-                    id: 'MainMapView',
-                    name: 'Home',
-                });
+                console.log(this.props.navigator);
+                this.props.navigator.pop();
                 break;
             case 2:
                 this.setState({viewIDG: 2});

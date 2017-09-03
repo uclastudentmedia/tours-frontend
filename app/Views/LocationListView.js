@@ -72,10 +72,7 @@ class LocationListView extends Component
         {
             case 0:
                 this.setState({viewIDG: 0});
-                this.props.navigator.push({
-                    id: 'MainMapView',
-                    name: 'Home',
-                });
+                this.props.navigator.pop();
                 break;
             case 2:
                 this.setState({viewIDG: 2});
