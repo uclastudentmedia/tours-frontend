@@ -12,11 +12,16 @@ var {height, width} = Dimensions.get('window');
 var windowWidth = Dimensions.get('window').width;
 
 module.exports = StyleSheet.create({
+    baseText:{
+        fontFamily:'sans-serif-thin'
+    },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent:'flex-end',
         backgroundColor: 'white',
+        width:width,
+        height:height
     },
     loadMapContainer: {
         flex: 1,
@@ -24,23 +29,19 @@ module.exports = StyleSheet.create({
         backgroundColor: 'white',
     },
     loading:{
-        backgroundColor: '#B2E4F7',
-        flex:1,
         width:width,
+        height:height,
         justifyContent:'center',
         alignItems:'center',
-        bottom: 0
+        paddingTop:250,
+        paddingRight:15,
     },
     center:{
         fontSize: 50,
-    },
-    loading_logo:{
-        width:200,
-        height:175,
-        bottom: 10
+        color:'white',
     },
     map: {
-        height: (height * 0.8),
+        height: (height * 0.9),
         width: width
     },
     instructions: {
@@ -166,7 +167,7 @@ module.exports = StyleSheet.create({
         height: 50
     },
     title: {
-        textAlignVertical: "center", 
+        textAlignVertical: "center",
         textAlign: "center",
         fontSize:18,
         justifyContent: 'center',
