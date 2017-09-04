@@ -9,7 +9,9 @@ import {
     Dimensions,
     Image,
 } from 'react-native';
-import {renderImage} from '../Utils';
+
+import { renderImage } from 'app/Utils';
+
 const styles = require( "../../assets/css/style");
 
 export default class ListItem extends Component {
@@ -34,5 +36,3 @@ export default class ListItem extends Component {
         );
     }
 }
-
-module.exports = ListItem;

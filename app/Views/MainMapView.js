@@ -13,17 +13,26 @@ import {
     TouchableOpacity,
     TextInput,
 } from 'react-native';
+
 import MapView from 'react-native-maps';
-import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
-import ListItem from '../Components/ListItem';
-import TBTItem from '../Components/TBTItem';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { Container, Navbar } from 'navbar-native';
 import SearchBar from 'react-native-searchbar';
+import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation';
 
-import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
+import {
+  DistancePrioritize,
+  popPrioritize,
+  LocToData,
+  LocToIcon
+} from 'app/Utils';
 
-import { GetLandmarkList } from '../DataManager';
+import {
+  ListItem,
+  TBTItem,
+} from 'app/Components';
+
+import { GetLandmarkList } from 'app/DataManager';
 
 const styles = require( "../../assets/css/style");
 

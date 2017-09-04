@@ -1,10 +1,8 @@
 'use strict';
 
-import 'isomorphic-fetch';
-
 // TODO: import real AsyncStorage for running on device
 //import { AsyncStorage } from 'react-native';
-import { AsyncStorage } from '../__fakes__/FakeAsyncStorage';
+import { AsyncStorage } from 'app/__fakes__/FakeAsyncStorage';
 
 /**
  * Constants

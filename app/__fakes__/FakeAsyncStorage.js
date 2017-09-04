@@ -34,7 +34,7 @@ export const AsyncStorage = {
 
   setItem: (key, value) => {
     trace('setItem', key, value);
-    return new Promise((resolve, reject) => {        
+    return new Promise((resolve, reject) => {
       storage[key] = value;
       resolve(value);
     });
