@@ -2,17 +2,28 @@
  * Created by danielhuang on 9/1/17.
  */
 import React, { Component } from 'react';
-import { BackAndroid, Text, View, Navigator, TouchableHighlight, TouchableOpacity, AsyncStorage, ListView } from 'react-native';
-import {renderImage, feetCalc} from '../Utils';
-import TBTItem from '../Components/ListItem';
+import {
+  BackAndroid,
+  Text,
+  View,
+  Navigator,
+  TouchableHighlight,
+  TouchableOpacity,
+  ListView
+} from 'react-native';
+
 import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+
+import { renderImage, feetCalc } from 'app/Utils';
+import { TBTItem } from 'app/Components';
+
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 const styles = require( "../../assets/css/style");
 const dstyles= require('../../assets/css/detailStyle');
 
-class LocationListView extends Component
+export default class LocationListView extends Component
 {
     static NavigationBarRouteMapper = props => ({
         LeftButton(route, navigator, index, navState) {
@@ -162,4 +173,3 @@ class LocationListView extends Component
  );
  }
 * */
-module.exports = LocationListView;
