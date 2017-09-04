@@ -5,8 +5,6 @@ import {
     View
 } from 'react-native';
 
-import { pick } from 'lodash';
-
 import fuzzy from 'fuzzy';
 import SearchBar from 'react-native-searchbar';
 
@@ -28,22 +26,37 @@ export default class SearchBarContainer extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      results: []
-    };
+
+    const { locations, numResults } = this.props;
 
     if (!props.locations) {
       console.error('No "locations" prop provided.');
     }
+
+    this.popularLocations = props.locations
+                              .sort((a,b) => a.priority - b.priority)
+                              .slice(0, numResults);
+
+    this.state = {
+      results: this.popularLocations
+    };
   }
 
   handleSearch = (input) => {
     const { numResults } = this.props;
 
-    const results = this.searchByName(input);
-    this.setState({
-      results: results.slice(0, numResults)
-    });
+    // show popular locations on empty input
+    if (input == '') {
+      this.setState({
+        results: this.popularLocations
+      });
+    }
+    else {
+      const results = this.searchByName(input);
+      this.setState({
+        results: results.slice(0, numResults)
+      });
+    }
   }
 
   searchByName = (input) => {
