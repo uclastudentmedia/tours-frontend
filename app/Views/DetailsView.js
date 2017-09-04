@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
-import { BackAndroid, Text, View, Navigator, TouchableHighlight, TouchableOpacity, AsyncStorage } from 'react-native';
-import {renderImage, feetCalc} from '../Utils';
-import DetailItem from '../Components/DetailItem';
-import ListItem from '../Components/ListItem';
+import {
+  BackAndroid,
+  Text,
+  View,
+  Navigator,
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native';
+
+import { renderImage, feetCalc } from 'app/Utils';
+
+import {
+  DetailItem,
+  ListItem,
+} from 'app/Components';
 
 const styles = require( "../../assets/css/style");
 const dstyles= require('../../assets/css/detailStyle');
 
-class DetailsView extends Component
- {
+export default class DetailsView extends Component
+{
      static NavigationBarRouteMapper = props => ({
          LeftButton(route, navigator, index, navState) {
              return (
@@ -47,7 +58,6 @@ class DetailsView extends Component
            this.setState({
              results: responseJson
            });
-           this.storeData();
            this.setState({
               loaded: true
            });
@@ -55,11 +65,6 @@ class DetailsView extends Component
          .catch((error) => {
            console.error(error);
          });*/
-     }
-
-     storeData(){
-         let data = this.state.results;
-         AsyncStorage.setItem('details', JSON.stringify(data));
      }
 
      render()
@@ -123,5 +128,3 @@ class DetailsView extends Component
         }
     }
 }
-
-module.exports = DetailsView;

@@ -5,12 +5,14 @@ import {
   View,
   Navigator,
 } from 'react-native';
-import MapView from 'react-native-maps';
-import LoadingView from './Views/LoadingView';
-import MainMapView from'./Views/MainMapView';
-import LocationListView from './Views/LocationListView';
-import DetailsView from './Views/DetailsView';
-import DirectionsView from './Views/DirectionsView'
+
+import {
+  LoadingView,
+  MainMapView,
+  LocationListView,
+  DetailsView,
+  DirectionsView,
+} from 'app/Views';
 
 
 const styles = require( "../assets/css/style");

@@ -30,5 +30,3 @@ export default class TBTItem extends Component {
         );
     }
 }
-
-module.exports = TBTItem;

@@ -6,7 +6,7 @@ import {
     Button
 } from 'react-native';
 
-import { GetLandmarkList } from '../DataManager';
+import { GetLandmarkList } from 'app/DataManager';
 
 const styles = require("../../assets/css/style");
 
