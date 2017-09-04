@@ -11,26 +11,26 @@ import SearchBar from 'react-native-searchbar';
 
 const styles = require( "../../assets/css/style");
 
-export default class SearchBarContainer extends Component {
+export default class SearchContainer extends Component {
 
   static propTypes = {
     locations: PropTypes.array,
     title: PropTypes.string,
-    numResults: PropTypes.number,
+    maxResults: PropTypes.number,
     onResultSelect: PropTypes.func,
   };
 
   static defaultProps = {
     locations: [],
     title: "Searchbar Title",
-    numResults: 30,
+    maxResults: 30,
     onResultSelect: res => console.log('result clicked (no callback)', res)
   };
 
   constructor(props) {
     super(props);
 
-    const { locations, numResults } = this.props;
+    const { locations, maxResults } = this.props;
 
     if (!props.locations) {
       console.error('No "locations" prop provided.');
@@ -38,7 +38,7 @@ export default class SearchBarContainer extends Component {
 
     this.popularLocations = props.locations
                               .sort((a,b) => a.priority - b.priority)
-                              .slice(0, numResults);
+                              .slice(0, maxResults);
 
     this.state = {
       results: this.popularLocations
@@ -46,7 +46,7 @@ export default class SearchBarContainer extends Component {
   }
 
   handleSearch = (input) => {
-    const { numResults } = this.props;
+    const { maxResults } = this.props;
 
     // show popular locations on empty input
     if (input == '') {
@@ -57,7 +57,7 @@ export default class SearchBarContainer extends Component {
     else {
       const results = this.searchByName(input);
       this.setState({
-        results: results.slice(0, numResults)
+        results: results.slice(0, maxResults)
       });
     }
   }

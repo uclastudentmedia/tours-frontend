@@ -19,6 +19,7 @@ import { renderImage, feetCalc } from 'app/Utils';
 
 import {
   TBTItem,
+  SearchContainer,
 } from 'app/Components';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -78,8 +79,7 @@ export default class DirectionsView extends Component
         super(props);
         this.state = {
             results: '',
-            loaded: true,
-            viewIDG: 1
+            viewIDG: 1,
         }
     }
 
@@ -109,25 +109,50 @@ export default class DirectionsView extends Component
      */
 
     renderScene(route, navigator) {
-        if(this.state.loaded){
-            console.log("Hello World");
-            //make modules into ListView, each module will have an id, based on which id, the ListView will render that module
-            return (
-                <View style={styles.container}>
-                    <Text style={styles.title}>This is the Directions View</Text>
-                    {this.renderGlobalNav()}
+        //make modules into ListView, each module will have an id, based on which id, the ListView will render that module
+
+        const {
+          startLocation,
+          endLocation
+        } = this.state;
+
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>This is the Directions View</Text>
+
+                <Text>From: {startLocation ? startLocation.name : ''}</Text>
+                <Text>To: {endLocation ? endLocation.name : ''}</Text>
+
+                <View style={{flexDirection: 'row', flex: 1}}>
+                  <SearchContainer style={{flexDirection: 'column'}}
+                    locations={this.props.locations}
+                    onResultSelect={this.selectStartLocation.bind(this)}
+                    maxResults={5}
+                  />
+                  <SearchContainer style={{flexDirection: 'column'}}
+                    locations={this.props.locations}
+                    onResultSelect={this.selectEndLocation.bind(this)}
+                    maxResults={5}
+                  />
                 </View>
-            );
-        }
-        else
-        {
-            <View style={{flex: 1, alignItems: 'center', justifyContent:'center'}}>
-                <Text style={styles.locText}>
-                    Test
-                </Text>
+
+                {this.renderGlobalNav()}
             </View>
-        }
+        );
     }
+
+    selectStartLocation(result) {
+      this.setState({
+        startLocation: result
+      });
+    }
+
+    selectEndLocation(result) {
+      this.setState({
+        endLocation: result
+      });
+    }
+
     renderGlobalNav(){
         return(
             <BottomNavigation
