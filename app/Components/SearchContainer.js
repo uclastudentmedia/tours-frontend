@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import {
     StyleSheet,
     Text,
-    View
+    View,
+    Button
 } from 'react-native';
 
 import fuzzy from 'fuzzy';
@@ -15,13 +16,15 @@ export default class SearchBarContainer extends Component {
   static propTypes = {
     locations: PropTypes.array,
     title: PropTypes.string,
-    numResults: PropTypes.number
+    numResults: PropTypes.number,
+    onResultSelect: PropTypes.func,
   };
 
   static defaultProps = {
     locations: [],
     title: "Searchbar Title",
-    numResults: 30
+    numResults: 30,
+    onResultSelect: res => console.log('result clicked (no callback)', res)
   };
 
   constructor(props) {
@@ -72,7 +75,11 @@ export default class SearchBarContainer extends Component {
   }
 
   render() {
-    const { locations, title } = this.props;
+    const {
+      locations,
+      title,
+      onResultSelect,
+    } = this.props;
 
     return (
         <View style={styles.wrapper}>
@@ -83,9 +90,11 @@ export default class SearchBarContainer extends Component {
           <View style={{marginTop: 110}}>
             {
               this.state.results.map((result, i) => (
-                <Text key={i}>
-                  {result.name}
-                </Text>
+                <Button
+                  key={i}
+                  title={result.name}
+                  onPress={() => onResultSelect(result)}
+                />
               ))
             }
           </View>
