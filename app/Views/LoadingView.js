@@ -14,9 +14,6 @@ export default class LoadingView extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      done: false
-    };
   }
 
   componentDidMount() {
@@ -25,11 +22,7 @@ export default class LoadingView extends Component {
 
   getAPIData() {
     GetLandmarkList()
-      .then(() => {
-        this.setState({
-          done: true
-        });
-      })
+      .then(this.gotoMapView.bind(this))
       .catch(console.error);
   }
 
@@ -42,28 +35,14 @@ export default class LoadingView extends Component {
   }
 
   render() {
-    let button = null;
-    if (this.state.done) {
-      button = (
-          <Button
-            onPress={this.gotoMapView.bind(this)}
-            title="Launch App"
-            />
-      );
-    } else {
-      button = (
-          <ActivityIndicator
-                color={'yellow'}
-                size={'large'}
-               />
-      );
-    }
-
     return (
         <Image style={styles.container}
                source={require('../../assets/images/logoArtboard.png')}>
           <View style={styles.loading}>
-            {button}
+            <ActivityIndicator
+              color={'yellow'}
+              size={'large'}
+            />
           </View>
         </Image>
     );
