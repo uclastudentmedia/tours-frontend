@@ -24,7 +24,7 @@ export default class SearchContainer extends Component {
     locations: [],
     title: "Searchbar Title",
     maxResults: 30,
-    onResultSelect: res => console.log('result clicked (no callback)', res)
+    onResultSelect: res => console.warn('result clicked (no callback)', res)
   };
 
   constructor(props) {

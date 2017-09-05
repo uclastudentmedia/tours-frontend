@@ -3,26 +3,24 @@
  */
 import React, { Component } from 'react';
 import {
-  BackAndroid,
   Text,
   View,
+  Button,
   Navigator,
   TouchableHighlight,
   TouchableOpacity,
-  ListView
 } from 'react-native';
 
 import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import { renderImage, feetCalc } from 'app/Utils';
+import { RouteTBT } from 'app/DataManager';
 
 import {
   TBTItem,
   SearchContainer,
 } from 'app/Components';
-
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 const styles = require( "../../assets/css/style");
 const dstyles= require('../../assets/css/detailStyle');
@@ -78,9 +76,9 @@ export default class DirectionsView extends Component
     constructor(props){
         super(props);
         this.state = {
-            results: '',
             viewIDG: 1,
-        }
+            directions: {},
+        };
     }
 
     render()
@@ -98,40 +96,37 @@ export default class DirectionsView extends Component
         );
     }
 
-    /* Tried to make the back button work, but I'll save it for later.
-     componentWillMount() {
-     const { navigator } = this.props
-     BackAndroid.addEventListener('hardwareBackPress', function() {
-
-     return navigator.parentNavigator.pop();
-     });
-     }
-     */
-
     renderScene(route, navigator) {
-        //make modules into ListView, each module will have an id, based on which id, the ListView will render that module
 
         const {
           startLocation,
-          endLocation
+          endLocation,
+          directions,
         } = this.state;
 
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>This is the Directions View</Text>
 
+                <Text>{JSON.stringify(directions)}</Text>
+                <Button
+                  title='Get Directions'
+                  onPress={this.getDirections.bind(this)}
+                />
+
                 <Text>From: {startLocation ? startLocation.name : ''}</Text>
                 <Text>To: {endLocation ? endLocation.name : ''}</Text>
+
 
                 <View style={{flexDirection: 'row', flex: 1}}>
                   <SearchContainer style={{flexDirection: 'column'}}
                     locations={this.props.locations}
-                    onResultSelect={this.selectStartLocation.bind(this)}
+                    onResultSelect={this.setStartLocation.bind(this)}
                     maxResults={5}
                   />
                   <SearchContainer style={{flexDirection: 'column'}}
                     locations={this.props.locations}
-                    onResultSelect={this.selectEndLocation.bind(this)}
+                    onResultSelect={this.setEndLocation.bind(this)}
                     maxResults={5}
                   />
                 </View>
@@ -141,16 +136,29 @@ export default class DirectionsView extends Component
         );
     }
 
-    selectStartLocation(result) {
+    setStartLocation(result) {
       this.setState({
         startLocation: result
       });
     }
 
-    selectEndLocation(result) {
+    setEndLocation(result) {
       this.setState({
         endLocation: result
       });
+    }
+
+    async getDirections() {
+      const {
+        startLocation,
+        endLocation
+      } = this.state;
+
+      const extraOptions = {};
+
+      RouteTBT(startLocation, endLocation, extraOptions)
+        .then(data => this.setState({directions: data}))
+        .catch(console.error);
     }
 
     renderGlobalNav(){
