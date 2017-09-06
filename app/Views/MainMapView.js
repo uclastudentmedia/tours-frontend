@@ -61,13 +61,9 @@ const MAPIMAGES = {
   image1285: require('../../assets/new_sizes/1285.png'), // statically analyzed
 }
 
-var {height, width} = Dimensions.get('window');
-var loaded = false;
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 var mapSettinger='popular';
 var val = {};
-var deviceHeight = Dimensions.get('window').height;
-var deviceWidth = Dimensions.get('window').width;
 let flag1 = {latitude: 0, longitude: 0};
 var flag2 = {latitude: 0, longitude: 0};
 var initCoords = {};
@@ -183,7 +179,6 @@ export default class MainMapView extends Component {
         this.setState({
             markers:markersTemp
         });
-        loaded = true;
     }
 
     getPosition(){
@@ -192,6 +187,7 @@ export default class MainMapView extends Component {
                 var initialPosition2 = JSON.stringify(position);
                 var val = JSON.parse(initialPosition2);
                 initialPosition = val;
+                this.setState({lastPosition: val});
             },
             (error) => alert(JSON.stringify(error)),
             {enableHighAccuracy: true, timeout: 2000000, maximumAge: 500}
@@ -314,106 +310,57 @@ export default class MainMapView extends Component {
     }
 
     render() {
-        if(loaded && initialPosition != 'unknown' && tbt != true){
-            if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
-            {
-                    this.extractRoute();
-            }
-            return (
-                <View style={styles.container}>
-                    <SearchBar
-                        ref={(ref) => this.searchBar = ref}
-                        handleResults={this._handleResults}
-                        autoCorrect
-                        showOnLoad
-                        focusOnLayout={false}
-                        hideBack={true}
+        if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
+        {
+            this.extractRoute();
+        }
+
+        let polyline = null;
+        if (tbt != true) {
+          polyline = (
+            <MapView.Polyline
+              coordinates={route}
+              strokeWidth={3}
+            />
+          );
+        }
+
+        return (
+            <View style={styles.container}>
+                <SearchBar
+                    ref={(ref) => this.searchBar = ref}
+                    handleResults={this._handleResults}
+                    autoCorrect
+                    showOnLoad
+                    focusOnLayout={false}
+                    hideBack={true}
+                />
+                <MapView style={styles.map}
+                    initialRegion={this.state.region}
+                    zoomEnabled
+                    onRegionChange={this.onRegionChange}
+                    >
+                    <MapView.Marker
+                        image={require('../../assets/images/dot1.png')}
+                        coordinate={initialPosition.coords}
                     />
-                    <MapView style={styles.map}
-                        initialRegion={this.state.region}
-                        zoomEnabled
-                        onRegionChange={this.onRegionChange}
-                        >
+
+                    {polyline}
+
+                    {this.state.markers.map(marker => (
                         <MapView.Marker
-                            image={require('../../assets/images/dot1.png')}
-                            coordinate={{
-                                latitude: initialPosition.coords.latitude,
-                                longitude: initialPosition.coords.longitude
-                            }}
+                          key={marker.id}
+                          coordinate={{latitude: marker.lat, longitude: marker.long}}
+                          title={marker.title}
+                          description={marker.description}
+                          image={MAPIMAGES['image' + marker.srcID]}
                         />
-                        <MapView.Polyline
-                            coordinates={route}
-                            strokeWidth={3}
-                        />
-                        {this.state.markers.map(marker => (
-                            <MapView.Marker
-                              key={marker.id}
-                              coordinate={{latitude: marker.lat, longitude: marker.long}}
-                              title={marker.title}
-                              description={marker.description}
-                              image={MAPIMAGES['image' + marker.srcID]}
-                            />
-                          )
-                      )}
-                    </MapView>
-                </View>
-            );
-        }
-        else if(loaded && tbt === true){
-            return (
-                <View style={styles.loadMapContainer}>
-                    <MapView style={styles.map}
-                             initialRegion={this.initialRegion}
-                             >
-                        <MapView.Marker
-                            image={require('../../assets/images/dot1.png')}
-                            coordinate={{
-                                latitude: 34.070984,
-                                longitude: -118.444759
-                            }}/>
-                    </MapView>
-                    <View style={styles.info}>
-                        <ListView
-                            style={styles.locations}
-                            dataSource={this.dataSourceTBT}
-                            renderRow={(rowData) =>
-                                <View>
-                                    <TouchableOpacity style={styles.wrapper}>
-                                        <TBTItem rowData={rowData}/>
-                                        </TouchableOpacity>
-                                        <View style={styles.separator} />
-                                </View>}
-                            enableEmptySections={true}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    </View>
-                </View>
-            );
-        }
-        else {
-            return (
-                <View style={styles.loadMapContainer}>
-                    <MapView style={styles.map}
-                             region={this.initialRegion}
-                             >
-                        <MapView.Marker
-                            image={require('../../assets/images/dot1.png')}
-                            coordinate={{
-                                latitude: 34.070984,
-                                longitude: -118.444759
-                            }}/>
-                    </MapView>
-                    <View style={styles.info}>
-                        <Text style={styles.loadingLocText}>
-                            Loading Data...
-                        </Text>
-                        <Text style={styles.loadingDistText}>
-                            We are loading your location data
-                        </Text>
-                    </View>
-                </View>
-            );
-        }
+                      )
+                    )}
+
+                </MapView>
+            </View>
+        );
     }
 }
 
