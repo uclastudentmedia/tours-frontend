@@ -18,7 +18,6 @@ import { debounce } from 'lodash';
 
 import MapView from 'react-native-maps';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
-import { Container, Navbar } from 'navbar-native';
 import SearchBar from 'react-native-searchbar';
 
 import {
@@ -326,52 +325,37 @@ export default class MainMapView extends Component {
                         ref={(ref) => this.searchBar = ref}
                         handleResults={this._handleResults}
                         autoCorrect
+                        showOnLoad
+                        focusOnLayout={false}
+                        hideBack={true}
                     />
-                    <Container>
-                        <Navbar
-                            bgColor={"white"}
-                            user={true}
-                            title={<Text>      UCLA Tours</Text>}
-                            titleColor={"grey"}
-                            left={{
-                                icon: "md-menu",
-                                iconColor: "#CCCCCC"
+                    <MapView style={styles.map}
+                        initialRegion={this.state.region}
+                        zoomEnabled
+                        onRegionChange={this.onRegionChange}
+                        >
+                        <MapView.Marker
+                            image={require('../../assets/images/dot1.png')}
+                            coordinate={{
+                                latitude: initialPosition.coords.latitude,
+                                longitude: initialPosition.coords.longitude
                             }}
-                            right={{
-                                icon: "md-search",
-                                iconColor: "#CCCCCC",
-                                onPress: () => {this.searchBar.show()}
-                            }}
-                            style={styles.navbar}
                         />
-                        <MapView style={styles.map}
-                            initialRegion={this.state.region}
-                            zoomEnabled
-                                onRegionChange={this.onRegionChange}
-                            >
+                        <MapView.Polyline
+                            coordinates={route}
+                            strokeWidth={3}
+                        />
+                        {this.state.markers.map(marker => (
                             <MapView.Marker
-                                image={require('../../assets/images/dot1.png')}
-                                coordinate={{
-                                    latitude: initialPosition.coords.latitude,
-                                    longitude: initialPosition.coords.longitude
-                                }}
+                              key={marker.id}
+                              coordinate={{latitude: marker.lat, longitude: marker.long}}
+                              title={marker.title}
+                              description={marker.description}
+                              image={MAPIMAGES['image' + marker.srcID]}
                             />
-                            <MapView.Polyline
-                                coordinates={route}
-                                strokeWidth={3}
-                            />
-                            {this.state.markers.map(marker => (
-                                <MapView.Marker
-                                  key={marker.id}
-                                  coordinate={{latitude: marker.lat, longitude: marker.long}}
-                                  title={marker.title}
-                                  description={marker.description}
-                                  image={MAPIMAGES['image' + marker.srcID]}
-                                />
-                              )
-                          )}
-                        </MapView>
-                    </Container>
+                          )
+                      )}
+                    </MapView>
                 </View>
             );
         }

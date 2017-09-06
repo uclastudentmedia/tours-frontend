@@ -46,7 +46,6 @@
 		D39DB10675C740EF8018E3EC /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0E6F16D1C6346A9B845F88B /* SimpleLineIcons.ttf */; };
 		D9CB821DD2BA4E908CB7DFCF /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27C3C1A419AA454483CF915D /* Entypo.ttf */; };
 		EEC0C7BBE29144AD913D61E6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99598854264A4D5DA890D73F /* MaterialIcons.ttf */; };
-		4A8C7C675B5C495BBCC46EBC /* libRNSpinkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C82FB8CB50F49B682C60C3F /* libRNSpinkit.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -286,8 +285,6 @@
 		D3C6A42790044E47BCCC648E /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		D4469F7C5E5A46DA9A909989 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		E9C421B0B49E42F9B9C7CAC1 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
-		7C288537DB864D66A640F82A /* RNSpinkit.xcodeproj */ = {isa = PBXFileReference; name = "RNSpinkit.xcodeproj"; path = "../node_modules/react-native-spinkit/ios/RNSpinkit.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		1C82FB8CB50F49B682C60C3F /* libRNSpinkit.a */ = {isa = PBXFileReference; name = "libRNSpinkit.a"; path = "libRNSpinkit.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -315,7 +312,6 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				62582AA53E6A4A798573FAC2 /* libAirMaps.a in Frameworks */,
 				5B90F0441A104E0BAA70CA73 /* libRNVectorIcons.a in Frameworks */,
-				4A8C7C675B5C495BBCC46EBC /* libRNSpinkit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,7 +488,6 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				D4469F7C5E5A46DA9A909989 /* AirMaps.xcodeproj */,
 				E9C421B0B49E42F9B9C7CAC1 /* RNVectorIcons.xcodeproj */,
-				7C288537DB864D66A640F82A /* RNSpinkit.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
