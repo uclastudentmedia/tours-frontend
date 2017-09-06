@@ -18,7 +18,6 @@ import MapView from 'react-native-maps';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { Container, Navbar } from 'navbar-native';
 import SearchBar from 'react-native-searchbar';
-import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation';
 
 import {
   DistancePrioritize,
@@ -102,7 +101,6 @@ export default class MainMapView extends Component {
                 latitudeDelta: 0.0045,
                 longitudeDelta: 0.0345,
             },
-            viewIDG: 0,
             results: []
         };
         this._handleResults = this._handleResults.bind(this);
@@ -197,36 +195,6 @@ export default class MainMapView extends Component {
         });
     }
 
-    //function to go to a different view
-    gotoView(viewID){
-        switch(viewID)
-        {
-          case 0:
-            this.setState({viewIDG: 0});
-              this.props.navigator.push({
-                  id: 'MainMapView',
-                  name: 'Home',
-              });
-            break;
-          case 2:
-            this.setState({viewIDG: 2});
-              this.props.navigator.push({
-                  id: 'LocationListView',
-                  name: 'Nearby Locations',
-              });
-            break;
-          case 1:
-            this.setState({viewIDG: 1});
-            this.props.navigator.push({
-                id: 'DirectionsView',
-                name: 'GPS Navigation',
-            });
-            break;
-        }
-    }
-
-    handleTabChange = (value) => this.setState({ currentTab: value });
-
     _handleResults(results) {
         this.setState({ results });
     }
@@ -295,33 +263,6 @@ export default class MainMapView extends Component {
         {
             console.error(e);
         }
-    }
-
-    renderGlobalNav(){
-        return(
-            <BottomNavigation
-                labelColor="grey"
-                style={{ height: 56, elevation: 8, position: 'absolute', left: 0, bottom: 0, right: 0 }}
-                onTabChange={(newTabIndex) => this.gotoView(newTabIndex)}
-                activeTab={this.state.viewIDG}
-            >
-                <Tab
-                    barBackgroundColor="white"
-                    label="Maps"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="tv" />}
-                />
-                <Tab
-                    barBackgroundColor="white"
-                    label="Directions"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="music-note"/>}
-                />
-                <Tab
-                    barBackgroundColor="white"
-                    label="Nearby"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="account-box"/>}
-                />
-            </BottomNavigation>
-        );
     }
 
     extractRoute(){
@@ -422,7 +363,6 @@ export default class MainMapView extends Component {
                               )
                           )}
                         </MapView>
-                         {this.renderGlobalNav()}
                     </Container>
                 </View>
             );
