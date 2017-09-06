@@ -4,13 +4,12 @@ import {
 } from 'react-native';
 
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
-import { TabNavigator } from 'react-navigation';
+import { TabNavigator, StackNavigator } from 'react-navigation';
 
 import {
   LoadingView,
   MainMapView,
   LocationListView,
-  DetailsView,
   DirectionsView,
 } from 'app/Views';
 
@@ -75,20 +74,14 @@ class LocationListScreen extends Component {
 
 
 /**
- * Navigator
+ * Tab Navigator
  */
 
-const App = TabNavigator(
+const MainNavigator = TabNavigator(
   {
-    MainMap: {
-      screen: MainMapScreen
-    },
-    Directions: {
-      screen: DirectionsScreen
-    },
-    LocationList: {
-      screen: LocationListScreen
-    },
+    MainMap: { screen: MainMapScreen },
+    Directions: { screen: DirectionsScreen },
+    LocationList: { screen: LocationListScreen },
   },
   {
     tabBarOptions: {
@@ -104,5 +97,28 @@ const App = TabNavigator(
     },
   }
 );
+
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded: false
+    };
+  }
+
+  onLoadComplete = () => {
+    this.setState({loaded: true});
+  }
+
+  render() {
+    if (!this.state.loaded) {
+      return <LoadingView onLoadComplete={this.onLoadComplete} />;
+    }
+    else {
+      return <MainNavigator/>;
+    }
+  }
+}
 
 export default App;

@@ -100,8 +100,7 @@ export default class MainMapView extends Component {
             results: []
         };
         this._handleResults = this._handleResults.bind(this);
-        this.onRegionChangeDebounced = debounce(this.onRegionChange.bind(this),
-                                                100, {maxWait: 300});
+        this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
     }
 
     componentDidMount() {
@@ -348,7 +347,7 @@ export default class MainMapView extends Component {
                         <MapView style={styles.map}
                             initialRegion={this.state.region}
                             zoomEnabled
-                                onRegionChange={this.onRegionChangeDebounced}
+                                onRegionChange={this.onRegionChange}
                             >
                             <MapView.Marker
                                 image={require('../../assets/images/dot1.png')}
