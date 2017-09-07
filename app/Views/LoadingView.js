@@ -1,96 +1,66 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
-    Navigator,
-    StyleSheet,
-    Text,
     View,
     Image,
-    AsyncStorage,
     ActivityIndicator,
-    TouchableOpacity,
     Button
 } from 'react-native';
 
-import MainMapView from './MainMapView';
+import { NavigationActions } from 'react-navigation';
+
+import { GetLandmarkList } from 'app/DataManager';
 
 const styles = require("../../assets/css/style");
 
 export default class LoadingView extends Component {
+  static propTypes = {
+    onLoadComplete: PropTypes.func.isRequired,
+  };
 
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state = {
-      results: '',
-      done: false,
-    }
   }
 
-  componentDidMount(){
-    this.getAPIData();
+  componentDidMount() {
+    this.initializeApp();
   }
 
-  getAPIData(){
-    return fetch("https://tours.bruinmobile.com/api/landmark/")
-      .then((response) => response.json())
-      .then((responseJson) => {
-        let results = this.formatData(responseJson.results);
-        this.storeData(results);
-        this.setState({
-          results: results,
-          done: true
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  initializeApp() {
+    const {
+      onLoadComplete,
+    } = this.props;
+
+    Promise.all([
+      this.getAPIData(),
+      //this.testDelay(),
+    ]).then(onLoadComplete)
+      .catch(console.error);
   }
 
-  formatData(results) {
-    return results.map(landmark => {
-      landmark.category_id = landmark.category_id || 1;
+  async getAPIData() {
+    await GetLandmarkList();
+  }
 
-      return landmark;
+  // create 5 second artificial loading time
+  async testDelay() {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 5000);
     });
   }
 
-  storeData(data){
-      AsyncStorage.setItem('data', JSON.stringify(data));
-  }
-
-  gotoMapView(){
-      console.log(this.props.navigator);
-      this.props.navigator.push({
-          id: 'MapView',
-          name: 'MapView',
-      });
-  }
-
   render() {
-    if(!this.state.done) {
-      return (
-            <Image
-                style={styles.container}
-                source={require('../../assets/images/logoArtboard.png')}>
-              <ActivityIndicator
-                color={'yellow'}
-                size={'large'}
-                style={styles.loading}
-              />
-            </Image>
-
-      );
-    }
-    else {
-      return(
-            <Image
-                style={styles.container}
-                source={require('../../assets/images/logoArtboard.png')}>
-              <View style={styles.loading}>
-                <Button onPress={this.gotoMapView.bind(this)} title="Launch App"></Button>
-              </View>
-            </Image>
-
-      );
-    }
+    return (
+      <Image style={styles.container}
+             source={require('../../assets/images/logoArtboard.png')}>
+        <View style={styles.loading}>
+          <ActivityIndicator
+            color={'yellow'}
+            size={'large'}
+          />
+        </View>
+      </Image>
+    );
   }
 }

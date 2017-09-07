@@ -13,15 +13,26 @@ import {
     TouchableOpacity,
     TextInput,
 } from 'react-native';
+
+import { debounce } from 'lodash';
+
 import MapView from 'react-native-maps';
-import {DistancePrioritize,popPrioritize,LocToData,LocToIcon} from '../Utils'
-import ListItem from '../Components/ListItem';
-import TBTItem from '../Components/TBTItem';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
-import { Container, Navbar } from 'navbar-native';
 import SearchBar from 'react-native-searchbar';
 
-import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
+import {
+  DistancePrioritize,
+  popPrioritize,
+  LocToData,
+  LocToIcon
+} from 'app/Utils';
+
+import {
+  ListItem,
+  TBTItem,
+} from 'app/Components';
+
+import { GetLandmarkList } from 'app/DataManager';
 
 const styles = require( "../../assets/css/style");
 
@@ -50,19 +61,9 @@ const MAPIMAGES = {
   image1285: require('../../assets/new_sizes/1285.png'), // statically analyzed
 }
 
-var {height, width} = Dimensions.get('window');
-var loaded = false;
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
-var mapSettinger=1;
+var mapSettinger='popular';
 var val = {};
-var deviceHeight = Dimensions.get('window').height;
-var deviceWidth = Dimensions.get('window').width;
-var region: {
-    latitude: 34.070286,
-    longitude: -118.443413,
-    latitudeDelta: 0.0045,
-    longitudeDelta: 0.0345,
-};
 let flag1 = {latitude: 0, longitude: 0};
 var flag2 = {latitude: 0, longitude: 0};
 var initCoords = {};
@@ -81,101 +82,100 @@ export default class MainMapView extends Component {
         this.dataSourceTBT = new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 !== r2
         });
+        this.initialRegion = {
+          latitude: 34.070286,
+          longitude: -118.443413,
+          latitudeDelta: 0.0045,
+          longitudeDelta: 0.0345,
+        };
 
         this.state = {
-            data: '',
             markers: [],
-            region: {
-                latitude: 34.070286,
-                longitude: -118.443413,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,
-            },
-            viewIDG: 0,
+            region: this.initialRegion,
             results: []
         };
         this._handleResults = this._handleResults.bind(this);
+        this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
     }
-
 
     componentDidMount() {
 
-        this.setState({
-            region: {
-                latitude: 34.070286,
-                longitude: -118.443413,
-                latitudeDelta: 0.0045,
-                longitudeDelta: 0.0345,
-                },
-            viewIDG: 0,
-        });
-
         this.getPosition();
-        this.getData();
+
+        this.getData()
+            .then(() => this.updateMapIcons())
+            .catch(console.error);
+    }
+
+    async getData() {
+        this.landmarks = await GetLandmarkList();
     }
 
     componentWillUnmount(){
         navigator.geolocation.clearWatch(this.watchID);
     }
 
-    async getData(){
-        var val = null;
-        try {
-            let value = await AsyncStorage.getItem('data');
-            val = JSON.parse(value);
-        } catch (e) {
-            console.error(e);
+    updateMapIcons() {
+        var val = this.landmarks;
+        if(!val) {
+          return;
         }
-        if(val !== null){
-            var temp;
-            if(mapSettinger===2){
-                //if map setting is tours, display locations on the tour
-            }
-            else if(mapSettinger===0){
-                //if map setting is nearby, prioritize top 10 location by distance
-                temp = DistancePrioritize(initialPosition.coords.latitude, initialPosition.coords.longitude, val);
-            }
-            else{
-                //if map setting is campus map. prioritize top 10 locations by popularity/category
-                //this is default
-                temp = popPrioritize(val,this.state.region.latitude, this.state.region.longitude,
-                    this.state.region.latitudeDelta, this.state.region.longitudeDelta);
-                //console.log("region",this.state.region);
-            }
-            var dataPop = [];
-            markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
-            for(var i = 0; i < temp.length; i++)
-            {
-                //push location data onto data
-                var locData = {loc:"", dist:0,catID:1};
-                var distance = Math.round(temp[i].distanceAway);
-                locData.loc = temp[i].location;
-                locData.dist = distance;
-                var specLoc = LocToData(locData.loc, val);
-                if (specLoc && specLoc.category_id)
-                {
-                    locData.catID = specLoc.category_id;
-                }
-                dataPop.push(locData);
 
-                //push coordinate data into this.markers
-                var markersData = {title:'',lat:0,long:0,srcID:1};
-                markersData.title = temp[i].location;
-                markersData.lat= temp[i].lat;
-                markersData.long= temp[i].long;
-                markersData.srcID= specLoc.category_id;
-                markersData.location=temp[i].location;
-                markersData.id = temp[i].id;
-                markersTemp.push(markersData);
-            }
-            markersTemp.splice(0,1);
-            markersTemp.slice(0,10);
-            this.setState({
-                data: val,
-                markers:markersTemp
-            });
-            loaded = true;
+        var temp;
+
+        switch (mapSettinger) {
+          case 'tour':
+            //if map setting is tours, display locations on the tour
+            break;
+
+          case 'distance':
+            //if map setting is nearby, prioritize top 10 location by distance
+
+            break;
+
+          case 'popular':
+          default:
+            //if map setting is campus map. prioritize top 10 locations by popularity/category
+            //this is default
+            temp = popPrioritize(val,
+                                 this.state.region.latitude,
+                                 this.state.region.longitude,
+                                 this.state.region.latitudeDelta,
+                                 this.state.region.longitudeDelta);
+            break;
         }
+
+        var dataPop = [];
+        markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
+        for(var i = 0; i < temp.length; i++)
+        {
+            //push location data onto data
+            var locData = {loc:"", dist:0,catID:1};
+            var distance = Math.round(temp[i].distanceAway);
+            locData.loc = temp[i].location;
+            locData.dist = distance;
+            var specLoc = LocToData(locData.loc, val);
+            if (specLoc && specLoc.category_id)
+            {
+                locData.catID = specLoc.category_id;
+            }
+            dataPop.push(locData);
+
+            //push coordinate data into this.markers
+            var markersData = {title:'',lat:0,long:0,srcID:1};
+            markersData.title = temp[i].location;
+            markersData.lat= temp[i].lat;
+            markersData.long= temp[i].long;
+            markersData.srcID= specLoc.category_id;
+            markersData.location=temp[i].location;
+            markersData.id = temp[i].id;
+            markersTemp.push(markersData);
+        }
+        markersTemp.splice(0,1);
+        markersTemp.slice(0,10);
+        this.setState({
+            markers:markersTemp
+        });
     }
 
     getPosition(){
@@ -184,65 +184,35 @@ export default class MainMapView extends Component {
                 var initialPosition2 = JSON.stringify(position);
                 var val = JSON.parse(initialPosition2);
                 initialPosition = val;
+                this.setState({lastPosition: val});
             },
             (error) => alert(JSON.stringify(error)),
-            {enableHighAccuracty: true, timeout: 2000000, maximumAge: 500}
+            {enableHighAccuracy: true, timeout: 2000000, maximumAge: 500}
         );
         this.watchID = navigator.geolocation.watchPosition((position) => {
-            console.log('watchPosition');
             var lastPosition = JSON.stringify(position);
             var val = JSON.parse(lastPosition);
             this.setState({lastPosition: val});
         });
     }
 
-    //function to go to a different view
-    gotoView(viewID){
-        switch(viewID)
-        {
-          case 0:
-            this.setState({viewIDG: 0});
-              this.props.navigator.push({
-                  id: 'MainMapView',
-                  name: 'Home',
-              });
-            break;
-          case 2:
-            this.setState({viewIDG: 2});
-              this.props.navigator.push({
-                  id: 'LocationListView',
-                  name: 'Nearby Locations',
-              });
-            break;
-          case 1:
-            this.setState({viewIDG: 1});
-            this.props.navigator.push({
-                id: 'DirectionsView',
-                name: 'GPS Navigation',
-            });
-            break;
-        }
-    }
-
-    handleTabChange = (value) => this.setState({ currentTab: value });
-
     _handleResults(results) {
         this.setState({ results });
     }
 
-    onRegionChange(region1) {
-        this.setState({ region:region1 });
-        this.getData();
+    onRegionChange(region) {
+      this.setState({ region:region });
+      this.updateMapIcons();
     }
 
     changeMapSetting(setting){
         mapSettinger=setting;
-        this.getData();
+        this.updateMapIcons();
     }
 
     //function to switch to descriptions view
     gotoDescription(rowData){
-        let id = LocToData(rowData.loc, this.state.data);
+        let id = LocToData(rowData.loc, this.landmarks);
         this.props.navigator.push({
             id: 'Details',
             name: 'More Details',
@@ -296,33 +266,6 @@ export default class MainMapView extends Component {
         }
     }
 
-    renderGlobalNav(){
-        return(
-            <BottomNavigation
-                labelColor="grey"
-                style={{ height: 56, elevation: 8, position: 'absolute', left: 0, bottom: 0, right: 0 }}
-                onTabChange={(newTabIndex) => this.gotoView(newTabIndex)}
-                activeTab={this.state.viewIDG}
-            >
-                <Tab
-                    barBackgroundColor="white"
-                    label="Maps"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="tv" />}
-                />
-                <Tab
-                    barBackgroundColor="white"
-                    label="Directions"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="music-note"/>}
-                />
-                <Tab
-                    barBackgroundColor="white"
-                    label="Nearby"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="account-box"/>}
-                />
-            </BottomNavigation>
-        );
-    }
-
     extractRoute(){
         serverRouteChecked = true;
 
@@ -364,123 +307,57 @@ export default class MainMapView extends Component {
     }
 
     render() {
-        if(loaded && initialPosition != 'unknown' && tbt != true){
-            if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
-            {
-                    this.extractRoute();
-            }
-            return (
-                <View style={styles.container}>
-                    <SearchBar
-                        ref={(ref) => this.searchBar = ref}
-                        handleResults={this._handleResults}
-                        autoCorrect
+        if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
+        {
+            this.extractRoute();
+        }
+
+        let polyline = null;
+        if (tbt != true) {
+          polyline = (
+            <MapView.Polyline
+              coordinates={route}
+              strokeWidth={3}
+            />
+          );
+        }
+
+        return (
+            <View style={styles.container}>
+                <SearchBar
+                    ref={(ref) => this.searchBar = ref}
+                    handleResults={this._handleResults}
+                    autoCorrect
+                    showOnLoad
+                    focusOnLayout={false}
+                    hideBack={true}
+                />
+                <MapView style={styles.map}
+                    initialRegion={this.state.region}
+                    zoomEnabled
+                    onRegionChange={this.onRegionChange}
+                    >
+                    <MapView.Marker
+                        image={require('../../assets/images/dot1.png')}
+                        coordinate={initialPosition.coords}
                     />
-                    <Container>
-                        <Navbar
-                            bgColor={"white"}
-                            user={true}
-                            title={<Text>      UCLA Tours</Text>}
-                            titleColor={"grey"}
-                            left={{
-                                icon: "md-menu",
-                                iconColor: "#CCCCCC"
-                            }}
-                            right={{
-                                icon: "md-search",
-                                iconColor: "#CCCCCC",
-                                onPress: () => {this.searchBar.show()}
-                            }}
-                            style={styles.navbar}
-                        />
-                        <MapView style={styles.map}
-                            region={this.state.region}
-                             zoomEnabled
-                                 onRegionChangeComplete={(region) => this.setState({ region })}
-                                 onRegionChange={this.onRegionChange.bind(this)}
-                            >
-                            <MapView.Marker
-                                image={require('../../assets/images/dot1.png')}
-                                coordinate={{
-                                    latitude: initialPosition.coords.latitude,
-                                    longitude: initialPosition.coords.longitude
-                                }}
-                            />
-                            <MapView.Polyline
-                                coordinates={route}
-                                strokeWidth={3}
-                            />
-                            {this.state.markers.map(marker => (
-                                <MapView.Marker
-                                  key={marker.id}
-                                  coordinate={{latitude: marker.lat, longitude: marker.long}}
-                                  title={marker.title}
-                                  description={marker.description}
-                                  image={MAPIMAGES['image' + marker.srcID]}
-                                />
-                              )
-                          )}
-                        </MapView>
-                         {this.renderGlobalNav()}
-                    </Container>
-                </View>
-            );
-        }
-        else if(loaded && tbt === true){
-            return (
-                <View style={styles.loadMapContainer}>
-                    <MapView style={styles.map}
-                             region={this.state.region}
-                             >
+
+                    {polyline}
+
+                    {this.state.markers.map(marker => (
                         <MapView.Marker
-                            image={require('../../assets/images/dot1.png')}
-                            coordinate={{
-                                latitude: 34.070984,
-                                longitude: -118.444759
-                            }}/>
-                    </MapView>
-                    <View style={styles.info}>
-                        <ListView
-                            style={styles.locations}
-                            dataSource={this.dataSourceTBT}
-                            renderRow={(rowData) =>
-                                <View>
-                                    <TouchableOpacity style={styles.wrapper}>
-                                        <TBTItem rowData={rowData}/>
-                                        </TouchableOpacity>
-                                        <View style={styles.separator} />
-                                </View>}
-                            enableEmptySections={true}
-                            showsVerticalScrollIndicator={false}
+                          key={marker.id}
+                          coordinate={{latitude: marker.lat, longitude: marker.long}}
+                          title={marker.title}
+                          description={marker.description}
+                          image={MAPIMAGES['image' + marker.srcID]}
                         />
-                    </View>
-                </View>
-            );
-        }
-        else {
-            return (
-                <View style={styles.loadMapContainer}>
-                    <MapView style={styles.map}
-                             region={this.state.region}
-                             >
-                        <MapView.Marker
-                            image={require('../../assets/images/dot1.png')}
-                            coordinate={{
-                                latitude: 34.070984,
-                                longitude: -118.444759
-                            }}/>
-                    </MapView>
-                    <View style={styles.info}>
-                        <Text style={styles.loadingLocText}>
-                            Loading Data...
-                        </Text>
-                        <Text style={styles.loadingDistText}>
-                            We are loading your location data
-                        </Text>
-                    </View>
-                </View>
-            );
-        }
+                      )
+                    )}
+
+                </MapView>
+            </View>
+        );
     }
 }
 

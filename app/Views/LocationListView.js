@@ -2,141 +2,100 @@
  * Created by danielhuang on 9/1/17.
  */
 import React, { Component } from 'react';
-import { BackAndroid, Text, View, Navigator, TouchableHighlight, TouchableOpacity, AsyncStorage, ListView } from 'react-native';
+import { Text, View, Navigator, ListView} from 'react-native';
 import {renderImage, feetCalc} from '../Utils';
 import TBTItem from '../Components/ListItem';
 import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
+var dataPop=[];
 const styles = require( "../../assets/css/style");
-const dstyles= require('../../assets/css/detailStyle');
 
 class LocationListView extends Component
 {
-    static NavigationBarRouteMapper = props => ({
-        LeftButton(route, navigator, index, navState) {
-            return (
-                <TouchableOpacity style={{flex: 1, justifyContent: 'center'}}
-                                  onPress={() => navigator.parentNavigator.pop()}>
-                    <Text style={{color: 'white', margin: 10,}}>
-                        Back
-                    </Text>
-                </TouchableOpacity>
-            );
+  constructor(props){
+    super(props);
+    this.initialRegion = {
+        latitude: 34.070286,
+        longitude: -118.443413,
+        latitudeDelta: 0.0045,
+        longitudeDelta: 0.0345,
+    };
+      this.state = {
+          dataSource:ds.cloneWithRows(dataPop),
+          markers: [],
+          region: this.initialRegion,
+          results: []
+      };
+  }
+  componentDidMount() {
+      this.getPosition();
+      this.getData()
+            .catch(console.error);
+  }
+
+  async getData() {
+        this.landmarks = await GetLandmarkList();
+  }
+  getPosition(){
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            var initialPosition2 = JSON.stringify(position);
+            var val = JSON.parse(initialPosition2);
+            initialPosition = val;
+            this.setState({lastPosition: val});
         },
-        RightButton(route, navigator, index, navState) {
-            return null;
-        },
-        Title(route, navigator, index, navState) {
-            return null;
-        },
-    })
-
-    constructor(props){
-        super(props);
-        this.state = {
-            results: '',
-            loaded: true,
-            viewIDG: 1
-        }
-    }
-
-    render()
-    {
-        return (
-            <Navigator
-                renderScene={
-                    this.renderScene.bind(this)
-                }
-                navigator={this.props.navigator}
-                navigationBar={
-                    <Navigator.NavigationBar style={{backgroundColor: '#246dd5'}}
-                                             routeMapper={LocationListView.NavigationBarRouteMapper(this.props)} />
-                } />
-        );
-    }
-
-    /* Tried to make the back button work, but I'll save it for later.
-     componentWillMount() {
-     const { navigator } = this.props
-     BackAndroid.addEventListener('hardwareBackPress', function() {
-
-     return navigator.parentNavigator.pop();
-     });
-     }
-     */
-    //function to go to a different view
-    gotoView(viewID){
-        switch(viewID)
-        {
-            case 0:
-                this.setState({viewIDG: 0});
-                this.props.navigator.pop();
-                break;
-            case 2:
-                this.setState({viewIDG: 2});
-                this.props.navigator.push({
-                    id: 'LocationListView',
-                    name: 'Nearby Locations',
-                });
-                break;
-            case 1:
-                this.setState({viewIDG: 1});
-                this.props.navigator.push({
-                    id: 'DirectionsView',
-                    name: 'GPS Navigation',
-                });
-                break;
-        }
-    }
-
-    renderScene(route, navigator) {
-        if(this.state.loaded){
-            console.log("Hello World");
-            //make modules into ListView, each module will have an id, based on which id, the ListView will render that module
-            return (
-                <View style={styles.container}>
-                    <Text style={styles.title}>This is the Locations List View</Text>
-                    {this.renderGlobalNav()}
-                </View>
-            );
-        }
-        else
-        {
-            <View style={{flex: 1, alignItems: 'center', justifyContent:'center'}}>
-                <Text style={styles.locText}>
-                    Test
-                </Text>
-            </View>
-        }
-    }
-    renderGlobalNav(){
-        return(
-            <BottomNavigation
-                labelColor="grey"
-                style={{ height: 56, elevation: 8, position: 'absolute', left: 0, bottom: 0, right: 0 }}
-                onTabChange={(newTabIndex) => this.gotoView(newTabIndex)}
-                activeTab={this.state.viewIDG}
-            >
-                <Tab
-                    barBackgroundColor="white"
-                    label="Maps"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="tv" />}
-                />
-                <Tab
-                    barBackgroundColor="white"
-                    label="Directions"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="music-note"/>}
-                />
-                <Tab
-                    barBackgroundColor="white"
-                    label="Nearby"
-                    icon={<MaterialsIcon size={24} color="#CCCCCC" name="account-box"/>}
-                />
-            </BottomNavigation>
-        );
-    }
+        (error) => alert(JSON.stringify(error)),
+        {enableHighAccuracy: true, timeout: 2000000, maximumAge: 500}
+    );
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+        var lastPosition = JSON.stringify(position);
+        var val = JSON.parse(lastPosition);
+        this.setState({lastPosition: val});
+    });
+  }
+  getLocations(){
+      val = this.landmarks;
+      if(!val) {
+          return [];
+      }
+      console.log(this.state.region);
+      //Get list of top 10 locations
+      //edit: need to change to current gps location, NOT initial position
+      const temp = popPrioritize(val,
+          this.initialRegion.latitude,
+          this.initialRegion.longitude,
+          this.initialRegion.latitudeDelta,
+          this.initialRegion.longitudeDelta);
+      locTemp=[];
+      for(var i = 0; i < temp.length; i++) {
+          //push location data onto data
+          var locData = {loc:"", dist:0,catID:1,images:[]};
+          var distance = Math.round(temp[i].distanceAway);
+          locData.loc = temp[i].location;
+          locData.dist = distance;
+          locData.images = temp[i].images;
+          var specLoc = LocToData(locData.loc, val);
+          if (specLoc && specLoc.category_id) {
+              locData.catID = specLoc.category_id;
+          }
+          dataPop.push(locData);
+      }
+      console.log("Data Pop is returned!");
+      //console.log(dataPop);
+  }
+    //this.ds.cloneWithRows(this.getLocations)}
+  render() {
+    console.log("LocationListView");
+    //make modules into ListView, each module will have an id, based on which
+    //id, the ListView will render that module
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>This is the Locations List View</Text>
+          {this.state.dataSource}
+      </View>
+    );
+  }
 }
 /*
  renderDragMenu(){
@@ -159,4 +118,3 @@ class LocationListView extends Component
  );
  }
 * */
-module.exports = LocationListView;
