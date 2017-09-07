@@ -7,22 +7,90 @@ import {
   View,
   ListView
 } from 'react-native';
+import { GetLandmarkList } from 'app/DataManager';
+import {popPrioritize, LocToData} from '../Utils'
 
 import { TBTItem } from 'app/Components';
 
+var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
+var dataPop=[];
 const styles = require( "../../assets/css/style");
 
 export default class LocationListView extends Component
 {
   constructor(props){
     super(props);
-    this.state = {
-      results: '',
-    }
+    this.initialRegion = {
+        latitude: 34.070286,
+        longitude: -118.443413,
+        latitudeDelta: 0.0045,
+        longitudeDelta: 0.0345,
+    };
+      this.state = {
+          dataSource:ds.cloneWithRows(dataPop),
+          markers: [],
+          region: this.initialRegion,
+          results: []
+      };
+  }
+  componentDidMount() {
+      this.getPosition();
+      this.getData()
+            .catch(console.error);
   }
 
+  async getData() {
+        this.landmarks = await GetLandmarkList();
+  }
+  getPosition(){
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            var initialPosition2 = JSON.stringify(position);
+            var val = JSON.parse(initialPosition2);
+            initialPosition = val;
+            this.setState({lastPosition: val});
+        },
+        (error) => alert(JSON.stringify(error)),
+        {enableHighAccuracy: true, timeout: 2000000, maximumAge: 500}
+    );
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+        var lastPosition = JSON.stringify(position);
+        var val = JSON.parse(lastPosition);
+        this.setState({lastPosition: val});
+    });
+  }
+  getLocations(){
+      val = this.landmarks;
+      if(!val) {
+          return [];
+      }
+      console.log(this.state.region);
+      //Get list of top 10 locations
+      //edit: need to change to current gps location, NOT initial position
+      const temp = popPrioritize(val,
+          this.initialRegion.latitude,
+          this.initialRegion.longitude,
+          this.initialRegion.latitudeDelta,
+          this.initialRegion.longitudeDelta);
+      locTemp=[];
+      for(var i = 0; i < temp.length; i++) {
+          //push location data onto data
+          var locData = {loc:"", dist:0,catID:1,images:[]};
+          var distance = Math.round(temp[i].distanceAway);
+          locData.loc = temp[i].location;
+          locData.dist = distance;
+          locData.images = temp[i].images;
+          var specLoc = LocToData(locData.loc, val);
+          if (specLoc && specLoc.category_id) {
+              locData.catID = specLoc.category_id;
+          }
+          dataPop.push(locData);
+      }
+      console.log("Data Pop is returned!");
+      //console.log(dataPop);
+  }
+    //this.ds.cloneWithRows(this.getLocations)}
   render() {
     console.log("LocationListView");
     //make modules into ListView, each module will have an id, based on which
@@ -30,6 +98,7 @@ export default class LocationListView extends Component
     return (
       <View style={styles.container}>
         <Text style={styles.title}>This is the Locations List View</Text>
+          {this.state.dataSource}
       </View>
     );
   }

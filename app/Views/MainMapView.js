@@ -130,9 +130,7 @@ export default class MainMapView extends Component {
 
           case 'distance':
             //if map setting is nearby, prioritize top 10 location by distance
-            temp = DistancePrioritize(initialPosition.coords.latitude,
-                                      initialPosition.coords.longitude,
-                                      val);
+
             break;
 
           case 'popular':
@@ -144,7 +142,6 @@ export default class MainMapView extends Component {
                                  this.state.region.longitude,
                                  this.state.region.latitudeDelta,
                                  this.state.region.longitudeDelta);
-            //console.log("region",this.state.region);
             break;
         }
 
