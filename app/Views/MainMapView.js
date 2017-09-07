@@ -17,7 +17,6 @@ import {
 import { debounce } from 'lodash';
 
 import MapView from 'react-native-maps';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import SearchBar from 'react-native-searchbar';
 
 import {
@@ -26,11 +25,6 @@ import {
   LocToData,
   LocToIcon
 } from 'app/Utils';
-
-import {
-  ListItem,
-  TBTItem,
-} from 'app/Components';
 
 import { GetLandmarkList } from 'app/DataManager';
 

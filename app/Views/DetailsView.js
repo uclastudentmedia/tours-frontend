@@ -3,13 +3,6 @@ import {
   Text,
   View,
 } from 'react-native';
-
-import { renderImage, feetCalc } from 'app/Utils';
-
-import {
-  DetailItem,
-} from 'app/Components';
-
 const styles = require( "../../assets/css/style");
 const dstyles= require('../../assets/css/detailStyle');
 

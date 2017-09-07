@@ -28,6 +28,7 @@ export default class LocationListView extends Component
         longitudeDelta: 0.0345,
     };
       this.state = {
+          //Datasource is undefined with this code right now
           dataSource:ds.cloneWithRows(dataPop),
           markers: [],
           region: this.initialRegion,
@@ -98,7 +99,7 @@ export default class LocationListView extends Component
     return (
       <View style={styles.container}>
         <Text style={styles.title}>This is the Locations List View</Text>
-          {this.state.dataSource}
+
       </View>
     );
   }
