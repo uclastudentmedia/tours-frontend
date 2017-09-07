@@ -2,16 +2,20 @@
  * Created by danielhuang on 9/1/17.
  */
 import React, { Component } from 'react';
-import { Text, View, Navigator, ListView} from 'react-native';
-import {renderImage, feetCalc} from '../Utils';
-import TBTItem from '../Components/ListItem';
-import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import {
+  Text,
+  View,
+  ListView
+} from 'react-native';
+import { GetLandmarkList } from 'app/DataManager';
+import {popPrioritize, LocToData} from '../Utils'
+
+var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var dataPop=[];
 const styles = require( "../../assets/css/style");
 
-class LocationListView extends Component
+export default class LocationListView extends Component
 {
   constructor(props){
     super(props);
@@ -23,7 +27,7 @@ class LocationListView extends Component
     };
       this.state = {
           //Datasource is undefined with this code right now
-          dataSource:ds.cloneWithRows(dataPop),
+          dataSource:ds.cloneWithRows({dataPop},'Locations'),
           markers: [],
           region: this.initialRegion,
           results: []
