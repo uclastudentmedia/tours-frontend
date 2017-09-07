@@ -1,79 +1,124 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  Navigator,
+  Platform,
 } from 'react-native';
+
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import { TabNavigator, StackNavigator } from 'react-navigation';
 
 import {
   LoadingView,
   MainMapView,
   LocationListView,
-  DetailsView,
   DirectionsView,
 } from 'app/Views';
 
+import styles from '../assets/css/App';
 
-const styles = require( "../assets/css/style");
 
-export default class App extends Component {
+function makeIcon(name) {
+  /**
+   * Helper function to generate tab icons
+   * @param name string the name of the icon
+   */
+  const iconSize = 24;
 
-    render() {
-        return (
-            <Navigator
-                initialRoute={{id: 'LoadingView', name: 'Index'}}
-                renderScene={this.renderScene1.bind(this)}
-                configureScene={(route) => {
-                    if(route.sceneConfig) {
-                        return route.sceneConfig;
-                    }
-                    return Navigator.SceneConfigs.FloatFromRight;
-                }}
-            />
-        );
-    }
-
-    renderScene1(route, navigator) {
-        var routeID = route.id;
-        if(routeID === 'LoadingView') {
-            console.log("LoadingView");
-            return(
-                <LoadingView
-                    navigator={navigator}/>
-            );
-        } else if (routeID === 'MapView') {
-            console.log("MapView");
-            return (
-                <MainMapView
-                    navigator={navigator}/>
-            );
-        } else if (routeID === 'Details') {
-            console.log("Details");
-            return (
-                <DetailsView
-                    navigator={navigator}
-                    rowData={route.rowDat}
-                    detID={route.locID}
-                    lastLoc={route.lastPos}
-                />
-            );
-        } else if (routeID === 'LocationListView') {
-            console.log("LocationListView");
-            console.log(route.locations);
-            return (
-                <LocationListView
-                    navigator={navigator}
-                    locations={route.locations}
-                />
-            );
-        }else if (routeID === 'DirectionsView') {
-            console.log("DirectionsView");
-            return (
-                <DirectionsView
-                    navigator={navigator}
-                />
-            );
-        }
-    }
+  return ({tintColor, focused}) => (
+    <MaterialsIcon color={tintColor} size={iconSize} name={name} />
+  );
 }
+
+
+/**
+ * Screens
+ */
+
+class MainMapScreen extends Component {
+  static navigationOptions = {
+    tabBarLabel: 'Maps',
+    tabBarIcon: makeIcon('tv')
+  };
+
+  render() {
+    return (
+      <MainMapView navigation={this.props.navigation} />
+    );
+  }
+}
+
+class DirectionsScreen extends Component {
+  static navigationOptions = {
+    tabBarLabel: 'Directions',
+    tabBarIcon: makeIcon('music-note')
+  };
+
+  render() {
+    return (
+      <DirectionsView navigation={this.props.navigation} />
+    );
+  }
+}
+
+class LocationListScreen extends Component {
+  static navigationOptions = {
+    tabBarLabel: 'Nearby',
+    tabBarIcon: makeIcon('account-box')
+  };
+
+  render() {
+    return (
+      <LocationListView navigation={this.props.navigation} />
+    );
+  }
+}
+
+
+/**
+ * Tab Navigator
+ */
+
+const MainNavigator = TabNavigator(
+  {
+    MainMap: { screen: MainMapScreen },
+    Directions: { screen: DirectionsScreen },
+    LocationList: { screen: LocationListScreen },
+  },
+  {
+    tabBarOptions: {
+      activeTintColor:   Platform.OS === 'ios' ? '#e91e63' : '#fff',
+      inactiveTintColor: Platform.OS === 'ios' ? '#f06595' : '#ccc',
+      showIcon: true,
+      showLabel: true,
+      tabStyle: styles.tab,
+      indicatorStyle: styles.indicator,
+      labelStyle: styles.label,
+      iconStyle: styles.icon,
+      style: styles.tabbar,
+    },
+  }
+);
+
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded: false
+    };
+  }
+
+  onLoadComplete = () => {
+    this.setState({loaded: true});
+  }
+
+  render() {
+    if (!this.state.loaded) {
+      return <LoadingView onLoadComplete={this.onLoadComplete} />;
+    }
+    else {
+      return <MainNavigator/>;
+    }
+  }
+}
+
+export default App;
