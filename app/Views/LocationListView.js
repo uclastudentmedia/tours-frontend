@@ -12,26 +12,26 @@ import {popPrioritize, LocToData} from '../Utils'
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-var dataPop=[];
 const styles = require( "../../assets/css/style");
 
 export default class LocationListView extends Component
 {
   constructor(props){
-    super(props);
-    this.initialRegion = {
-        latitude: 34.070286,
-        longitude: -118.443413,
-        latitudeDelta: 0.0045,
-        longitudeDelta: 0.0345,
-    };
+      super(props);
+      this.initialRegion = {
+          latitude: 34.070286,
+          longitude: -118.443413,
+          latitudeDelta: 0.0045,
+          longitudeDelta: 0.0345,
+      };
+      this.dataPop = [];
       this.state = {
-          //Datasource is undefined with this code right now
-          dataSource:ds.cloneWithRows({dataPop},'Locations'),
+          dataSource: ds.cloneWithRows(this.dataPop),
           markers: [],
           region: this.initialRegion,
           results: []
       };
+      console.log(this.state);
   }
   componentDidMount() {
       this.getPosition();
@@ -42,6 +42,7 @@ export default class LocationListView extends Component
   async getData() {
         this.landmarks = await GetLandmarkList();
   }
+
   getPosition(){
     navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -84,8 +85,11 @@ export default class LocationListView extends Component
           if (specLoc && specLoc.category_id) {
               locData.catID = specLoc.category_id;
           }
-          dataPop.push(locData);
+          this.dataPop = this.data.concat(locData);
       }
+      this.setState({
+        ds: this.state.ds.cloneWithRows(this.dataPop),
+      });
       console.log("Data Pop is returned!");
       //console.log(dataPop);
   }

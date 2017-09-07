@@ -8,7 +8,7 @@ function notImplemented() {
     });
 };
 
-const TRACE = true;
+const TRACE = false;
 function trace(func, key, value) {
   if (TRACE) {
     if (value) {
