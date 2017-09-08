@@ -75,7 +75,7 @@ module.exports = StyleSheet.create({
     },
     locText:{
         padding:20,
-        fontSize:18,
+        fontSize:25,
         color: '#5b73a4'
     },
     loadingLocText:{
@@ -129,9 +129,12 @@ module.exports = StyleSheet.create({
         top: 40
     },
     wrapper: {
+        flex:1,
         flexWrap: 'wrap',
         alignItems: 'flex-start',
-        flexDirection:'row'
+        flexDirection:'row',
+        height:80,
+        width:width,
     },
     btnContainer: {
         flex: 1,

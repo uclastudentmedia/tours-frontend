@@ -27,6 +27,7 @@ import {
 } from 'app/Utils';
 
 import { GetLandmarkList } from 'app/DataManager';
+import {popLocation} from 'app/LocationPopManager'
 
 const styles = require( "../../assets/css/style");
 
@@ -135,7 +136,7 @@ export default class MainMapView extends Component {
                                  this.state.region.latitude,
                                  this.state.region.longitude,
                                  this.state.region.latitudeDelta,
-                                 this.state.region.longitudeDelta);
+                                 this.state.region.longitudeDelta,"All");
             break;
         }
 

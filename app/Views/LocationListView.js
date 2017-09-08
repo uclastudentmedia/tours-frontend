@@ -5,8 +5,10 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
-  ListView
+  ListView,
+  TouchableOpacity,
 } from 'react-native';
+import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import { GetLandmarkList } from 'app/DataManager';
 import {popPrioritize, LocToData,renderImage} from '../Utils'
 
@@ -68,15 +70,13 @@ export default class LocationListView extends Component
       if(!val) {
           return [];
       }
-      console.log("hello");
-      console.log(this.state.region);
       //Get list of top 10 locations
       //edit: need to change to current gps location, NOT initial position
       const temp = popPrioritize(val,
           this.initialRegion.latitude,
           this.initialRegion.longitude,
           this.initialRegion.latitudeDelta,
-          this.initialRegion.longitudeDelta);
+          this.initialRegion.longitudeDelta,'Parking');
       locTemp=[];
       console.log("templength"+temp.length);
       for(var i = 0; i < temp.length; i++) {
@@ -99,32 +99,41 @@ export default class LocationListView extends Component
         dataSource: ds.cloneWithRows(this.dataPop),
       });
   }
+    gotoDescription(rowData){
+        let id = LocToData(rowData.loc, this.landmarks);
+        this.props.navigation.navigate('Details',{
+            id: 'Details',
+            rowDat: rowData,
+            locID: id,
+        });
+    }
     //this.ds.cloneWithRows(this.getLocations)}
   render() {
-    // console.log("LocationListView");
-    // console.log("this.state.dataSource");
-    // console.log(this.state.dataSource);
     //make modules into ListView, each module will have an id, based on which
     //id, the ListView will render that module
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>This is the Locations List View</Text>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={(rowdata) => 
-            <View style={styles.wrapper}>
-              {renderImage(rowdata.catID)}
-              <Text style={styles.baseText}>
-                <Text style={styles.locText}>
-                  {rowdata.loc}{'\n'}
-                  <Text style={styles.distText}>
-                    {rowdata.dist} feet away
-                  </Text>
-                </Text>
-              </Text>
-            </View>
-          }
-        />
+          <View>
+
+          </View>
+          <ListView
+              dataSource={this.state.dataSource}
+              renderRow={(rowdata) =>
+                <TouchableOpacity onPress={this.gotoDescription.bind(this, rowdata)} style={styles.wrapper}>
+                    <View style={styles.wrapper}>
+                      {renderImage(rowdata.catID)}
+                      <Text style={styles.baseText}>
+                        <Text style={styles.locText}>
+                          {rowdata.loc}{'\n'}
+                          <Text style={styles.distText}>
+                            {rowdata.dist} feet away
+                          </Text>
+                        </Text>
+                      </Text>
+                    </View>
+                </TouchableOpacity>
+              }
+          />
       </View>
     );
   }
