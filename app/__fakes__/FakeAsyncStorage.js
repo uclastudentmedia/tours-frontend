@@ -28,7 +28,7 @@ export const AsyncStorage = {
   getItem: (key) => {
     trace('getItem', key);
     return new Promise((resolve, reject) => {
-      resolve(storage[key]);
+      resolve(storage[key] || null);
     });
   },
 
