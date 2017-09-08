@@ -77,7 +77,7 @@ class LocationListScreen extends Component {
  * Tab Navigator
  */
 
-const MainNavigator = TabNavigator(
+const MainScreenNavigator = TabNavigator(
   {
     MainMap: { screen: MainMapScreen },
     Directions: { screen: DirectionsScreen },
@@ -99,23 +99,23 @@ const MainNavigator = TabNavigator(
   },
 );
 
+MainScreenNavigator.navigationOptions = {
+  header: null,
+};
+
+
 /**
  * Stack Navigator
  */
-const detailsNavigator = StackNavigator({
+const MainNavigator = StackNavigator(
+  {
+    Home: { screen: MainScreenNavigator },
+    Details: { screen: DetailsView },
+  },
+  {
 
-    // For each screen that you can navigate to, create a new entry like this:
-    LocationList: {
-        // `LocationListView` is a React component that will be the main content of the screen.
-        screen: LocationListView,
-        // When `LocationListView` is loaded by the StackNavigator, it will be given a `navigation` prop.
-    },
-    Details: {
-        // `DetailsView` is a React component that will be the main content of the screen.
-        screen: DetailsView,
-        // When `DetailsView` is loaded by the StackNavigator, it will be given a `navigation` prop.
-    },
-});
+  }
+);
 
 
 

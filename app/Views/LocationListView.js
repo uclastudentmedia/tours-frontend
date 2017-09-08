@@ -99,12 +99,13 @@ export default class LocationListView extends Component
         dataSource: ds.cloneWithRows(this.dataPop),
       });
   }
-    gotoDescription(rowData){
+    gotoDescription(rowData) {
         let id = LocToData(rowData.loc, this.landmarks);
-        this.props.navigation.navigate('Details',{
+        this.props.navigation.navigate('Details', {
             id: 'Details',
             rowDat: rowData,
             locID: id,
+            title: rowData.loc,
         });
     }
     //this.ds.cloneWithRows(this.getLocations)}
@@ -117,6 +118,7 @@ export default class LocationListView extends Component
 
           </View>
           <ListView
+              enableEmptySections={true}
               dataSource={this.state.dataSource}
               renderRow={(rowdata) =>
                 <TouchableOpacity onPress={this.gotoDescription.bind(this, rowdata)} style={styles.wrapper}>
