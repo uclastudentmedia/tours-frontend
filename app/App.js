@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   Platform,
 } from 'react-native';
-
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 
