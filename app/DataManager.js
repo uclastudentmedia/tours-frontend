@@ -41,9 +41,35 @@ function find(data, key, value) {
   return matches[0];
 }
 
+/**
+ * SyncStorage: store data in memory. This is reset when the app is closed.
+ */
+class SyncStorage {
+  constructor() {
+    this.storage = {};
+  }
+
+  getItem(key) {
+    return this.storage[key] || null;
+  }
+
+  setItem(key, value) {
+    this.storage[key] = value;
+  }
+
+  removeItem(key) {
+    delete this.storage[key];
+  }
+
+  getAllKeys() {
+    return Object.keys(this.storage);
+  }
+};
+const syncStorage = new SyncStorage();
+
 
 /**
- * Storage management functions
+ * AsyncStorage management functions
  */
 
 async function getCacheTime(endpoint) {
@@ -109,7 +135,7 @@ async function setCachedData(endpoint, data) {
   }
 }
 
-async function queryEndpoint(endpoint) {
+async function queryEndpoint(endpoint, transformData) {
   /**
    * Fetch data from the server
    * @param endpoint string
@@ -118,36 +144,53 @@ async function queryEndpoint(endpoint) {
 
   //console.info(`queryEndpoint('${endpoint}')`);
 
+  // default: no transform
+  transformData = transformData || (data => data);
+
   let url = API_DOMAIN + endpoint;
   return fetch(url)
     .then(response => response.json())
-    .then(data => data['results']);
+    .then(data => data['results'])
+    .then(data => transformData(data));
 }
 
-async function getData(endpoint) {
+async function getData(endpoint, transformData, useAsyncStorage = false) {
   /**
    * get cached data, and fetch data if needed
    * @param endpoint string
    * @return Promise
    */
 
-  let currentTime = Date.now();
-  let cacheTime = await getCacheTime(endpoint);
+  // check if data is in SyncStorage
+  let cachedData = syncStorage.getItem(endpoint);
+  if (cachedData !== null) {
+    return cachedData;
+  }
 
-  if (currentTime - cacheTime < CACHE_EXPIRY) {
-    // this request was updated recently, try to use the cached value
-    let cachedData = await getCachedData(endpoint);
-    if (cachedData !== null) {
-      return cachedData;
+  // check if data is in AsyncStorage
+  if (useAsyncStorage) {
+    let currentTime = Date.now();
+    let cacheTime = await getCacheTime(endpoint);
+
+    if (currentTime - cacheTime < CACHE_EXPIRY) {
+      // this request was updated recently, try to use the cached value
+      let cachedData = await getCachedData(endpoint);
+      if (cachedData !== null) {
+        return cachedData;
+      }
     }
   }
 
   // there is no up-to-date cached data, need to query server
-  let newData = await queryEndpoint(endpoint);
+  let newData = await queryEndpoint(endpoint, transformData);
 
   // save the data in the cache
-  await setCachedData(endpoint, newData);
-  await updateCacheTime(endpoint);
+  syncStorage.setItem(endpoint, newData);
+
+  if (useAsyncStorage) {
+    await setCachedData(endpoint, newData);
+    await updateCacheTime(endpoint);
+  }
 
   return newData;
 }
@@ -156,7 +199,14 @@ async function clearCache() {
   /**
    * Remove everything from the cache
    */
-  let keys = await AsyncStorage.getAllKeys();
+  let keys = syncStorage.getAllKeys();
+  keys.forEach(key => {
+    if (key.startsWith(CACHE_PREFIX)) {
+      AsyncStorage.removeItem(key);
+    }
+  });
+
+  keys = await AsyncStorage.getAllKeys();
   keys.forEach(key => {
     if (key.startsWith(CACHE_PREFIX)) {
       AsyncStorage.removeItem(key);
@@ -173,7 +223,22 @@ export async function GetLandmarkList() {
   /**
    * @return Array of Landmark objects
    */
-  return getData(ENDPOINTS.LANDMARKS);
+
+  var transformData = (data) => {
+    return data.map(landmark => {
+      // give images a full URL
+      landmark.images = landmark.images.map(image => {
+        for (let size in image) {
+          image[size] = API_DOMAIN + image[size];
+        }
+        return image;
+      });
+
+      return landmark;
+    });
+  };
+
+  return await getData(ENDPOINTS.LANDMARKS, transformData);
 }
 
 export async function GetLandmarkById(id) {
@@ -181,7 +246,7 @@ export async function GetLandmarkById(id) {
    * @param id int
    * @return Landmark object
    */
-  return getData(ENDPOINTS.LANDMARKS)
+  return GetLandmarkList()
     .then(landmarks => find(landmarks, 'id', id));
 }
 
@@ -197,7 +262,7 @@ export async function GetCategoryById(id) {
    * @param id int
    * @return Category object
    */
-  return getData(ENDPOINTS.CATEGORIES)
+  return GetCategoryList()
     .then(categories => find(categories, 'id', id));
 }
 
@@ -213,7 +278,7 @@ export async function GetTourById(id) {
    * @param id int
    * @return Tour object
    */
-  return getData(ENDPOINTS.TOURS)
+  return GetTourList()
     .then(tours => find(tours, 'id', id));
 }
 
@@ -229,6 +294,6 @@ export async function GetIndoorBuildingById(id) {
    * @param id int landmark id
    * @return Building object
    */
-  return getData(ENDPOINTS.INDOOR_BUILDINGS)
+  return GetIndoorBuildingList()
     .then(buildings => find(buildings, 'landmark_id', id));
 }
