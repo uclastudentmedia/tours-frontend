@@ -8,8 +8,7 @@ import {
   ListView
 } from 'react-native';
 import { GetLandmarkList } from 'app/DataManager';
-import { ListItem } from 'app/Components/ListItem';
-import {popPrioritize, LocToData} from '../Utils'
+import {popPrioritize, LocToData,renderImage} from '../Utils'
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
@@ -96,23 +95,15 @@ export default class LocationListView extends Component
           }
           this.dataPop = this.dataPop.concat(locData);
       }
-      //richard: datapop has the value but datasource doesn't
-      console.log("this.dataPop");
-      console.log(this.dataPop);
       this.setState({
-        ds: this.state.dataSource.cloneWithRows(this.dataPop),
+        dataSource: ds.cloneWithRows(this.dataPop),
       });
-      console.log("Data Pop is returned!");
-      console.log(this.dataPop);
-      console.log("this.state.dataSource");
-      console.log(this.state.dataSource);
   }
     //this.ds.cloneWithRows(this.getLocations)}
   render() {
-    console.log("LocationListView");
-    console.log("this.state.dataSource");
-    console.log(this.state.dataSource);
-    console.log(ds.getRowCount());
+    // console.log("LocationListView");
+    // console.log("this.state.dataSource");
+    // console.log(this.state.dataSource);
     //make modules into ListView, each module will have an id, based on which
     //id, the ListView will render that module
     return (
@@ -120,7 +111,19 @@ export default class LocationListView extends Component
         <Text style={styles.title}>This is the Locations List View</Text>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={(rowdata) => <Text>{rowdata.name}</Text>}
+          renderRow={(rowdata) => 
+            <View style={styles.wrapper}>
+              {renderImage(rowdata.catID)}
+              <Text style={styles.baseText}>
+                <Text style={styles.locText}>
+                  {rowdata.loc}{'\n'}
+                  <Text style={styles.distText}>
+                    {rowdata.dist} feet away
+                  </Text>
+                </Text>
+              </Text>
+            </View>
+          }
         />
       </View>
     );
