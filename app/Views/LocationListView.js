@@ -8,10 +8,11 @@ import {
   ListView
 } from 'react-native';
 import { GetLandmarkList } from 'app/DataManager';
+import { ListItem } from 'app/Components/ListItem';
 import {popPrioritize, LocToData} from '../Utils'
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
 const styles = require( "../../assets/css/style");
 
 export default class LocationListView extends Component
@@ -41,6 +42,7 @@ export default class LocationListView extends Component
 
   async getData() {
         this.landmarks = await GetLandmarkList();
+        this.getLocations();
   }
 
   getPosition(){
@@ -62,9 +64,12 @@ export default class LocationListView extends Component
   }
   getLocations(){
       val = this.landmarks;
+      console.log("hi");
+      console.log(this.landmarks);
       if(!val) {
           return [];
       }
+      console.log("hello");
       console.log(this.state.region);
       //Get list of top 10 locations
       //edit: need to change to current gps location, NOT initial position
@@ -74,6 +79,7 @@ export default class LocationListView extends Component
           this.initialRegion.latitudeDelta,
           this.initialRegion.longitudeDelta);
       locTemp=[];
+      console.log("templength"+temp.length);
       for(var i = 0; i < temp.length; i++) {
           //push location data onto data
           var locData = {loc:"", dist:0,catID:1,images:[]};
@@ -81,27 +87,41 @@ export default class LocationListView extends Component
           locData.loc = temp[i].location;
           locData.dist = distance;
           locData.images = temp[i].images;
+          if(!locData.images)
+            locData.images = [];
+          console.log(locData);
           var specLoc = LocToData(locData.loc, val);
           if (specLoc && specLoc.category_id) {
               locData.catID = specLoc.category_id;
           }
-          this.dataPop = this.data.concat(locData);
+          this.dataPop = this.dataPop.concat(locData);
       }
+      //richard: datapop has the value but datasource doesn't
+      console.log("this.dataPop");
+      console.log(this.dataPop);
       this.setState({
-        ds: this.state.ds.cloneWithRows(this.dataPop),
+        ds: this.state.dataSource.cloneWithRows(this.dataPop),
       });
       console.log("Data Pop is returned!");
-      //console.log(dataPop);
+      console.log(this.dataPop);
+      console.log("this.state.dataSource");
+      console.log(this.state.dataSource);
   }
     //this.ds.cloneWithRows(this.getLocations)}
   render() {
     console.log("LocationListView");
+    console.log("this.state.dataSource");
+    console.log(this.state.dataSource);
+    console.log(ds.getRowCount());
     //make modules into ListView, each module will have an id, based on which
     //id, the ListView will render that module
     return (
       <View style={styles.container}>
         <Text style={styles.title}>This is the Locations List View</Text>
-
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={(rowdata) => <Text>{rowdata.name}</Text>}
+        />
       </View>
     );
   }
