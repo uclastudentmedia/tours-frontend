@@ -89,7 +89,7 @@ export function popPrioritize(val,lat,long,latD,longD){
             id: tempRes[i].id
         });
     }
-    return locInView;
+    return locInView.slice(0, 10);
 }
 
 export function DistancePrioritize(currentLat,currentLong, val){
