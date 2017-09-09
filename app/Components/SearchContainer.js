@@ -30,15 +30,13 @@ export default class SearchContainer extends Component {
   constructor(props) {
     super(props);
 
-    const { locations, maxResults } = this.props;
-
     if (!props.locations) {
       console.error('No "locations" prop provided.');
     }
 
     this.popularLocations = props.locations
                               .sort((a,b) => a.priority - b.priority)
-                              .slice(0, maxResults);
+                              .slice(0, props.maxResults);
 
     this.state = {
       results: this.popularLocations

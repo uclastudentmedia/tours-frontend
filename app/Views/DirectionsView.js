@@ -13,62 +13,80 @@ import {
   SearchContainer,
 } from 'app/Components';
 
+import { GetLandmarkList } from 'app/DataManager';
+
 const styles = require( "../../assets/css/style");
+
 
 export default class DirectionsView extends Component
 {
   static propTypes = {
-    locations: PropTypes.arrayOf(PropTypes.object),
   };
 
   static defaultProps = {
-    locations: [],
   };
 
   constructor(props){
     super(props);
     this.state = {
       directions: {},
+      locations: [],
     }
+  }
+
+  componentDidMount() {
+    GetLandmarkList()
+      .then(locations => {
+        this.setState({locations});
+      })
+      .catch(console.error);
   }
 
   render() {
     const {
+      locations,
       startLocation,
       endLocation,
       directions,
     } = this.state;
 
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}> This is the Directions View </Text>
+    if (locations.length == 0) {
+      return (
+        <View style={styles.container}></View>
+      );
+    }
+    else {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}> This is the Directions View </Text>
 
-        <Text>{JSON.stringify(directions)}</Text>
+          <Text>{JSON.stringify(directions)}</Text>
 
-        <Button
-          title='Get Directions'
-          onPress={this.getDirections.bind(this)}
-        />
-
-        <Text>From: {startLocation ? startLocation.name : ''}</Text>
-        <Text>To: {endLocation ? endLocation.name : ''}</Text>
-
-
-        <View style={{flexDirection: 'row', flex: 1}}>
-          <SearchContainer style={{flexDirection: 'column'}}
-          locations={this.props.locations}
-          onResultSelect={this.setStartLocation.bind(this)}
-          maxResults={5}
+          <Button
+            title='Get Directions'
+            onPress={this.getDirections.bind(this)}
           />
-          <SearchContainer style={{flexDirection: 'column'}}
-          locations={this.props.locations}
-          onResultSelect={this.setEndLocation.bind(this)}
-          maxResults={5}
-          />
+
+          <Text>From: {startLocation ? startLocation.name : ''}</Text>
+          <Text>To: {endLocation ? endLocation.name : ''}</Text>
+
+
+          <View style={{flexDirection: 'row', flex: 1}}>
+            <SearchContainer style={{flexDirection: 'column'}}
+            locations={locations}
+            onResultSelect={this.setStartLocation.bind(this)}
+            maxResults={5}
+            />
+            <SearchContainer style={{flexDirection: 'column'}}
+            locations={locations}
+            onResultSelect={this.setEndLocation.bind(this)}
+            maxResults={5}
+            />
+          </View>
+
         </View>
-
-      </View>
-    );
+      );
+    }
   }
 
   setStartLocation(result) {
