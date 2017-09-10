@@ -12,7 +12,7 @@ import {
     Image,
 } from 'react-native';
 
-const styles = require( "../../assets/css/style");
+import { styles } from 'app/css';
 
 export default class TBTItem extends Component {
 

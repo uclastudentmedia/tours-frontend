@@ -10,7 +10,9 @@ import {
 
 import { LoadAllData } from 'app/DataManager';
 
-const styles = require("../../assets/css/style");
+import { styles } from 'app/css';
+
+import { logoArtboard } from 'app/Assets';
 
 export default class LoadingView extends Component {
   static propTypes = {
@@ -53,7 +55,7 @@ export default class LoadingView extends Component {
   render() {
     return (
       <Image style={styles.container}
-             source={require('../../assets/images/logoArtboard.png')}>
+             source={logoArtboard}>
         <View style={styles.loading}>
           <ActivityIndicator
             color={'yellow'}

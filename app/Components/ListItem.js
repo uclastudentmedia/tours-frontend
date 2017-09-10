@@ -12,9 +12,9 @@ import {
     Image,
 } from 'react-native';
 
-import { renderImage } from 'app/Utils';
+import { RenderIcon } from 'app/Utils';
 
-const styles = require( "../../assets/css/style");
+import { styles } from 'app/css';
 
 export default class ListItem extends Component {
 
@@ -25,7 +25,7 @@ export default class ListItem extends Component {
     render() {
         return (
             <View style={styles.wrapper}>
-                {renderImage(this.props.rowData.catID)}
+                {RenderIcon(this.props.rowData.catID)}
                 <Text style={styles.baseText}>
                     <Text style={styles.locText}>
                         {this.props.rowData.loc}{'\n'}

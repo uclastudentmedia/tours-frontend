@@ -3,16 +3,15 @@
 /**
  * Created by danielhuang on 5/26/17.
  */
-const React = require("react-native");
+import React from 'react';
 import {
     StyleSheet,
     Dimensions
-} from "react-native";
-import MapView from 'react-native-maps'
+} from 'react-native';
 
 var {height, width} = Dimensions.get('window');
 
-module.exports = StyleSheet.create({
+export default StyleSheet.create({
     titleSec:{
         flex:.1,
         flexDirection:'row',
