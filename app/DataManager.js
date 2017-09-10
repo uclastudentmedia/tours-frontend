@@ -4,7 +4,12 @@
 //import { AsyncStorage } from 'react-native';
 import { AsyncStorage } from 'app/__fakes__/FakeAsyncStorage';
 
-import { Location } from 'app/DataTypes';
+import {
+  Location,
+  Category,
+  Tour,
+  IndoorBuilding
+} from 'app/DataTypes';
 
 /**
  * Constants
@@ -225,8 +230,7 @@ export async function GetLocationList() {
   /**
    * @return Array of Location objects
    */
-
-  var transformData = (data) => {
+  const transformData = (data) => {
     return data.map(loc => {
       // give images a full URL
       loc.images = loc.images.map(image => {
@@ -256,7 +260,13 @@ export async function GetCategoryList() {
   /**
    * @return Array of Category objects
    */
-  return getData(ENDPOINTS.CATEGORIES);
+  const transformData = (data) => {
+    return data.map(category => {
+      return new Category(category);
+    });
+  };
+
+  return getData(ENDPOINTS.CATEGORIES, transformData);
 }
 
 export async function GetCategoryById(id) {
@@ -272,7 +282,13 @@ export async function GetTourList() {
   /**
    * @return Array of Tour objects
    */
-  return getData(ENDPOINTS.TOURS);
+  const transformData = (data) => {
+    return data.map(tour => {
+      return new Tour(tour);
+    });
+  };
+
+  return getData(ENDPOINTS.TOURS, transformData);
 }
 
 export async function GetTourById(id) {
@@ -288,7 +304,12 @@ export async function GetIndoorBuildingList() {
   /**
    * @return Array of Building object
    */
-  return getData(ENDPOINTS.INDOOR_BUILDINGS);
+  const transformData = (data) => {
+    return data.map(building => {
+      return new IndoorBuilding(building);
+    });
+  };
+  return getData(ENDPOINTS.INDOOR_BUILDINGS, transformData);
 }
 
 export async function GetIndoorBuildingById(id) {

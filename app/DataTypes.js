@@ -12,3 +12,6 @@ class ImmutableObject {
 }
 
 export class Location extends ImmutableObject {}
+export class Category extends ImmutableObject {}
+export class Tour extends ImmutableObject {}
+export class IndoorBuilding extends ImmutableObject {}
