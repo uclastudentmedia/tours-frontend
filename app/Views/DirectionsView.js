@@ -15,7 +15,7 @@ import {
 
 import { GetLandmarkList } from 'app/DataManager';
 
-const styles = require( "../../assets/css/style");
+import { styles } from 'app/css';
 
 
 export default class DirectionsView extends Component

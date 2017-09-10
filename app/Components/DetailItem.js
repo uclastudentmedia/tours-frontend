@@ -10,7 +10,9 @@ import {
     Image,
 } from 'react-native';
 
-const styles = require( "../../assets/css/style");
+import { RenderIcon } from 'app/Utils';
+
+import { styles } from 'app/css';
 
 export default class DetailItem extends Component {
 
@@ -21,48 +23,10 @@ export default class DetailItem extends Component {
         };
     }
 
-    renderImage(){
-        switch(this.props.rowData.catID)
-        {
-            //description
-            case 1:
-                return(
-                    <Image style={styles.placeholder} source={require('../../assets/new_sizes/1.png')}/>
-                );
-                break;
-            //image
-            case 2:
-                return(
-                    <Image style={styles.placeholder} source={require('../../assets/new_sizes/2.png')}/>
-                );
-                break;
-            //parking
-            case 3:
-                return(
-                    <Image style={styles.placeholder} source={require('../../assets/new_sizes/3.png')}/>
-                );
-                break;
-            //menu
-            case 4:
-                return(
-                    <Text></Text>
-                );
-                break;
-            //priority
-            case 5:
-                return(<Text></Text>);
-                break;
-            //hours
-            case 6:
-                return(<Text></Text>);
-                break;
-        }
-    }
-
     render() {
         return (
             <View style={styles.wrapper}>
-                {this.renderImage()}
+                {RenderIcon(this.props.rowData.category_id)}
                 <Text style={styles.locText}>
                     {this.props.rowData.loc}{'\n'}
                     <Text style={styles.distText}>

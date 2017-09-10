@@ -1,17 +1,16 @@
 /**
  * Created by Daniel on 2/3/2017.
  */
-const React = require("react-native");
+import React from 'react';
 import {
     StyleSheet,
     Dimensions
-} from "react-native";
-import MapView from 'react-native-maps'
+} from 'react-native';
 
 var {height, width} = Dimensions.get('window');
 var windowWidth = Dimensions.get('window').width;
 
-module.exports = StyleSheet.create({
+export default StyleSheet.create({
     baseText:{
         fontFamily:'sans-serif-thin'
     },

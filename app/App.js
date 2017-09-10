@@ -13,7 +13,7 @@ import {
   DetailsView
 } from 'app/Views';
 
-import styles from '../assets/css/App';
+import { AppStyle } from 'app/css';
 
 
 function makeIcon(name) {
@@ -90,11 +90,11 @@ const MainScreenNavigator = TabNavigator(
       inactiveTintColor: Platform.OS === 'ios' ? '#f06595' : '#ccc',
       showIcon: true,
       showLabel: true,
-      tabStyle: styles.tab,
-      indicatorStyle: styles.indicator,
-      labelStyle: styles.label,
-      iconStyle: styles.icon,
-      style: styles.tabbar,
+      tabStyle: AppStyle.tab,
+      indicatorStyle: AppStyle.indicator,
+      labelStyle: AppStyle.label,
+      iconStyle: AppStyle.icon,
+      style: AppStyle.tabbar,
     },
   },
 );
