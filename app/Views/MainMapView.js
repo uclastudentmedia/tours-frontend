@@ -34,33 +34,10 @@ import {
 
 import { GetLandmarkList, GetLandmarkById } from 'app/DataManager';
 
+import { GetIcon, dot1 } from 'app/Assets';
+
 const styles = require( "../../assets/css/style");
 import CustomMapStyle from '../../assets/css/Map';
-
-const MAPIMAGES = {
-  image1: require('../../assets/new_sizes/1.png'), // statically analyzed
-  image2: require('../../assets/new_sizes/2.png'), // statically analyzed
-  image3: require('../../assets/new_sizes/3.png'), // statically analyzed
-  image4: require('../../assets/new_sizes/4.png'), // statically analyzed
- // image5: require('../../assets/new_sizes/5.png'), // statically analyzed
-  image6: require('../../assets/new_sizes/6.png'), // statically analyzed
-  image7: require('../../assets/new_sizes/7.png'), // statically analyzed
-  image8: require('../../assets/new_sizes/8.png'), // statically analyzed
-  image9: require('../../assets/new_sizes/9.png'), // statically analyzed
-  image10: require('../../assets/new_sizes/10.png'), // statically analyzed
-  image11: require('../../assets/new_sizes/11.png'), // statically analyzed
-  image12: require('../../assets/new_sizes/12.png'), // statically analyzed
-  image13: require('../../assets/new_sizes/13.png'), // statically analyzed
-  image14: require('../../assets/new_sizes/14.png'), // statically analyzed
-  image15: require('../../assets/new_sizes/15.png'), // statically analyzed
-  image16: require('../../assets/new_sizes/17.png'), // statically analyzed
-  image18: require('../../assets/new_sizes/18.png'), // statically analyzed
-  image20: require('../../assets/new_sizes/20.png'), // statically analyzed
-  image61: require('../../assets/new_sizes/61.png'), // statically analyzed
-  image321: require('../../assets/new_sizes/321.png'), // statically analyzed
-  image961: require('../../assets/new_sizes/961.png'), // statically analyzed
-  image1285: require('../../assets/new_sizes/1285.png'), // statically analyzed
-}
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 var mapSettinger='popular';
@@ -399,7 +376,7 @@ export default class MainMapView extends Component {
                     onPress={this.onPressMap}
                     >
                     <MapView.Marker
-                        image={require('../../assets/images/dot1.png')}
+                        image={dot1}
                         coordinate={initialPosition.coords}
                     />
 
@@ -411,7 +388,7 @@ export default class MainMapView extends Component {
                           coordinate={{latitude: marker.lat, longitude: marker.long}}
                           title={marker.title}
                           description={marker.description}
-                          image={MAPIMAGES['image' + marker.srcID]}
+                          image={GetIcon(marker.srcID)}
                           onPress={this.onPressMarker(marker.id)}
                           onCalloutPress={this.onCalloutPress(marker.id)}
                         />
