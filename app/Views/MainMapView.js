@@ -23,12 +23,12 @@ import {
   DistancePrioritize,
   popPrioritize,
   LocToData,
-  LocToIcon
 } from 'app/Utils';
 
 import { GetLandmarkList } from 'app/DataManager';
 
 const styles = require( "../../assets/css/style");
+import CustomMapStyle from '../../assets/css/Map';
 
 const MAPIMAGES = {
   image1: require('../../assets/new_sizes/1.png'), // statically analyzed
@@ -167,6 +167,21 @@ export default class MainMapView extends Component {
         }
         markersTemp.splice(0,1);
         markersTemp.slice(0,10);
+
+        // add the selected location if needed
+        const selected = this.state.selectedLocation;
+        if (selected && !markersTemp.find(l => l.id == selected.id)) {
+          console.log(selected);
+          markersTemp.push({
+            title: selected.name,
+            lat: selected.lat,
+            long: selected.long,
+            srcID: selected.category_id,
+            location: selected.name,
+            id: selected.id,
+          });
+        }
+
         this.setState({
             markers:markersTemp
         });
@@ -300,6 +315,45 @@ export default class MainMapView extends Component {
         tbt = true;
     }
 
+    // marker deselected
+    onPressMap = () => {
+      this.setState({
+        selectedLocation: undefined,
+      });
+    }
+
+    // marker selected
+    onPressMarker = (id) => {
+      return (event) => {
+        GetLandmarkById(id)
+          .then(landmark => {
+            console.log(landmark);
+            this.setState({
+              selectedLocation: landmark,
+            });
+          })
+          .catch(console.error);
+      };
+    }
+
+    // TODO: this should work when Daniel's branch is merged
+    onCalloutPress = (id) => {
+      return (event) => {
+        GetLandmarkById(id)
+          .then(landmark => {
+            console.log(landmark);
+            console.log(this.props);
+            this.props.navigation.navigate('Details', {
+                id: 'Details',
+                rowDat: landmark,
+                locID: id,
+                title: landmark.name,
+            });
+          })
+          .catch(console.error);
+      };
+    }
+
     render() {
         if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
         {
@@ -327,9 +381,12 @@ export default class MainMapView extends Component {
                     hideBack={true}
                 />
                 <MapView style={styles.map}
+                    provider="google"
                     initialRegion={this.state.region}
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
+                    customMapStyle={CustomMapStyle}
+                    onPress={this.onPressMap}
                     >
                     <MapView.Marker
                         image={require('../../assets/images/dot1.png')}
@@ -345,6 +402,8 @@ export default class MainMapView extends Component {
                           title={marker.title}
                           description={marker.description}
                           image={MAPIMAGES['image' + marker.srcID]}
+                          onPress={this.onPressMarker(marker.id)}
+                          onCalloutPress={this.onCalloutPress(marker.id)}
                         />
                       )
                     )}
