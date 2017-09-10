@@ -12,7 +12,7 @@ import {
 
 import { RenderIcon } from 'app/Utils';
 
-const styles = require( "../../assets/css/style");
+import { styles } from 'app/css';
 
 export default class DetailItem extends Component {
 

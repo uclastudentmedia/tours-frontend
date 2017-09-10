@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import { GetLandmarkList } from 'app/DataManager';
-import {popPrioritize, LocToData,renderImage} from '../Utils'
+import {popPrioritize, LocToData,RenderIcon} from 'app/Utils'
+
+import { styles } from 'app/css';
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
-const styles = require( "../../assets/css/style");
 
 export default class LocationListView extends Component
 {
@@ -121,7 +122,7 @@ export default class LocationListView extends Component
               renderRow={(rowdata) =>
                 <TouchableOpacity onPress={this.gotoDescription.bind(this, rowdata)} style={styles.wrapper}>
                     <View style={styles.wrapper}>
-                      {renderImage(rowdata.catID)}
+                      {RenderIcon(rowdata.catID)}
                       <Text style={styles.baseText}>
                         <Text style={styles.locText}>
                           {rowdata.loc}{'\n'}

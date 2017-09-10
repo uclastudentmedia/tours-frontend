@@ -11,7 +11,7 @@ import {
   TBTItem,
 } from 'app/Components';
 
-const styles = require( "../../assets/css/style");
+import { styles } from 'app/css';
 
 export default class DirectionsView extends Component
 {

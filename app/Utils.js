@@ -7,8 +7,7 @@ import { Image, Navigator } from 'react-native';
 
 import { GetIcon } from 'app/Assets';
 
-const styles = require( "../assets/css/style");
-const dstyles= require('../assets/css/detailStyle');
+import { styles, DetailStyle } from 'app/css';
 
 export function feetCalc(lat,long,curLat,curLong){
     // haversine :: (Num, Num) -> (Num, Num) -> Num
@@ -181,7 +180,7 @@ export function LocToData(location,data){
 export function RenderIcon(category, view) {
     let styleClass;
     if(view==='details'){
-        styleClass=dstyles.icon;
+        styleClass=DetailStyle.icon;
     }
     else{
         styleClass=styles.placeholder;

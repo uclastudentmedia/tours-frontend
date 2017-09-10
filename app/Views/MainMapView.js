@@ -29,8 +29,7 @@ import {popLocation} from 'app/LocationPopManager'
 
 import { GetIcon, dot1 } from 'app/Assets';
 
-const styles = require( "../../assets/css/style");
-import CustomMapStyle from '../../assets/css/Map';
+import { styles, CustomMapStyle } from 'app/css';
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 var mapSettinger='popular';
