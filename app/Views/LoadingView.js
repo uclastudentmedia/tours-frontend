@@ -8,9 +8,7 @@ import {
     Button
 } from 'react-native';
 
-import { NavigationActions } from 'react-navigation';
-
-import { GetLocationList } from 'app/DataManager';
+import { LoadAllData } from 'app/DataManager';
 
 const styles = require("../../assets/css/style");
 
@@ -40,12 +38,12 @@ export default class LoadingView extends Component {
   }
 
   async getAPIData() {
-    await GetLocationList();
+    await LoadAllData();
   }
 
   // create 5 second artificial loading time
   async testDelay() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
       }, 5000);

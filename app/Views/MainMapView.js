@@ -77,7 +77,6 @@ let tbt = false;
 
 export default class MainMapView extends Component {
 
-
     constructor(props){
         super(props);
 
@@ -102,16 +101,13 @@ export default class MainMapView extends Component {
     }
 
     componentDidMount() {
-
         this.getPosition();
-
-        this.getData()
-            .then(() => this.updateMapIcons())
-            .catch(console.error);
+        this.getData();
+        this.updateMapIcons();
     }
 
-    async getData() {
-        this.landmarks = await GetLocationList();
+    getData() {
+        this.landmarks = GetLocationList();
     }
 
     componentWillUnmount(){
@@ -386,32 +382,24 @@ export default class MainMapView extends Component {
     // marker selected
     onPressMarker = (id) => {
       return (event) => {
-        GetLocationById(id)
-          .then(landmark => {
-            console.log(landmark);
-            this.setState({
-              selectedLocation: landmark,
-            });
-          })
-          .catch(console.error);
+        this.setState({
+          selectedLocation: GetLocationById(id),
+        })
       };
     }
 
     // TODO: this should work when Daniel's branch is merged
     onCalloutPress = (id) => { 
       return (event) => {
-        GetLocationById(id)
-          .then(landmark => {
-            console.log(landmark);
-            console.log(this.props);
-            this.props.navigation.navigate('Details', {
-                id: 'Details',
-                rowDat: landmark,
-                locID: id,
-                title: landmark.name,
-            });
-          })
-          .catch(console.error);
+        const location = GetLocationById(id);
+        console.log(location);
+
+        this.props.navigation.navigate('Details', {
+            id: 'Details',
+            rowDat: location,
+            locID: id,
+            title: location.name,
+        });
       };
     }
 

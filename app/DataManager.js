@@ -29,6 +29,8 @@ const ENDPOINTS = {
   INDOOR_BUILDINGS: '/indoor/building/',
 };
 
+// has LoadAllData been called?
+let DATA_LOADED = false;
 
 /**
  * Helper functions
@@ -169,9 +171,9 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
    */
 
   // check if data is in SyncStorage
-  let cachedData = syncStorage.getItem(endpoint);
-  if (cachedData !== null) {
-    return cachedData;
+  let cachedDataSync = syncStorage.getItem(endpoint);
+  if (cachedDataSync !== null) {
+    return cachedDataSync;
   }
 
   // check if data is in AsyncStorage
@@ -179,9 +181,10 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
     let currentTime = Date.now();
     let cacheTime = await getCacheTime(endpoint);
 
+    // this request was updated recently, try to use the cached value
     if (currentTime - cacheTime < CACHE_EXPIRY) {
-      // this request was updated recently, try to use the cached value
       let cachedData = await getCachedData(endpoint);
+
       if (cachedData !== null) {
         return cachedData;
       }
@@ -189,17 +192,38 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
   }
 
   // there is no up-to-date cached data, need to query server
-  let newData = await queryEndpoint(endpoint, transformData);
+  let newData;
+  try {
+    newData = await queryEndpoint(endpoint, transformData);
+  } catch(error) {
+    console.error(error);
+    return null;
+  }
 
-  // save the data in the cache
-  syncStorage.setItem(endpoint, newData);
+  if (newData !== null) {
+    // save the data in the cache
+    syncStorage.setItem(endpoint, newData);
 
-  if (useAsyncStorage) {
-    await setCachedData(endpoint, newData);
-    await updateCacheTime(endpoint);
+    if (useAsyncStorage) {
+      await setCachedData(endpoint, newData);
+      await updateCacheTime(endpoint);
+    }
   }
 
   return newData;
+}
+
+function getDataSync(endpoint) {
+  /**
+   * Fetch data synchronously. Must be called after LoadAllData has resolved.
+   */
+
+  if (!DATA_LOADED) {
+    console.error('The data has not been loaded yet.');
+    return;
+  }
+
+  return syncStorage.getItem(endpoint);
 }
 
 async function clearCache() {
@@ -209,7 +233,7 @@ async function clearCache() {
   let keys = syncStorage.getAllKeys();
   keys.forEach(key => {
     if (key.startsWith(CACHE_PREFIX)) {
-      AsyncStorage.removeItem(key);
+      syncStorage.removeItem(key);
     }
   });
 
@@ -226,97 +250,116 @@ async function clearCache() {
  * Exports
  */
 
-export async function GetLocationList() {
+export async function LoadAllData() {
   /**
-   * @return Array of Location objects
+   * Sends API requests to get all of the data needed from the server. This
+   * only needs to be called one time when the app is initially loaded.
    */
-  const transformData = (data) => {
-    return data.map(loc => {
-      // give images a full URL
-      loc.images = loc.images.map(image => {
-        for (let size in image) {
-          image[size] = API_DOMAIN + image[size];
-        }
-        return image;
+
+  if (DATA_LOADED) {
+    console.warn('LoadAllData has already been called.');
+    return;
+  }
+
+  await Promise.all([
+
+    // Locations
+    getData(ENDPOINTS.LOCATIONS, (data) => {
+      return data.map(loc => {
+        // give images a full URL
+        loc.images = loc.images.map(image => {
+          for (let size in image) {
+            image[size] = API_DOMAIN + image[size];
+          }
+          return image;
+        });
+
+        return new Location(loc);
       });
+    }),
 
-      return new Location(loc);
-    });
-  };
+    // Categories
+    getData(ENDPOINTS.CATEGORIES, (data) => {
+      return data.map(category => {
+        return new Category(category);
+      });
+    }),
 
-  return await getData(ENDPOINTS.LOCATIONS, transformData);
+    // Tours
+    getData(ENDPOINTS.TOURS, (data) => {
+      return data.map(tour => {
+        return new Tour(tour);
+      });
+    }),
+
+    // IndoorBuildings
+    getData(ENDPOINTS.INDOOR_BUILDINGS, (data) => {
+      return data.map(building => {
+        return new IndoorBuilding(building);
+      });
+    }),
+
+  ]);
+
+  DATA_LOADED = true;
 }
 
-export async function GetLocationById(id) {
+export function GetLocationList() {
+  /**
+   * @return Location[]
+   */
+  return getDataSync(ENDPOINTS.LOCATIONS);
+}
+
+export function GetLocationById(id) {
   /**
    * @param id int
-   * @return Location object
+   * @return Location
    */
-  return GetLocationList()
-    .then(locations => find(locations, 'id', id));
+  return find(GetLocationList(), 'id', id);
 }
 
-export async function GetCategoryList() {
+export function GetCategoryList() {
   /**
-   * @return Array of Category objects
+   * @return Category[]
    */
-  const transformData = (data) => {
-    return data.map(category => {
-      return new Category(category);
-    });
-  };
-
-  return getData(ENDPOINTS.CATEGORIES, transformData);
+  return getDataSync(ENDPOINTS.CATEGORIES);
 }
 
-export async function GetCategoryById(id) {
+export function GetCategoryById(id) {
   /**
    * @param id int
-   * @return Category object
+   * @return Category
    */
-  return GetCategoryList()
-    .then(categories => find(categories, 'id', id));
+  return find(GetCategoryList(), 'id', id);
 }
 
-export async function GetTourList() {
+export function GetTourList() {
   /**
-   * @return Array of Tour objects
+   * @return Tour[]
    */
-  const transformData = (data) => {
-    return data.map(tour => {
-      return new Tour(tour);
-    });
-  };
-
-  return getData(ENDPOINTS.TOURS, transformData);
+  return getDataSync(ENDPOINTS.TOURS);
 }
 
-export async function GetTourById(id) {
+export function GetTourById(id) {
   /**
    * @param id int
-   * @return Tour object
+   * @return Tour
    */
-  return GetTourList()
-    .then(tours => find(tours, 'id', id));
+   return find(GetTourList(), 'id', id);
 }
 
-export async function GetIndoorBuildingList() {
+export function GetIndoorBuildingList() {
   /**
-   * @return Array of Building object
+   * @return IndoorBuilding[]
    */
-  const transformData = (data) => {
-    return data.map(building => {
-      return new IndoorBuilding(building);
-    });
-  };
-  return getData(ENDPOINTS.INDOOR_BUILDINGS, transformData);
+  return getDataSync(ENDPOINTS.INDOOR_BUILDINGS);
 }
 
-export async function GetIndoorBuildingById(id) {
+export function GetIndoorBuildingById(id) {
   /**
    * @param id int landmark id
-   * @return Building object
+   * @return IndoorBuilding
    */
-  return GetIndoorBuildingList()
-    .then(buildings => find(buildings, 'landmark_id', id));
+  return find(GetIndoorBuildingList(), 'landmark_id', id);
 }
