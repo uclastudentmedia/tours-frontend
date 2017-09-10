@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   Platform,
 } from 'react-native';
-
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 
@@ -11,6 +10,7 @@ import {
   MainMapView,
   LocationListView,
   DirectionsView,
+  DetailsView
 } from 'app/Views';
 
 import styles from '../assets/css/App';
@@ -36,7 +36,7 @@ function makeIcon(name) {
 class MainMapScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Maps',
-    tabBarIcon: makeIcon('tv')
+    tabBarIcon: makeIcon('map')
   };
 
   render() {
@@ -49,7 +49,7 @@ class MainMapScreen extends Component {
 class DirectionsScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Directions',
-    tabBarIcon: makeIcon('music-note')
+    tabBarIcon: makeIcon('navigation')
   };
 
   render() {
@@ -61,8 +61,8 @@ class DirectionsScreen extends Component {
 
 class LocationListScreen extends Component {
   static navigationOptions = {
-    tabBarLabel: 'Nearby',
-    tabBarIcon: makeIcon('account-box')
+    tabBarLabel: 'Explore',
+    tabBarIcon: makeIcon('near-me')
   };
 
   render() {
@@ -77,13 +77,14 @@ class LocationListScreen extends Component {
  * Tab Navigator
  */
 
-const MainNavigator = TabNavigator(
+const MainScreenNavigator = TabNavigator(
   {
     MainMap: { screen: MainMapScreen },
     Directions: { screen: DirectionsScreen },
     LocationList: { screen: LocationListScreen },
   },
   {
+    tabBarPosition: 'bottom',
     tabBarOptions: {
       activeTintColor:   Platform.OS === 'ios' ? '#e91e63' : '#fff',
       inactiveTintColor: Platform.OS === 'ios' ? '#f06595' : '#ccc',
@@ -95,8 +96,27 @@ const MainNavigator = TabNavigator(
       iconStyle: styles.icon,
       style: styles.tabbar,
     },
+  },
+);
+
+MainScreenNavigator.navigationOptions = {
+  header: null,
+};
+
+
+/**
+ * Stack Navigator
+ */
+const MainNavigator = StackNavigator(
+  {
+    Home: { screen: MainScreenNavigator },
+    Details: { screen: DetailsView },
+  },
+  {
+
   }
 );
+
 
 
 class App extends Component {
