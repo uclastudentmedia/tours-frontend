@@ -56,3 +56,6 @@ fastlane/screenshots
 # vim
 *.swp
 *.swo
+
+debug.log
+package-lock.json

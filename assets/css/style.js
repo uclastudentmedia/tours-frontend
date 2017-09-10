@@ -67,6 +67,16 @@ module.exports = StyleSheet.create({
     locations:{
         width: width - 40
     },
+    locList:{
+        flex:1,
+        width:width
+    }
+    ,
+    listHeader:{
+        flex:4,
+        width:width
+    }
+    ,
     distText:{
         fontSize:16,
         color: '#B8B8B8'
@@ -77,7 +87,7 @@ module.exports = StyleSheet.create({
     },
     locText:{
         padding:20,
-        fontSize:18,
+        fontSize:25,
         color: '#5b73a4'
     },
     loadingLocText:{
@@ -131,9 +141,12 @@ module.exports = StyleSheet.create({
         top: 40
     },
     wrapper: {
+        flex:1,
         flexWrap: 'wrap',
         alignItems: 'flex-start',
-        flexDirection:'row'
+        flexDirection:'row',
+        height:80,
+        width:width,
     },
     btnContainer: {
         flex: 1,

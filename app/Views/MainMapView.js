@@ -19,22 +19,15 @@ import {
 import { debounce } from 'lodash';
 
 import MapView from 'react-native-maps';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import SearchBar from 'react-native-searchbar';
 
 import {
-  DistancePrioritize,
   popPrioritize,
   LocToData,
-  LocToIcon
 } from 'app/Utils';
 
-import {
-  ListItem,
-  TBTItem,
-} from 'app/Components';
-
 import { GetLocationList, GetLocationById } from 'app/DataManager';
+import {popLocation} from 'app/LocationPopManager'
 
 const styles = require( "../../assets/css/style");
 import CustomMapStyle from '../../assets/css/Map';
@@ -129,9 +122,7 @@ export default class MainMapView extends Component {
 
           case 'distance':
             //if map setting is nearby, prioritize top 10 location by distance
-            temp = DistancePrioritize(initialPosition.coords.latitude,
-                                      initialPosition.coords.longitude,
-                                      val);
+
             break;
 
           case 'popular':
@@ -142,8 +133,7 @@ export default class MainMapView extends Component {
                                  this.state.region.latitude,
                                  this.state.region.longitude,
                                  this.state.region.latitudeDelta,
-                                 this.state.region.longitudeDelta);
-            //console.log("region",this.state.region);
+                                 this.state.region.longitudeDelta,"All");
             break;
         }
 
@@ -389,7 +379,7 @@ export default class MainMapView extends Component {
     }
 
     // TODO: this should work when Daniel's branch is merged
-    onCalloutPress = (id) => { 
+    onCalloutPress = (id) => {
       return (event) => {
         const location = GetLocationById(id);
         console.log(location);

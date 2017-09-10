@@ -5,19 +5,16 @@ import {
   Text,
   View,
 } from 'react-native';
-
-import { renderImage, feetCalc } from 'app/Utils';
-
-import {
-  DetailItem,
-} from 'app/Components';
-
 const styles = require( "../../assets/css/style");
 const dstyles= require('../../assets/css/detailStyle');
 
 export default class DetailsView extends Component
 {
-  constructor(props){
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params.title}`
+  });
+
+  constructor(props) {
     super(props);
     this.state = {
       results: '',
