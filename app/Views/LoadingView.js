@@ -54,13 +54,9 @@ export default class LoadingView extends Component {
 
   render() {
     return (
-      <Image style={styles.container}
-             source={logoArtboard}>
+      <Image style={styles.container} source={logoArtboard}>
         <View style={styles.loading}>
-          <ActivityIndicator
-            color={'yellow'}
-            size={'large'}
-          />
+          <ActivityIndicator color={'yellow'} size={'large'} />
         </View>
       </Image>
     );

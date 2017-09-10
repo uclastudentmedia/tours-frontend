@@ -7,8 +7,9 @@
 import React, { Component } from 'react';
 import { Image, Navigator } from 'react-native';
 
-import { GetIcon } from 'app/Assets';
+import { GetLocationList, GetCategoryByName } from 'app/DataManager';
 
+import { GetIcon } from 'app/Assets';
 import { styles, DetailStyle } from 'app/css';
 
 export function feetCalc(lat,long,curLat,curLong){
@@ -44,29 +45,12 @@ export function feetCalc(lat,long,curLat,curLong){
     return FeetConverter(haversine([lat,long],[curLat,curLong]));
 }
 
-export function popPrioritize(val,lat,long,latD,longD, category){
-    if(!val) {
+export function popPrioritize(lat,long,latD,longD, categoryName = 'All'){
+    const locations = GetLocationList();
+    if(!locations) {
         return [];
     }
-    var catDict=
-        {
-            'All':'',
-            'Parking':1,
-            'Shop':2,
-            'Theater':3,
-            'Bank':4,
-            'Hospital':6,
-            'Gym':7,
-            'Info':8,
-            'Library':9,
-            'Police':10,
-            'POI':11,
-            'Apartment':12,
-            'Lecture Hall':13,
-            'Food':14,
-            'Garden':18,
-            'Computer Lab':20,
-        };
+
     //create rectangular area
     //est topLeft and bottomRight long/lat based on long,lat, long delta, and lat delta
     const topLeftCor = {
@@ -78,12 +62,13 @@ export function popPrioritize(val,lat,long,latD,longD, category){
         long:long-(longD/2)
     };
 
+    console.log(topLeftCor, bottomRight);
+    console.log(locations[0]);
+
     //filter out locations outside of viewport
     var locInView=[];
-    //sort everything in val
-    var tempRes=val.sort(function(a,b){return a.priority-b.priority;});
     //loop through all locations to filter by: zoom level
-    tempRes=tempRes.filter(function(loc){
+    var tempRes = locations.filter(function(loc){
         if(loc.long > topLeftCor.long ||
             loc.long < bottomRight.long ||
             loc.lat > bottomRight.lat ||
@@ -95,12 +80,23 @@ export function popPrioritize(val,lat,long,latD,longD, category){
             return true;
         }
     });
+
     //check if category filter exists, if it doesn't, set category to all
-    if(!(category in catDict)){ category = 'All'}
+    const category = GetCategoryByName(categoryName);
+    if (category === null) {
+        categoryName = 'All';
+    }
+
     //check if category is parking, if so reverse priority (most obscure parking lots to most popular parking lots)
-    if(category==="Parking"){tempRes=tempRes.sort(function(a,b){return b.priority-a.priority});}
-    if(category==='All'){
-        for(i=0; i<20;i++){
+    if(categoryName === 'Parking'){
+        tempRes=tempRes.sort(function(a,b){return b.priority-a.priority});
+    }
+    else {
+        tempRes=tempRes.sort(function(a,b){return a.priority-b.priority;});
+    }
+
+    if (categoryName === 'All') {
+        for(let i=0; i<tempRes.length;i++){
             locInView.push({
                 location: tempRes[i].name,
                 lat: tempRes[i].lat,
@@ -113,9 +109,9 @@ export function popPrioritize(val,lat,long,latD,longD, category){
         }
     } else {
         //list locations depending on what location category was called
-        for(i=0; i<tempRes.length;i++){
+        for(let i=0; i<tempRes.length;i++){
             //Select for food category and displays food locations within 800 feet
-            if(tempRes[i].category_id === catDict[category] ){
+            if(tempRes[i].category_id === category.id ){
                 locInView.push({
                     location: tempRes[i].name,
                     lat: tempRes[i].lat,
@@ -129,46 +125,27 @@ export function popPrioritize(val,lat,long,latD,longD, category){
         }
     }
 
-    //save top 10 results to locInView
-    for(var i = 0; i < 10 && i < tempRes.length; i++){
-        locInView.push({
-            location: tempRes[i].name,
-            lat: tempRes[i].lat,
-            long: tempRes[i].long,
-            rank: tempRes[i].priority,
-            distanceAway: feetCalc(lat,long,tempRes[i].lat,tempRes[i].long),
-            category: tempRes[i].category_id,
-            id: tempRes[i].id
-        });
-    }
     return locInView.slice(0, 10);
 }
 
-export function DistancePrioritize(currentLat,currentLong, val){
-    if (!val) {
+export function DistancePrioritize(currentLat, currentLong) {
+    const locations = GetLocationList();
+    if (!locations) {
         return [];
     }
-    var DistAway = [];
-    for(var i = 0; i<val.length; i++){
-        DistAway.push({
-            location:val[i].name,
-            distanceAway:feetCalc(currentLat, currentLong,
-                                  val[i].lat, val[i].long),
-            lat:val[i].lat,
-            long:val[i].long,
-            category:val[i].category_id,
-        });
-    }
-    DistAway.sort(function(a,b){
-        if(a.distanceAway<b.distanceAway){
-            return -1;
-        }
-        if(a.distanceAway>b.distanceAway){
-            return 1;
-        }
-        return 0;
+
+    var DistAway = locations.map(loc => {
+        return {
+          loc: loc,
+          distanceAway:feetCalc(currentLat, currentLong,
+                                loc.lat, loc.long),
+        };
     });
-    return DistAway.slice(0,10);
+    DistAway.sort((a,b) => {
+      return a.distanceAway - b.distanceAway;
+    });
+
+    return DistAway.slice(0,10).map(obj => obj.loc);
 }
 
 //given a location name (string), returns data object

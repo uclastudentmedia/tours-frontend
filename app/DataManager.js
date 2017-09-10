@@ -319,6 +319,14 @@ export function GetLocationById(id) {
   return find(GetLocationList(), 'id', id);
 }
 
+export function GetLocationByName(name) {
+  /**
+   * @param name string
+   * @return Location
+   */
+  return find(GetLocationList(), 'name', name);
+}
+
 export function GetCategoryList() {
   /**
    * @return Category[]
@@ -332,6 +340,14 @@ export function GetCategoryById(id) {
    * @return Category
    */
   return find(GetCategoryList(), 'id', id);
+}
+
+export function GetCategoryByName(name) {
+  /**
+   * @param name string
+   * @return Category
+   */
+  return find(GetCategoryList(), 'name', name);
 }
 
 export function GetTourList() {

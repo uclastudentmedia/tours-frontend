@@ -75,11 +75,11 @@ export default class LocationListView extends Component
       }
       //Get list of top 10 locations
       //edit: need to change to current gps location, NOT initial position
-      const temp = popPrioritize(val,
-          this.initialRegion.latitude,
-          this.initialRegion.longitude,
-          this.initialRegion.latitudeDelta,
-          this.initialRegion.longitudeDelta,category);
+      const temp = popPrioritize(this.initialRegion.latitude,
+                                 this.initialRegion.longitude,
+                                 this.initialRegion.latitudeDelta,
+                                 this.initialRegion.longitudeDelta,
+                                 category);
       let locTemp=[];
       console.log("templength"+temp.length);
       for(var i = 0; i < temp.length; i++) {

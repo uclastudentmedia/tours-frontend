@@ -105,16 +105,15 @@ export default class MainMapView extends Component {
           default:
             //if map setting is campus map. prioritize top 10 locations by popularity/category
             //this is default
-            temp = popPrioritize(val,
-                                 this.state.region.latitude,
+            temp = popPrioritize(this.state.region.latitude,
                                  this.state.region.longitude,
                                  this.state.region.latitudeDelta,
-                                 this.state.region.longitudeDelta,"All");
+                                 this.state.region.longitudeDelta,
+                                 "Food & Beverage");
             break;
         }
 
-        var dataPop = [];
-        var markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
+        var markersTemp = [];
         for(var i = 0; i < temp.length; i++)
         {
             //push location data onto data
@@ -127,7 +126,6 @@ export default class MainMapView extends Component {
             {
                 locData.catID = specLoc.category_id;
             }
-            dataPop.push(locData);
 
             //push coordinate data into this.markers
             var markersData = {title:'',lat:0,long:0,srcID:1};
@@ -139,7 +137,6 @@ export default class MainMapView extends Component {
             markersData.id = temp[i].id;
             markersTemp.push(markersData);
         }
-        markersTemp.splice(0,1);
         markersTemp.slice(0,10);
 
         // add the selected location if needed
