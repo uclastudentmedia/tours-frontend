@@ -20,12 +20,11 @@ import MapView from 'react-native-maps';
 import SearchBar from 'react-native-searchbar';
 
 import {
-  DistancePrioritize,
   popPrioritize,
   LocToData,
 } from 'app/Utils';
 
-import { GetLandmarkList } from 'app/DataManager';
+import { GetLandmarkList, GetLandmarkById } from 'app/DataManager';
 import {popLocation} from 'app/LocationPopManager'
 
 const styles = require( "../../assets/css/style");
