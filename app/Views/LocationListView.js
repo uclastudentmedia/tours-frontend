@@ -7,6 +7,7 @@ import {
   View,
   ListView,
   TouchableOpacity,
+  Button
 } from 'react-native';
 import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import { GetLandmarkList } from 'app/DataManager';
@@ -43,7 +44,7 @@ export default class LocationListView extends Component
 
   async getData() {
         this.landmarks = await GetLandmarkList();
-        this.getLocations();
+        this.getLocations('All');
   }
 
   getPosition(){
@@ -63,7 +64,7 @@ export default class LocationListView extends Component
         this.setState({lastPosition: val});
     });
   }
-  getLocations(){
+  getLocations(category){
       val = this.landmarks;
       console.log("hi");
       console.log(this.landmarks);
@@ -76,7 +77,7 @@ export default class LocationListView extends Component
           this.initialRegion.latitude,
           this.initialRegion.longitude,
           this.initialRegion.latitudeDelta,
-          this.initialRegion.longitudeDelta,'Parking');
+          this.initialRegion.longitudeDelta,category);
       locTemp=[];
       console.log("templength"+temp.length);
       for(var i = 0; i < temp.length; i++) {
@@ -114,9 +115,6 @@ export default class LocationListView extends Component
     //id, the ListView will render that module
     return (
       <View style={styles.container}>
-          <View>
-
-          </View>
           <ListView
               enableEmptySections={true}
               dataSource={this.state.dataSource}

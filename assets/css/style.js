@@ -65,6 +65,16 @@ module.exports = StyleSheet.create({
     locations:{
         width: width - 40
     },
+    locList:{
+        flex:1,
+        width:width
+    }
+    ,
+    listHeader:{
+        flex:4,
+        width:width
+    }
+    ,
     distText:{
         fontSize:16,
         color: '#B8B8B8'
