@@ -8,7 +8,7 @@ import {
 
 import { NavigationActions } from 'react-navigation';
 
-import { GetLandmarkList } from 'app/DataManager';
+import { GetLocationList } from 'app/DataManager';
 
 const styles = require("../../assets/css/style");
 
@@ -38,7 +38,7 @@ export default class LoadingView extends Component {
   }
 
   async getAPIData() {
-    await GetLandmarkList();
+    await GetLocationList();
   }
 
   // create 5 second artificial loading time

@@ -4,6 +4,8 @@
 //import { AsyncStorage } from 'react-native';
 import { AsyncStorage } from 'app/__fakes__/FakeAsyncStorage';
 
+import { Location } from 'app/DataTypes';
+
 /**
  * Constants
  */
@@ -16,7 +18,7 @@ const API_DOMAIN = 'https://tours.bruinmobile.com';
 
 // API endpoints
 const ENDPOINTS = {
-  LANDMARKS: '/api/landmark/',
+  LOCATIONS: '/api/landmark/',
   CATEGORIES: '/api/category/',
   TOURS: '/api/tour/',
   INDOOR_BUILDINGS: '/indoor/building/',
@@ -219,35 +221,35 @@ async function clearCache() {
  * Exports
  */
 
-export async function GetLandmarkList() {
+export async function GetLocationList() {
   /**
-   * @return Array of Landmark objects
+   * @return Array of Location objects
    */
 
   var transformData = (data) => {
-    return data.map(landmark => {
+    return data.map(loc => {
       // give images a full URL
-      landmark.images = landmark.images.map(image => {
+      loc.images = loc.images.map(image => {
         for (let size in image) {
           image[size] = API_DOMAIN + image[size];
         }
         return image;
       });
 
-      return landmark;
+      return new Location(loc);
     });
   };
 
-  return await getData(ENDPOINTS.LANDMARKS, transformData);
+  return await getData(ENDPOINTS.LOCATIONS, transformData);
 }
 
-export async function GetLandmarkById(id) {
+export async function GetLocationById(id) {
   /**
    * @param id int
-   * @return Landmark object
+   * @return Location object
    */
-  return GetLandmarkList()
-    .then(landmarks => find(landmarks, 'id', id));
+  return GetLocationList()
+    .then(locations => find(locations, 'id', id));
 }
 
 export async function GetCategoryList() {

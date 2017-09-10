@@ -32,7 +32,7 @@ import {
   TBTItem,
 } from 'app/Components';
 
-import { GetLandmarkList, GetLandmarkById } from 'app/DataManager';
+import { GetLocationList, GetLocationById } from 'app/DataManager';
 
 const styles = require( "../../assets/css/style");
 import CustomMapStyle from '../../assets/css/Map';
@@ -109,7 +109,7 @@ export default class MainMapView extends Component {
     }
 
     async getData() {
-        this.landmarks = await GetLandmarkList();
+        this.landmarks = await GetLocationList();
     }
 
     componentWillUnmount(){
@@ -335,7 +335,7 @@ export default class MainMapView extends Component {
     // marker selected
     onPressMarker = (id) => {
       return (event) => {
-        GetLandmarkById(id)
+        GetLocationById(id)
           .then(landmark => {
             console.log(landmark);
             this.setState({
@@ -349,7 +349,7 @@ export default class MainMapView extends Component {
     // TODO: this should work when Daniel's branch is merged
     onCalloutPress = (id) => { 
       return (event) => {
-        GetLandmarkById(id)
+        GetLocationById(id)
           .then(landmark => {
             console.log(landmark);
             console.log(this.props);
