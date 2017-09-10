@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Created by Daniel on 2/10/2017.
  */
@@ -48,11 +50,11 @@ export function popPrioritize(val,lat,long,latD,longD){
     // We have data!!
     //create rectangular area
     //est topLeft and bottomRight long/lat based on long,lat, long delta, and lat delta
-    topLeftCor = {
+    const topLeftCor = {
         lat:lat-(latD/2),
         long:long+(longD/2)
     };
-    bottomRight = {
+    const bottomRight = {
         lat:lat+(latD/2),
         long:long-(longD/2)
     };

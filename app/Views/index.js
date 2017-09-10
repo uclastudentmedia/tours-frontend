@@ -1,3 +1,5 @@
+'use strict';
+
 export { default as DetailsView } from "./DetailsView.js";
 export { default as DirectionsView } from "./DirectionsView.js";
 export { default as LoadingView } from "./LoadingView.js";
