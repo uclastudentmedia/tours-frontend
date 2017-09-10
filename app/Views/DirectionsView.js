@@ -58,7 +58,6 @@ export default class DirectionsView extends Component
     else {
       return (
         <View style={styles.container}>
-          <Text style={styles.title}> This is the Directions View </Text>
 
           <Text>{JSON.stringify(directions)}</Text>
 
@@ -71,11 +70,12 @@ export default class DirectionsView extends Component
           <Text>To: {endLocation ? endLocation.name : ''}</Text>
 
 
-          <View style={{flexDirection: 'row', flex: 1}}>
+          <View style={{flexDirection: 'column', flex: 1}}>
             <SearchContainer style={{flexDirection: 'column'}}
             locations={locations}
             onResultSelect={this.setStartLocation.bind(this)}
             maxResults={5}
+            title="Start"
             />
             <SearchContainer style={{flexDirection: 'column'}}
             locations={locations}
