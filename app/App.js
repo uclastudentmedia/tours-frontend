@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   Platform,
 } from 'react-native';
-
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 
@@ -11,6 +10,7 @@ import {
   MainMapView,
   LocationListView,
   DirectionsView,
+  DetailsView
 } from 'app/Views';
 
 import styles from '../assets/css/App';
@@ -77,7 +77,7 @@ class LocationListScreen extends Component {
  * Tab Navigator
  */
 
-const MainNavigator = TabNavigator(
+const MainScreenNavigator = TabNavigator(
   {
     MainMap: { screen: MainMapScreen },
     Directions: { screen: DirectionsScreen },
@@ -98,6 +98,25 @@ const MainNavigator = TabNavigator(
     },
   },
 );
+
+MainScreenNavigator.navigationOptions = {
+  header: null,
+};
+
+
+/**
+ * Stack Navigator
+ */
+const MainNavigator = StackNavigator(
+  {
+    Home: { screen: MainScreenNavigator },
+    Details: { screen: DetailsView },
+  },
+  {
+
+  }
+);
+
 
 
 class App extends Component {

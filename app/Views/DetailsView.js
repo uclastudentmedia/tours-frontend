@@ -8,7 +8,11 @@ const dstyles= require('../../assets/css/detailStyle');
 
 export default class DetailsView extends Component
 {
-  constructor(props){
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params.title}`
+  });
+
+  constructor(props) {
     super(props);
     this.state = {
       results: '',

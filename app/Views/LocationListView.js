@@ -5,35 +5,36 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
-  ListView
+  ListView,
+  TouchableOpacity,
+  Button
 } from 'react-native';
+import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import { GetLandmarkList } from 'app/DataManager';
-import {popPrioritize, LocToData} from '../Utils'
-
-import { TBTItem } from 'app/Components';
+import {popPrioritize, LocToData,renderImage} from '../Utils'
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-var dataPop=[];
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
 const styles = require( "../../assets/css/style");
 
 export default class LocationListView extends Component
 {
   constructor(props){
-    super(props);
-    this.initialRegion = {
-        latitude: 34.070286,
-        longitude: -118.443413,
-        latitudeDelta: 0.0045,
-        longitudeDelta: 0.0345,
-    };
+      super(props);
+      this.initialRegion = {
+          latitude: 34.070286,
+          longitude: -118.443413,
+          latitudeDelta: 0.0045,
+          longitudeDelta: 0.0345,
+      };
+      this.dataPop = [];
       this.state = {
-          //Datasource is undefined with this code right now
-          dataSource:ds.cloneWithRows(dataPop),
+          dataSource: ds.cloneWithRows(this.dataPop),
           markers: [],
           region: this.initialRegion,
           results: []
       };
+      console.log(this.state);
   }
   componentDidMount() {
       this.getPosition();
@@ -43,7 +44,9 @@ export default class LocationListView extends Component
 
   async getData() {
         this.landmarks = await GetLandmarkList();
+        this.getLocations('All');
   }
+
   getPosition(){
     navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -61,20 +64,22 @@ export default class LocationListView extends Component
         this.setState({lastPosition: val});
     });
   }
-  getLocations(){
+  getLocations(category){
       val = this.landmarks;
+      console.log("hi");
+      console.log(this.landmarks);
       if(!val) {
           return [];
       }
-      console.log(this.state.region);
       //Get list of top 10 locations
       //edit: need to change to current gps location, NOT initial position
       const temp = popPrioritize(val,
           this.initialRegion.latitude,
           this.initialRegion.longitude,
           this.initialRegion.latitudeDelta,
-          this.initialRegion.longitudeDelta);
+          this.initialRegion.longitudeDelta,category);
       locTemp=[];
+      console.log("templength"+temp.length);
       for(var i = 0; i < temp.length; i++) {
           //push location data onto data
           var locData = {loc:"", dist:0,catID:1,images:[]};
@@ -82,24 +87,53 @@ export default class LocationListView extends Component
           locData.loc = temp[i].location;
           locData.dist = distance;
           locData.images = temp[i].images;
+          if(!locData.images)
+            locData.images = [];
+          console.log(locData);
           var specLoc = LocToData(locData.loc, val);
           if (specLoc && specLoc.category_id) {
               locData.catID = specLoc.category_id;
           }
-          dataPop.push(locData);
+          this.dataPop = this.dataPop.concat(locData);
       }
-      console.log("Data Pop is returned!");
-      //console.log(dataPop);
+      this.setState({
+        dataSource: ds.cloneWithRows(this.dataPop),
+      });
   }
+    gotoDescription(rowData) {
+        let id = LocToData(rowData.loc, this.landmarks);
+        this.props.navigation.navigate('Details', {
+            id: 'Details',
+            rowDat: rowData,
+            locID: id,
+            title: rowData.loc,
+        });
+    }
     //this.ds.cloneWithRows(this.getLocations)}
   render() {
-    console.log("LocationListView");
     //make modules into ListView, each module will have an id, based on which
     //id, the ListView will render that module
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>This is the Locations List View</Text>
-
+          <ListView
+              enableEmptySections={true}
+              dataSource={this.state.dataSource}
+              renderRow={(rowdata) =>
+                <TouchableOpacity onPress={this.gotoDescription.bind(this, rowdata)} style={styles.wrapper}>
+                    <View style={styles.wrapper}>
+                      {renderImage(rowdata.catID)}
+                      <Text style={styles.baseText}>
+                        <Text style={styles.locText}>
+                          {rowdata.loc}{'\n'}
+                          <Text style={styles.distText}>
+                            {rowdata.dist} feet away
+                          </Text>
+                        </Text>
+                      </Text>
+                    </View>
+                </TouchableOpacity>
+              }
+          />
       </View>
     );
   }
