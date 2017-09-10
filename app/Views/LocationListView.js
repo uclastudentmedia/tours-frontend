@@ -12,7 +12,7 @@ import {
   Button
 } from 'react-native';
 import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
-import { GetLandmarkList } from 'app/DataManager';
+import { GetLocationList } from 'app/DataManager';
 import {popPrioritize, LocToData,RenderIcon} from 'app/Utils'
 
 import { styles } from 'app/css';
@@ -41,12 +41,11 @@ export default class LocationListView extends Component
   }
   componentDidMount() {
       this.getPosition();
-      this.getData()
-            .catch(console.error);
+      this.getData();
   }
 
   async getData() {
-        this.landmarks = await GetLandmarkList();
+        this.locations = GetLocationList();
         this.getLocations('All');
   }
 
@@ -68,9 +67,9 @@ export default class LocationListView extends Component
     });
   }
   getLocations(category){
-      val = this.landmarks;
+      let val = this.locations;
       console.log("hi");
-      console.log(this.landmarks);
+      console.log(this.locations);
       if(!val) {
           return [];
       }
@@ -81,7 +80,7 @@ export default class LocationListView extends Component
           this.initialRegion.longitude,
           this.initialRegion.latitudeDelta,
           this.initialRegion.longitudeDelta,category);
-      locTemp=[];
+      let locTemp=[];
       console.log("templength"+temp.length);
       for(var i = 0; i < temp.length; i++) {
           //push location data onto data
@@ -104,7 +103,7 @@ export default class LocationListView extends Component
       });
   }
     gotoDescription(rowData) {
-        let id = LocToData(rowData.loc, this.landmarks);
+        let id = LocToData(rowData.loc, this.locations);
         this.props.navigation.navigate('Details', {
             id: 'Details',
             rowDat: rowData,
