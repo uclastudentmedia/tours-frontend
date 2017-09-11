@@ -102,15 +102,15 @@ export default class LocationListView extends Component
         dataSource: ds.cloneWithRows(this.dataPop),
       });
   }
-    gotoDescription(rowData) {
-        let id = LocToData(rowData.loc, this.locations);
-        this.props.navigation.navigate('Details', {
-            id: 'Details',
-            rowDat: rowData,
-            locID: id,
-            title: rowData.loc,
-        });
-    }
+
+  gotoDescription(location) {
+      this.props.navigation.navigate('Details', {
+          id: 'Details',
+          title: location.name,
+          location: location,
+      });
+  }
+
     //this.ds.cloneWithRows(this.getLocations)}
   render() {
     //make modules into ListView, each module will have an id, based on which

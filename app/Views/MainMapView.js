@@ -26,16 +26,18 @@ import {
   LocToData,
 } from 'app/Utils';
 
-import { GetLocationList, GetLocationById } from 'app/DataManager';
+import {
+  GetLocationList,
+  GetLocationById,
+} from 'app/DataManager';
+
 import {popLocation} from 'app/LocationPopManager'
 
 import { GetIcon, dot1 } from 'app/Assets';
 
 import { styles, CustomMapStyle } from 'app/css';
 
-var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 var mapSettinger='popular';
-var val = {};
 let flag1 = {latitude: 0, longitude: 0};
 var flag2 = {latitude: 0, longitude: 0};
 var initCoords = {};
@@ -49,10 +51,19 @@ export default class MainMapView extends Component {
     constructor(props){
         super(props);
 
-        this.watchID = null;
+        this.GPSManager = props.screenProps.GPSManager;
+
         this.dataSourceTBT = new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 !== r2
         });
+
+        this.landmarks = GetLocationList();
+
+        this.initialPosition = {
+          latitude: 34.070286,
+          longitude: -118.443413,
+        };
+
         this.initialRegion = {
           latitude: 34.070286,
           longitude: -118.443413,
@@ -61,6 +72,7 @@ export default class MainMapView extends Component {
         };
 
         this.state = {
+            position: this.initialPosition,
             markers: [],
             region: this.initialRegion,
             results: []
@@ -70,26 +82,26 @@ export default class MainMapView extends Component {
     }
 
     componentDidMount() {
-        this.getPosition();
-        this.getData();
+        // get position
+        this.watchID = this.GPSManager.watchPosition(() => {
+          this.setState({
+            position: this.GPSManager.getPosition()
+          });
+        });
+
         this.updateMapIcons();
     }
 
-    getData() {
-        this.landmarks = GetLocationList();
-    }
-
     componentWillUnmount(){
-        navigator.geolocation.clearWatch(this.watchID);
+        this.GPSManager.clearWatch(this.watchID);
     }
 
     updateMapIcons() {
-        var val = this.landmarks;
-        if(!val) {
+        if(!this.landmarks) {
           return;
         }
 
-        var temp;
+        var temp = [];
 
         switch (mapSettinger) {
           case 'tour':
@@ -121,7 +133,7 @@ export default class MainMapView extends Component {
             var distance = Math.round(temp[i].distanceAway);
             locData.loc = temp[i].location;
             locData.dist = distance;
-            var specLoc = LocToData(locData.loc, val);
+            var specLoc = GetLocationById(temp[i].id);
             if (specLoc && specLoc.category_id)
             {
                 locData.catID = specLoc.category_id;
@@ -158,24 +170,6 @@ export default class MainMapView extends Component {
         });
     }
 
-    getPosition(){
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                var initialPosition2 = JSON.stringify(position);
-                var val = JSON.parse(initialPosition2);
-                initialPosition = val;
-                this.setState({lastPosition: val});
-            },
-            (error) => alert(JSON.stringify(error)),
-            {enableHighAccuracy: true, timeout: 2000000, maximumAge: 500}
-        );
-        this.watchID = navigator.geolocation.watchPosition((position) => {
-            var lastPosition = JSON.stringify(position);
-            var val = JSON.parse(lastPosition);
-            this.setState({lastPosition: val});
-        });
-    }
-
     _handleResults(results) {
         this.setState({ results });
     }
@@ -190,61 +184,50 @@ export default class MainMapView extends Component {
         this.updateMapIcons();
     }
 
-    //function to switch to descriptions view
-    gotoDescription(rowData){
-        let id = LocToData(rowData.loc, this.landmarks);
-        this.props.navigator.push({
-            id: 'Details',
-            name: 'More Details',
-            rowDat: rowData,
-            locID: id,
-        });
-    }
-
-    async search(text) {
-        try
-        {
-            let tochirisukun = await AsyncStorage.getItem('data');
-            val = JSON.parse(tochirisukun);
-            text = text.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-            let location = LocToData(text, val);
-
-            let rowan = {
-                "locations": [{
-                    "lat": location.lat,
-                    "lon": location.long,
-                }, {
-                    "lat": initialPosition.coords.latitude,
-                    "lon": initialPosition.coords.longitude,
-                }],
-                "costing": "pedestrian",
-                "directions_options": {
-                    "units": "miles"
-                }
-            };
-
-            initCoords.latitude = location.lat;
-            initCoords.longitude = location.long;
-
-            let angelrooroo = {};
-
-            console.log("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan));
-            fetch("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan))
-              .then((response) => response.json())
-              .then((responseJson) => {
-                  angelrooroo = responseJson;
-                  serverRoute = responseJson;
-                  serverRouteChecked = false;
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-        }
-        catch (e)
-        {
-            console.error(e);
-        }
-    }
+//    async search(text) {
+//        try
+//        {
+//            let tochirisukun = await AsyncStorage.getItem('data');
+//            val = JSON.parse(tochirisukun);
+//            text = text.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+//            let location = LocToData(text, val);
+//
+//            let rowan = {
+//                "locations": [{
+//                    "lat": location.lat,
+//                    "lon": location.long,
+//                }, {
+//                    "lat": initialPosition.coords.latitude,
+//                    "lon": initialPosition.coords.longitude,
+//                }],
+//                "costing": "pedestrian",
+//                "directions_options": {
+//                    "units": "miles"
+//                }
+//            };
+//
+//            initCoords.latitude = location.lat;
+//            initCoords.longitude = location.long;
+//
+//            let angelrooroo = {};
+//
+//            console.log("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan));
+//            fetch("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan))
+//              .then((response) => response.json())
+//              .then((responseJson) => {
+//                  angelrooroo = responseJson;
+//                  serverRoute = responseJson;
+//                  serverRouteChecked = false;
+//              })
+//              .catch((error) => {
+//                console.error(error);
+//              });
+//        }
+//        catch (e)
+//        {
+//            console.error(e);
+//        }
+//    }
 
     decode(str, precision) {
         var index = 0,
@@ -315,8 +298,8 @@ export default class MainMapView extends Component {
             });
         }
 
-        flag1.latitude = initialPosition.coords.latitude;
-        flag1.longitude = initialPosition.coords.longitude;
+        flag1.latitude = this.initialPosition.latitude;
+        flag1.longitude = this.initialPosition.longitude;
 
         flag2.latitude = initCoords.latitude;
         flag2.longitude = initCoords.longitude;
@@ -359,9 +342,8 @@ export default class MainMapView extends Component {
 
         this.props.navigation.navigate('Details', {
             id: 'Details',
-            rowDat: location,
-            locID: id,
             title: location.name,
+            location: location,
         });
       };
     }
@@ -394,7 +376,7 @@ export default class MainMapView extends Component {
                 />
                 <MapView style={styles.map}
                     provider="google"
-                    initialRegion={this.state.region}
+                    initialRegion={this.initialRegion}
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
                     customMapStyle={CustomMapStyle}
@@ -402,7 +384,7 @@ export default class MainMapView extends Component {
                     >
                     <MapView.Marker
                         image={dot1}
-                        coordinate={initialPosition.coords}
+                        coordinate={this.initialPosition}
                     />
 
                     {polyline}

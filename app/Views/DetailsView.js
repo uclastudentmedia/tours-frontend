@@ -18,16 +18,20 @@ export default class DetailsView extends Component
 
   constructor(props) {
     super(props);
+    this.GPSManager = props.screenProps.GPSManager;
     this.state = {
       results: '',
     }
-    console.log(props);
-    this.location = props.navigation.state.params.rowDat;
+    this.location = props.navigation.state.params.location;
   }
 
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
   //{this.state.results.results.name}
   render() {
+    const position = this.GPSManager.getPosition();
+    console.log(this.location);
+    const feetAway = this.location.FeetAway(position);
+
     return (
       <View style={styles.container}>
         <View style={DetailStyle.titleSec}>
@@ -37,10 +41,7 @@ export default class DetailsView extends Component
           </Text>
         </View>
         <Text style={DetailStyle.dist}>
-          {/*feetCalc(this.state.curLocation.latitude,
-                    this.state.curLocation.longitude,
-                    this.state.results.results.lat,
-                    this.state.results.results.long)*/} feet away
+          {feetAway} feet away
         </Text>
       </View>
     );
