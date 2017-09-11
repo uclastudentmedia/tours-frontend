@@ -28,9 +28,8 @@ export default class DetailsView extends Component
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
   //{this.state.results.results.name}
   render() {
-    const position = this.GPSManager.getPosition();
     console.log(this.location);
-    const feetAway = this.location.FeetAway(position);
+    const position = this.GPSManager.getPosition();
 
     return (
       <View style={styles.container}>
@@ -41,7 +40,7 @@ export default class DetailsView extends Component
           </Text>
         </View>
         <Text style={DetailStyle.dist}>
-          {feetAway} feet away
+          {this.location.FeetAway(position)} feet away
         </Text>
       </View>
     );

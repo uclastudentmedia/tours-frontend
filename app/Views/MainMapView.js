@@ -73,7 +73,7 @@ export default class MainMapView extends Component {
 
         this.state = {
             position: this.initialPosition,
-            markers: [],
+            markerLocations: [],
             region: this.initialRegion,
             results: []
         };
@@ -101,7 +101,7 @@ export default class MainMapView extends Component {
           return;
         }
 
-        var temp = [];
+        var markerLocations = [];
 
         switch (mapSettinger) {
           case 'tour':
@@ -117,56 +117,24 @@ export default class MainMapView extends Component {
           default:
             //if map setting is campus map. prioritize top 10 locations by popularity/category
             //this is default
-            temp = popPrioritize(this.state.region.latitude,
-                                 this.state.region.longitude,
-                                 this.state.region.latitudeDelta,
-                                 this.state.region.longitudeDelta,
-                                 "Food & Beverage");
+            markerLocations = popPrioritize(this.state.region,
+                                            'All');
+                                            //'Food & Beverage');
             break;
         }
 
-        var markersTemp = [];
-        for(var i = 0; i < temp.length; i++)
-        {
-            //push location data onto data
-            var locData = {loc:"", dist:0,catID:1};
-            var distance = Math.round(temp[i].distanceAway);
-            locData.loc = temp[i].location;
-            locData.dist = distance;
-            var specLoc = GetLocationById(temp[i].id);
-            if (specLoc && specLoc.category_id)
-            {
-                locData.catID = specLoc.category_id;
-            }
-
-            //push coordinate data into this.markers
-            var markersData = {title:'',lat:0,long:0,srcID:1};
-            markersData.title = temp[i].location;
-            markersData.lat= temp[i].lat;
-            markersData.long= temp[i].long;
-            markersData.srcID= specLoc.category_id;
-            markersData.location=temp[i].location;
-            markersData.id = temp[i].id;
-            markersTemp.push(markersData);
-        }
-        markersTemp.slice(0,10);
+        // limit the number of markers
+        markerLocations = markerLocations.slice(0, 10);
 
         // add the selected location if needed
         const selected = this.state.selectedLocation;
-        if (selected && !markersTemp.find(l => l.id == selected.id)) {
-          console.log(selected);
-          markersTemp.push({
-            title: selected.name,
-            lat: selected.lat,
-            long: selected.long,
-            srcID: selected.category_id,
-            location: selected.name,
-            id: selected.id,
-          });
+        if (selected && !markerLocations.find(l => l.id == selected.id)) {
+            console.log(selected);
+            markerLocations.push(selected);
         }
 
         this.setState({
-            markers:markersTemp
+            markerLocations: markerLocations
         });
     }
 
@@ -183,51 +151,6 @@ export default class MainMapView extends Component {
         mapSettinger=setting;
         this.updateMapIcons();
     }
-
-//    async search(text) {
-//        try
-//        {
-//            let tochirisukun = await AsyncStorage.getItem('data');
-//            val = JSON.parse(tochirisukun);
-//            text = text.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-//            let location = LocToData(text, val);
-//
-//            let rowan = {
-//                "locations": [{
-//                    "lat": location.lat,
-//                    "lon": location.long,
-//                }, {
-//                    "lat": initialPosition.coords.latitude,
-//                    "lon": initialPosition.coords.longitude,
-//                }],
-//                "costing": "pedestrian",
-//                "directions_options": {
-//                    "units": "miles"
-//                }
-//            };
-//
-//            initCoords.latitude = location.lat;
-//            initCoords.longitude = location.long;
-//
-//            let angelrooroo = {};
-//
-//            console.log("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan));
-//            fetch("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan))
-//              .then((response) => response.json())
-//              .then((responseJson) => {
-//                  angelrooroo = responseJson;
-//                  serverRoute = responseJson;
-//                  serverRouteChecked = false;
-//              })
-//              .catch((error) => {
-//                console.error(error);
-//              });
-//        }
-//        catch (e)
-//        {
-//            console.error(e);
-//        }
-//    }
 
     decode(str, precision) {
         var index = 0,
@@ -326,18 +249,17 @@ export default class MainMapView extends Component {
     }
 
     // marker selected
-    onPressMarker = (id) => {
+    onPressMarker = (location) => {
       return (event) => {
         this.setState({
-          selectedLocation: GetLocationById(id),
+          selectedLocation: location,
         })
       };
     }
 
     // TODO: this should work when Daniel's branch is merged
-    onCalloutPress = (id) => {
+    onCalloutPress = (location) => {
       return (event) => {
-        const location = GetLocationById(id);
         console.log(location);
 
         this.props.navigation.navigate('Details', {
@@ -389,15 +311,15 @@ export default class MainMapView extends Component {
 
                     {polyline}
 
-                    {this.state.markers.map(marker => (
+                    {this.state.markerLocations.map(loc => (
                         <MapView.Marker
-                          key={marker.id}
-                          coordinate={{latitude: marker.lat, longitude: marker.long}}
-                          title={marker.title}
-                          description={marker.description}
-                          image={GetIcon(marker.srcID)}
-                          onPress={this.onPressMarker(marker.id)}
-                          onCalloutPress={this.onCalloutPress(marker.id)}
+                          key={loc.id}
+                          coordinate={{latitude: loc.lat, longitude: loc.long}}
+                          title={loc.name}
+                          description={loc.text_description}
+                          image={GetIcon(loc.category_id)}
+                          onPress={this.onPressMarker(loc)}
+                          onCalloutPress={this.onCalloutPress(loc)}
                         />
                       )
                     )}
