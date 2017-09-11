@@ -1,17 +1,33 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
 } from 'react-native';
 
+import { Location } from 'app/DataTypes';
+import GPSManager from 'app/GPSManager';
 import { RenderIcon } from 'app/Utils';
 
 import { styles, DetailStyle } from 'app/css';
 
 export default class DetailsView extends Component
 {
+  static propTypes = {
+    navigation: PropTypes.shape({
+      state: PropTypes.shape({
+        params: PropTypes.shape({
+          title: PropTypes.string.isRequired,
+          location: PropTypes.instanceOf(Location).isRequired,
+        })
+      })
+    }),
+    screenProps: PropTypes.shape({
+      GPSManager: PropTypes.instanceOf(GPSManager).isRequired,
+    }),
+  };
+
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params.title}`,
   });

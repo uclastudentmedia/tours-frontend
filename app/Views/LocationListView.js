@@ -3,7 +3,7 @@
 /**
  * Created by danielhuang on 9/1/17.
  */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
@@ -12,6 +12,7 @@ import {
   Button
 } from 'react-native';
 import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
+import GPSManager from 'app/GPSManager';
 import { GetLocationList } from 'app/DataManager';
 import {popPrioritize, RenderIcon} from 'app/Utils'
 
@@ -22,6 +23,13 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id})
 
 export default class LocationListView extends Component
 {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    screenProps: PropTypes.shape({
+      GPSManager: PropTypes.instanceOf(GPSManager).isRequired,
+    }),
+  };
+
   constructor(props){
       super(props);
 

@@ -3,7 +3,7 @@
 /**
  * Created by Daniel on 2/9/2017.
  */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
     StyleSheet,
     Text,
@@ -31,6 +31,8 @@ import {
   GetLocationById,
 } from 'app/DataManager';
 
+import GPSManager from 'app/GPSManager';
+
 import {popLocation} from 'app/LocationPopManager'
 
 import { GetIcon, dot1 } from 'app/Assets';
@@ -47,6 +49,12 @@ var serverRouteChecked = false;
 let tbt = false;
 
 export default class MainMapView extends Component {
+    static propTypes = {
+        navigation: PropTypes.object.isRequired,
+        screenProps: PropTypes.shape({
+            GPSManager: PropTypes.instanceOf(GPSManager).isRequired,
+        }),
+    };
 
     constructor(props){
         super(props);
@@ -297,7 +305,6 @@ export default class MainMapView extends Component {
                     hideBack={true}
                 />
                 <MapView style={styles.map}
-                    provider="google"
                     initialRegion={this.initialRegion}
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
