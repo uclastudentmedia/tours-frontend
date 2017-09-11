@@ -4,6 +4,13 @@
 //import { AsyncStorage } from 'react-native';
 import { AsyncStorage } from 'app/__fakes__/FakeAsyncStorage';
 
+import {
+  Location,
+  Category,
+  Tour,
+  IndoorBuilding
+} from 'app/DataTypes';
+
 /**
  * Constants
  */
@@ -16,12 +23,14 @@ const API_DOMAIN = 'https://tours.bruinmobile.com';
 
 // API endpoints
 const ENDPOINTS = {
-  LANDMARKS: '/api/landmark/',
+  LOCATIONS: '/api/landmark/',
   CATEGORIES: '/api/category/',
   TOURS: '/api/tour/',
   INDOOR_BUILDINGS: '/indoor/building/',
 };
 
+// has LoadAllData been called?
+let DATA_LOADED = false;
 
 /**
  * Helper functions
@@ -162,9 +171,9 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
    */
 
   // check if data is in SyncStorage
-  let cachedData = syncStorage.getItem(endpoint);
-  if (cachedData !== null) {
-    return cachedData;
+  let cachedDataSync = syncStorage.getItem(endpoint);
+  if (cachedDataSync !== null) {
+    return cachedDataSync;
   }
 
   // check if data is in AsyncStorage
@@ -172,9 +181,10 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
     let currentTime = Date.now();
     let cacheTime = await getCacheTime(endpoint);
 
+    // this request was updated recently, try to use the cached value
     if (currentTime - cacheTime < CACHE_EXPIRY) {
-      // this request was updated recently, try to use the cached value
       let cachedData = await getCachedData(endpoint);
+
       if (cachedData !== null) {
         return cachedData;
       }
@@ -182,17 +192,38 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
   }
 
   // there is no up-to-date cached data, need to query server
-  let newData = await queryEndpoint(endpoint, transformData);
+  let newData;
+  try {
+    newData = await queryEndpoint(endpoint, transformData);
+  } catch(error) {
+    console.error(error);
+    return null;
+  }
 
-  // save the data in the cache
-  syncStorage.setItem(endpoint, newData);
+  if (newData !== null) {
+    // save the data in the cache
+    syncStorage.setItem(endpoint, newData);
 
-  if (useAsyncStorage) {
-    await setCachedData(endpoint, newData);
-    await updateCacheTime(endpoint);
+    if (useAsyncStorage) {
+      await setCachedData(endpoint, newData);
+      await updateCacheTime(endpoint);
+    }
   }
 
   return newData;
+}
+
+function getDataSync(endpoint) {
+  /**
+   * Fetch data synchronously. Must be called after LoadAllData has resolved.
+   */
+
+  if (!DATA_LOADED) {
+    console.error('The data has not been loaded yet.');
+    return;
+  }
+
+  return syncStorage.getItem(endpoint);
 }
 
 async function clearCache() {
@@ -202,7 +233,7 @@ async function clearCache() {
   let keys = syncStorage.getAllKeys();
   keys.forEach(key => {
     if (key.startsWith(CACHE_PREFIX)) {
-      AsyncStorage.removeItem(key);
+      syncStorage.removeItem(key);
     }
   });
 
@@ -219,81 +250,132 @@ async function clearCache() {
  * Exports
  */
 
-export async function GetLandmarkList() {
+export async function LoadAllData() {
   /**
-   * @return Array of Landmark objects
+   * Sends API requests to get all of the data needed from the server. This
+   * only needs to be called one time when the app is initially loaded.
    */
 
-  var transformData = (data) => {
-    return data.map(landmark => {
-      // give images a full URL
-      landmark.images = landmark.images.map(image => {
-        for (let size in image) {
-          image[size] = API_DOMAIN + image[size];
-        }
-        return image;
+  if (DATA_LOADED) {
+    console.warn('LoadAllData has already been called.');
+    return;
+  }
+
+  await Promise.all([
+
+    // Locations
+    getData(ENDPOINTS.LOCATIONS, (data) => {
+      return data.map(loc => {
+        // give images a full URL
+        loc.images = loc.images.map(image => {
+          for (let size in image) {
+            image[size] = API_DOMAIN + image[size];
+          }
+          return image;
+        });
+
+        return new Location(loc);
       });
+    }),
 
-      return landmark;
-    });
-  };
+    // Categories
+    getData(ENDPOINTS.CATEGORIES, (data) => {
+      return data.map(category => {
+        return new Category(category);
+      });
+    }),
 
-  return await getData(ENDPOINTS.LANDMARKS, transformData);
+    // Tours
+    getData(ENDPOINTS.TOURS, (data) => {
+      return data.map(tour => {
+        return new Tour(tour);
+      });
+    }),
+
+    // IndoorBuildings
+    getData(ENDPOINTS.INDOOR_BUILDINGS, (data) => {
+      return data.map(building => {
+        return new IndoorBuilding(building);
+      });
+    }),
+
+  ]);
+
+  DATA_LOADED = true;
 }
 
-export async function GetLandmarkById(id) {
+export function GetLocationList() {
+  /**
+   * @return Location[]
+   */
+  return getDataSync(ENDPOINTS.LOCATIONS);
+}
+
+export function GetLocationById(id) {
   /**
    * @param id int
-   * @return Landmark object
+   * @return Location
    */
-  return GetLandmarkList()
-    .then(landmarks => find(landmarks, 'id', id));
+  return find(GetLocationList(), 'id', id);
 }
 
-export async function GetCategoryList() {
+export function GetLocationByName(name) {
   /**
-   * @return Array of Category objects
+   * @param name string
+   * @return Location
    */
-  return getData(ENDPOINTS.CATEGORIES);
+  return find(GetLocationList(), 'name', name);
 }
 
-export async function GetCategoryById(id) {
+export function GetCategoryList() {
   /**
-   * @param id int
-   * @return Category object
+   * @return Category[]
    */
-  return GetCategoryList()
-    .then(categories => find(categories, 'id', id));
+  return getDataSync(ENDPOINTS.CATEGORIES);
 }
 
-export async function GetTourList() {
-  /**
-   * @return Array of Tour objects
-   */
-  return getData(ENDPOINTS.TOURS);
-}
-
-export async function GetTourById(id) {
+export function GetCategoryById(id) {
   /**
    * @param id int
-   * @return Tour object
+   * @return Category
    */
-  return GetTourList()
-    .then(tours => find(tours, 'id', id));
+  return find(GetCategoryList(), 'id', id);
 }
 
-export async function GetIndoorBuildingList() {
+export function GetCategoryByName(name) {
   /**
-   * @return Array of Building object
+   * @param name string
+   * @return Category
    */
-  return getData(ENDPOINTS.INDOOR_BUILDINGS);
+  return find(GetCategoryList(), 'name', name);
 }
 
-export async function GetIndoorBuildingById(id) {
+export function GetTourList() {
+  /**
+   * @return Tour[]
+   */
+  return getDataSync(ENDPOINTS.TOURS);
+}
+
+export function GetTourById(id) {
+  /**
+   * @param id int
+   * @return Tour
+   */
+   return find(GetTourList(), 'id', id);
+}
+
+export function GetIndoorBuildingList() {
+  /**
+   * @return IndoorBuilding[]
+   */
+  return getDataSync(ENDPOINTS.INDOOR_BUILDINGS);
+}
+
+export function GetIndoorBuildingById(id) {
   /**
    * @param id int landmark id
-   * @return Building object
+   * @return IndoorBuilding
    */
-  return GetIndoorBuildingList()
-    .then(buildings => find(buildings, 'landmark_id', id));
+  return find(GetIndoorBuildingList(), 'landmark_id', id);
 }

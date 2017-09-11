@@ -1,3 +1,5 @@
+'use strict';
+
 import React, { Component } from 'react';
 import {
   Platform,
@@ -13,6 +15,7 @@ import {
   DetailsView
 } from 'app/Views';
 
+import GPSManager from 'app/GPSManager';
 import { AppStyle } from 'app/css';
 
 
@@ -41,7 +44,7 @@ class MainMapScreen extends Component {
 
   render() {
     return (
-      <MainMapView navigation={this.props.navigation} />
+      <MainMapView {...this.props} />
     );
   }
 }
@@ -54,7 +57,7 @@ class DirectionsScreen extends Component {
 
   render() {
     return (
-      <DirectionsView navigation={this.props.navigation} />
+      <DirectionsView {...this.props} />
     );
   }
 }
@@ -67,7 +70,7 @@ class LocationListScreen extends Component {
 
   render() {
     return (
-      <LocationListView navigation={this.props.navigation} />
+      <LocationListView {...this.props} />
     );
   }
 }
@@ -127,16 +130,28 @@ class App extends Component {
     };
   }
 
+  componentDidMount() {
+    this.GPSManager = new GPSManager();
+  }
+
+  componentWillUnmount() {
+    this.GPSManager.clearWatch();
+  }
+
   onLoadComplete = () => {
     this.setState({loaded: true});
   }
 
   render() {
+    const screenProps = {
+      GPSManager: this.GPSManager,
+    };
+
     if (!this.state.loaded) {
       return <LoadingView onLoadComplete={this.onLoadComplete} />;
     }
     else {
-      return <MainNavigator/>;
+      return <MainNavigator screenProps={screenProps}/>;
     }
   }
 }

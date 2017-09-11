@@ -1,3 +1,5 @@
+'use strict';
+
 import React, { Component, PropTypes } from 'react';
 import {
     View,
@@ -6,9 +8,7 @@ import {
     Button
 } from 'react-native';
 
-import { NavigationActions } from 'react-navigation';
-
-import { GetLandmarkList } from 'app/DataManager';
+import { LoadAllData } from 'app/DataManager';
 
 import { styles } from 'app/css';
 
@@ -40,12 +40,12 @@ export default class LoadingView extends Component {
   }
 
   async getAPIData() {
-    await GetLandmarkList();
+    await LoadAllData();
   }
 
   // create 5 second artificial loading time
   async testDelay() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
       }, 5000);
@@ -54,13 +54,9 @@ export default class LoadingView extends Component {
 
   render() {
     return (
-      <Image style={styles.container}
-             source={logoArtboard}>
+      <Image style={styles.container} source={logoArtboard}>
         <View style={styles.loading}>
-          <ActivityIndicator
-            color={'yellow'}
-            size={'large'}
-          />
+          <ActivityIndicator color={'yellow'} size={'large'} />
         </View>
       </Image>
     );
