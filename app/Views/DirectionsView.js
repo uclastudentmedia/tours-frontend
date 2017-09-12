@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Created by danielhuang on 9/2/17.
  */
@@ -15,7 +17,8 @@ import {
   SearchContainer,
 } from 'app/Components';
 
-import { GetLandmarkList } from 'app/DataManager';
+import GPSManager from 'app/GPSManager';
+import { GetLocationList } from 'app/DataManager';
 
 import {
   styles,
@@ -27,6 +30,10 @@ import {
 export default class DirectionsView extends Component
 {
   static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    screenProps: PropTypes.shape({
+      GPSManager: PropTypes.instanceOf(GPSManager).isRequired,
+    }),
   };
 
   static defaultProps = {
@@ -36,69 +43,53 @@ export default class DirectionsView extends Component
     super(props);
     this.state = {
       directions: {},
-      locations: [],
     };
-  }
-
-  componentDidMount() {
-    GetLandmarkList()
-      .then(locations => {
-        this.setState({locations});
-      })
-      .catch(console.error);
+    this.locations = GetLocationList();
   }
 
   render() {
     const {
-      locations,
       startLocation,
       endLocation,
       directions,
     } = this.state;
 
-    if (locations.length == 0) {
-      return (
-        <View style={styles.container}></View>
-      );
-    }
-    else {
-      return (
-        <View style={DirectionsStyle.container}>
+    return (
+      <View style={DirectionsStyle.container}>
 
-          <Text>{JSON.stringify(directions)}</Text>
+        <Text>{JSON.stringify(directions)}</Text>
 
-          <Text style={{textAlign: 'center', fontWeight: 'bold', marginBottom: 10}}>Start Location</Text>
-          <View style={DirectionsStyle.search}>
-            <SearchContainer style={{marginTop: 10, flexDirection: 'column'}}
-              locations={locations}
-              onResultSelect={this.setStartLocation.bind(this)}
-              maxResults={3}
-            />
+        <Text style={{textAlign: 'center', fontWeight: 'bold', marginBottom: 10}}>Start Location</Text>
+        <View style={DirectionsStyle.search}>
+          <SearchContainer style={{marginTop: 10, flexDirection: 'column'}}
+            locations={this.locations}
+            onResultSelect={this.setStartLocation.bind(this)}
+            maxResults={3}
+          />
 
-            <Hr lineColor='#b3b3b3' />
+          <Hr lineColor='#b3b3b3' />
 
-            <Text style={{textAlign: 'center', fontWeight: 'bold', marginTop: 10, marginBottom: 10}}>End Location</Text>
-            <SearchContainer style={{marginTop: 10, flexDirection: 'column'}}
-              locations={locations}
-              onResultSelect={this.setEndLocation.bind(this)}
-              maxResults={3}
-            />
-          </View>
-
-          <View style={{marginBottom: 10}}> 
-	          <Text>From: {startLocation ? startLocation.name : ''}</Text>
-	          <Text>To: {endLocation ? endLocation.name : ''}</Text>
-	          <View style={{marginTop: 10}}>
-		          <Button
-		            title='Get Directions'
-		            onPress={this.getDirections.bind(this)}
-		          />
-	          </View>
-          </View>
-
+          <Text style={{textAlign: 'center', fontWeight: 'bold', marginTop: 10, marginBottom: 10}}>End Location</Text>
+          <SearchContainer style={{marginTop: 10, flexDirection: 'column'}}
+            locations={this.locations}
+            onResultSelect={this.setEndLocation.bind(this)}
+            maxResults={3}
+          />
         </View>
-      );
-    }
+
+        <View style={{marginBottom: 10}}> 
+          <Text>From: {startLocation ? startLocation.name : ''}</Text>
+          <Text>To: {endLocation ? endLocation.name : ''}</Text>
+          <View style={{marginTop: 10}}>
+            <Button
+              title='Get Directions'
+              onPress={this.getDirections.bind(this)}
+            />
+          </View>
+        </View>
+
+      </View>
+    );
   }
 
   setStartLocation(result) {

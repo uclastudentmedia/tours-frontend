@@ -1,7 +1,9 @@
+'use strict';
+
 /**
  * Created by Daniel on 2/9/2017.
  */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
     StyleSheet,
     Text,
@@ -24,16 +26,20 @@ import {
   LocToData,
 } from 'app/Utils';
 
-import { GetLandmarkList, GetLandmarkById } from 'app/DataManager';
+import {
+  GetLocationList,
+  GetLocationById,
+} from 'app/DataManager';
+
+import GPSManager from 'app/GPSManager';
+
 import {popLocation} from 'app/LocationPopManager'
 
 import { GetIcon, dot1 } from 'app/Assets';
 
 import { styles, CustomMapStyle } from 'app/css';
 
-var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 var mapSettinger='popular';
-var val = {};
 let flag1 = {latitude: 0, longitude: 0};
 var flag2 = {latitude: 0, longitude: 0};
 var initCoords = {};
@@ -43,15 +49,29 @@ var serverRouteChecked = false;
 let tbt = false;
 
 export default class MainMapView extends Component {
-
+    static propTypes = {
+        navigation: PropTypes.object.isRequired,
+        screenProps: PropTypes.shape({
+            GPSManager: PropTypes.instanceOf(GPSManager).isRequired,
+        }),
+    };
 
     constructor(props){
         super(props);
 
-        this.watchID = null;
+        this.GPSManager = props.screenProps.GPSManager;
+
         this.dataSourceTBT = new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 !== r2
         });
+
+        this.landmarks = GetLocationList();
+
+        this.initialPosition = {
+          latitude: 34.070286,
+          longitude: -118.443413,
+        };
+
         this.initialRegion = {
           latitude: 34.070286,
           longitude: -118.443413,
@@ -60,7 +80,8 @@ export default class MainMapView extends Component {
         };
 
         this.state = {
-            markers: [],
+            position: this.initialPosition,
+            markerLocations: [],
             region: this.initialRegion,
             results: []
         };
@@ -69,29 +90,26 @@ export default class MainMapView extends Component {
     }
 
     componentDidMount() {
+        // get position
+        this.watchID = this.GPSManager.watchPosition(() => {
+          this.setState({
+            position: this.GPSManager.getPosition()
+          });
+        });
 
-        this.getPosition();
-
-        this.getData()
-            .then(() => this.updateMapIcons())
-            .catch(console.error);
-    }
-
-    async getData() {
-        this.landmarks = await GetLandmarkList();
+        this.updateMapIcons();
     }
 
     componentWillUnmount(){
-        navigator.geolocation.clearWatch(this.watchID);
+        this.GPSManager.clearWatch(this.watchID);
     }
 
     updateMapIcons() {
-        var val = this.landmarks;
-        if(!val) {
+        if(!this.landmarks) {
           return;
         }
 
-        var temp;
+        var markerLocations = [];
 
         switch (mapSettinger) {
           case 'tour':
@@ -107,77 +125,24 @@ export default class MainMapView extends Component {
           default:
             //if map setting is campus map. prioritize top 10 locations by popularity/category
             //this is default
-            temp = popPrioritize(val,
-                                 this.state.region.latitude,
-                                 this.state.region.longitude,
-                                 this.state.region.latitudeDelta,
-                                 this.state.region.longitudeDelta,"All");
+            markerLocations = popPrioritize(this.state.region,
+                                            'All');
+                                            //'Food & Beverage');
             break;
         }
 
-        var dataPop = [];
-        markersTemp=[[{lat:34.070286,long:-118.443413,src:""}]];
-        for(var i = 0; i < temp.length; i++)
-        {
-            //push location data onto data
-            var locData = {loc:"", dist:0,catID:1};
-            var distance = Math.round(temp[i].distanceAway);
-            locData.loc = temp[i].location;
-            locData.dist = distance;
-            var specLoc = LocToData(locData.loc, val);
-            if (specLoc && specLoc.category_id)
-            {
-                locData.catID = specLoc.category_id;
-            }
-            dataPop.push(locData);
-
-            //push coordinate data into this.markers
-            var markersData = {title:'',lat:0,long:0,srcID:1};
-            markersData.title = temp[i].location;
-            markersData.lat= temp[i].lat;
-            markersData.long= temp[i].long;
-            markersData.srcID= specLoc.category_id;
-            markersData.location=temp[i].location;
-            markersData.id = temp[i].id;
-            markersTemp.push(markersData);
-        }
-        markersTemp.splice(0,1);
-        markersTemp.slice(0,10);
+        // limit the number of markers
+        markerLocations = markerLocations.slice(0, 10);
 
         // add the selected location if needed
         const selected = this.state.selectedLocation;
-        if (selected && !markersTemp.find(l => l.id == selected.id)) {
-          console.log(selected);
-          markersTemp.push({
-            title: selected.name,
-            lat: selected.lat,
-            long: selected.long,
-            srcID: selected.category_id,
-            location: selected.name,
-            id: selected.id,
-          });
+        if (selected && !markerLocations.find(l => l.id == selected.id)) {
+            console.log(selected);
+            markerLocations.push(selected);
         }
 
         this.setState({
-            markers:markersTemp
-        });
-    }
-
-    getPosition(){
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                var initialPosition2 = JSON.stringify(position);
-                var val = JSON.parse(initialPosition2);
-                initialPosition = val;
-                this.setState({lastPosition: val});
-            },
-            (error) => alert(JSON.stringify(error)),
-            {enableHighAccuracy: true, timeout: 2000000, maximumAge: 500}
-        );
-        this.watchID = navigator.geolocation.watchPosition((position) => {
-            var lastPosition = JSON.stringify(position);
-            var val = JSON.parse(lastPosition);
-            this.setState({lastPosition: val});
+            markerLocations: markerLocations
         });
     }
 
@@ -195,60 +160,53 @@ export default class MainMapView extends Component {
         this.updateMapIcons();
     }
 
-    //function to switch to descriptions view
-    gotoDescription(rowData){
-        let id = LocToData(rowData.loc, this.landmarks);
-        this.props.navigator.push({
-            id: 'Details',
-            name: 'More Details',
-            rowDat: rowData,
-            locID: id,
-        });
-    }
+    decode(str, precision) {
+        var index = 0,
+            lat = 0,
+            lng = 0,
+            coordinates = [],
+            shift = 0,
+            result = 0,
+            byte = null,
+            latitude_change,
+            longitude_change,
+            factor = Math.pow(10, precision || 6);
 
-    async search(text) {
-        try
-        {
-            let tochirisukun = await AsyncStorage.getItem('data');
-            val = JSON.parse(tochirisukun);
-            text = text.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-            let location = LocToData(text, val);
+        // Coordinates have variable length when encoded, so just keep
+        // track of whether we've hit the end of the string. In each
+        // loop iteration, a single coordinate is decoded.
+        while (index < str.length) {
 
-            let rowan = {
-                "locations": [{
-                    "lat": location.lat,
-                    "lon": location.long,
-                }, {
-                    "lat": initialPosition.coords.latitude,
-                    "lon": initialPosition.coords.longitude,
-                }],
-                "costing": "pedestrian",
-                "directions_options": {
-                    "units": "miles"
-                }
-            };
+            // Reset shift, result, and byte
+            byte = null;
+            shift = 0;
+            result = 0;
 
-            initCoords.latitude = location.lat;
-            initCoords.longitude = location.long;
+            do {
+                byte = str.charCodeAt(index++) - 63;
+                result |= (byte & 0x1f) << shift;
+                shift += 5;
+            } while (byte >= 0x20);
 
-            let angelrooroo = {};
+            latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
 
-            console.log("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan));
-            fetch("https://tours.bruinmobile.com/route?json=" + JSON.stringify(rowan))
-              .then((response) => response.json())
-              .then((responseJson) => {
-                  angelrooroo = responseJson;
-                  serverRoute = responseJson;
-                  serverRouteChecked = false;
-              })
-              .catch((error) => {
-                console.error(error);
-              });
+            shift = result = 0;
+
+            do {
+                byte = str.charCodeAt(index++) - 63;
+                result |= (byte & 0x1f) << shift;
+                shift += 5;
+            } while (byte >= 0x20);
+
+            longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+            lat += latitude_change;
+            lng += longitude_change;
+
+            coordinates.push([lat / factor, lng / factor]);
         }
-        catch (e)
-        {
-            console.error(e);
-        }
+
+        return coordinates;
     }
 
     extractRoute(){
@@ -258,7 +216,7 @@ export default class MainMapView extends Component {
 
         console.log(ply);
 
-        let troute = decode(ply);
+        let troute = this.decode(ply);
         route = [];
         for(var i = 0; i < troute.length; i++)
         {
@@ -271,8 +229,8 @@ export default class MainMapView extends Component {
             });
         }
 
-        flag1.latitude = initialPosition.coords.latitude;
-        flag1.longitude = initialPosition.coords.longitude;
+        flag1.latitude = this.initialPosition.latitude;
+        flag1.longitude = this.initialPosition.longitude;
 
         flag2.latitude = initCoords.latitude;
         flag2.longitude = initCoords.longitude;
@@ -299,34 +257,24 @@ export default class MainMapView extends Component {
     }
 
     // marker selected
-    onPressMarker = (id) => {
+    onPressMarker = (location) => {
       return (event) => {
-        GetLandmarkById(id)
-          .then(landmark => {
-            console.log(landmark);
-            this.setState({
-              selectedLocation: landmark,
-            });
-          })
-          .catch(console.error);
+        this.setState({
+          selectedLocation: location,
+        })
       };
     }
 
     // TODO: this should work when Daniel's branch is merged
-    onCalloutPress = (id) => {
+    onCalloutPress = (location) => {
       return (event) => {
-        GetLandmarkById(id)
-          .then(landmark => {
-            console.log(landmark);
-            console.log(this.props);
-            this.props.navigation.navigate('Details', {
-                id: 'Details',
-                rowDat: landmark,
-                locID: id,
-                title: landmark.name,
-            });
-          })
-          .catch(console.error);
+        console.log(location);
+
+        this.props.navigation.navigate('Details', {
+            id: 'Details',
+            title: location.name,
+            location: location,
+        });
       };
     }
 
@@ -357,8 +305,7 @@ export default class MainMapView extends Component {
                     hideBack={true}
                 />
                 <MapView style={styles.map}
-                    provider="google"
-                    initialRegion={this.state.region}
+                    initialRegion={this.initialRegion}
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
                     customMapStyle={CustomMapStyle}
@@ -366,20 +313,20 @@ export default class MainMapView extends Component {
                     >
                     <MapView.Marker
                         image={dot1}
-                        coordinate={initialPosition.coords}
+                        coordinate={this.initialPosition}
                     />
 
                     {polyline}
 
-                    {this.state.markers.map(marker => (
+                    {this.state.markerLocations.map(loc => (
                         <MapView.Marker
-                          key={marker.id}
-                          coordinate={{latitude: marker.lat, longitude: marker.long}}
-                          title={marker.title}
-                          description={marker.description}
-                          image={GetIcon(marker.srcID)}
-                          onPress={this.onPressMarker(marker.id)}
-                          onCalloutPress={this.onCalloutPress(marker.id)}
+                          key={loc.id}
+                          coordinate={{latitude: loc.lat, longitude: loc.long}}
+                          title={loc.name}
+                          description={loc.text_description}
+                          image={GetIcon(loc.category_id)}
+                          onPress={this.onPressMarker(loc)}
+                          onCalloutPress={this.onCalloutPress(loc)}
                         />
                       )
                     )}
@@ -390,51 +337,3 @@ export default class MainMapView extends Component {
     }
 }
 
-decode = function(str, precision) {
-    var index = 0,
-        lat = 0,
-        lng = 0,
-        coordinates = [],
-        shift = 0,
-        result = 0,
-        byte = null,
-        latitude_change,
-        longitude_change,
-        factor = Math.pow(10, precision || 6);
-
-    // Coordinates have variable length when encoded, so just keep
-    // track of whether we've hit the end of the string. In each
-    // loop iteration, a single coordinate is decoded.
-    while (index < str.length) {
-
-        // Reset shift, result, and byte
-        byte = null;
-        shift = 0;
-        result = 0;
-
-        do {
-            byte = str.charCodeAt(index++) - 63;
-            result |= (byte & 0x1f) << shift;
-            shift += 5;
-        } while (byte >= 0x20);
-
-        latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
-
-        shift = result = 0;
-
-        do {
-            byte = str.charCodeAt(index++) - 63;
-            result |= (byte & 0x1f) << shift;
-            shift += 5;
-        } while (byte >= 0x20);
-
-        longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
-
-        lat += latitude_change;
-        lng += longitude_change;
-
-        coordinates.push([lat / factor, lng / factor]);
-    }
-
-    return coordinates;
-};

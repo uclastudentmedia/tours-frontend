@@ -9,6 +9,8 @@ import {
 import fuzzy from 'fuzzy';
 import SearchBar from 'react-native-searchbar';
 
+import { Location } from 'app/DataTypes';
+
 import {
   styles,
   DirectionsStyle
@@ -17,16 +19,14 @@ import {
 export default class SearchContainer extends Component {
 
   static propTypes = {
-    locations: PropTypes.array,
+    locations: PropTypes.arrayOf(PropTypes.instanceOf(Location)).isRequired,
+    onResultSelect: PropTypes.func.isRequired,
     maxResults: PropTypes.number,
-    onResultSelect: PropTypes.func,
     searchText: PropTypes.string
   };
 
   static defaultProps = {
-    locations: [],
     maxResults: 5,
-    onResultSelect: res => console.warn('result clicked (no callback)', res),
     searchText: "Search"
   };
 
