@@ -3,7 +3,7 @@ import {
     StyleSheet,
     Text,
     View,
-    Button
+    Button,
 } from 'react-native';
 
 import fuzzy from 'fuzzy';
@@ -43,6 +43,7 @@ export default class SearchContainer extends Component {
 
     this.state = {
       results: this.popularLocations,
+      resultsVisible: false,
     };
   }
 
@@ -75,6 +76,16 @@ export default class SearchContainer extends Component {
     return results.map(result => result.original);
   }
 
+  onFocus = () => {
+    //console.log('onfocus');
+    this.setState({ resultsVisible: true });
+  }
+
+  onBlur = () => {
+    //console.log('onblur');
+    this.setState({ resultsVisible: false });
+  }
+
   onResultSelect(location) {
     this.props.onResultSelect(location);
 
@@ -90,27 +101,13 @@ export default class SearchContainer extends Component {
       searchText,
     } = this.props;
 
+    const {
+      results,
+      resultsVisible,
+    } = this.state;
+
     return (
         <View style={styles.wrapper}>
-          <Text style={{marginTop: 60}}>
-          </Text>
-
-          <View style={{marginTop: 60, marginBottom: 15}}>
-            {
-              this.state.results.map((loc, i) => (
-                <View
-                  style={DirectionsStyle.button}
-                  key={loc.id}
-                >
-                  <Button
-                    fontColor='red'
-                    title={loc.name}
-                    onPress={this.onResultSelect.bind(this, loc)}
-                  />
-                </View>
-              ))
-            }
-          </View>
 
           <SearchBar
             ref={(ref) => this.searchBar = ref}
@@ -122,7 +119,31 @@ export default class SearchContainer extends Component {
             heightAdjust={-10}
             focusOnLayout={false}
             autoCorrect={false}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
           />
+
+          <View style={{marginTop: 60, marginBottom: 15}}>
+            {
+              resultsVisible ?
+              (
+                results.map((loc, i) => (
+                  <View
+                    style={DirectionsStyle.button}
+                    key={loc.id}
+                  >
+                    <Button
+                      fontColor='red'
+                      title={loc.name}
+                      onPress={this.onResultSelect.bind(this, loc)}
+                    />
+                  </View>
+                ))
+              )
+              : null
+            }
+          </View>
+
         </View>
     );
   }

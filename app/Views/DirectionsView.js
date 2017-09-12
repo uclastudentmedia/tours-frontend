@@ -69,7 +69,7 @@ export default class DirectionsView extends Component
 
           <Text style={{textAlign: 'center', fontWeight: 'bold', marginBottom: 10}}>Start Location</Text>
           <View style={DirectionsStyle.search}>
-            <SearchContainer style={{marginTop: 200, flexDirection: 'column'}}
+            <SearchContainer style={{marginTop: 10, flexDirection: 'column'}}
               locations={locations}
               onResultSelect={this.setStartLocation.bind(this)}
               maxResults={3}
@@ -94,7 +94,7 @@ export default class DirectionsView extends Component
 		            onPress={this.getDirections.bind(this)}
 		          />
 	          </View>
-	   		</View>
+          </View>
 
         </View>
       );
