@@ -14,10 +14,10 @@ var windowWidth = Dimensions.get('window').width;
 module.exports = StyleSheet.create({
     search:{
         flexDirection: 'column', 
-        flex: 1,
+        flex: 1
     },
     button:{
-        width: windowWidth - 15,
+        width: windowWidth,
         marginBottom: 1
     }
 });

@@ -84,13 +84,16 @@ export default class DirectionsView extends Component
             />
           </View>
 
-          <Text>From: {startLocation ? startLocation.name : ''}</Text>
-          <Text>To: {endLocation ? endLocation.name : ''}</Text>
-
-          <Button
-            title='Get Directions'
-            onPress={this.getDirections.bind(this)}
-          />
+          <View style={{marginBottom: 10}}> 
+	          <Text>From: {startLocation ? startLocation.name : ''}</Text>
+	          <Text>To: {endLocation ? endLocation.name : ''}</Text>
+	          <View style={{marginTop: 10}}>
+		          <Button
+		            title='Get Directions'
+		            onPress={this.getDirections.bind(this)}
+		          />
+	          </View>
+	   		</View>
 
         </View>
       );
