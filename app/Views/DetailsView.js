@@ -4,22 +4,23 @@ import {
   View,
 } from 'react-native';
 
-import { renderImage, feetCalc } from 'app/Utils';
+import { RenderIcon } from 'app/Utils';
 
-import {
-  DetailItem,
-} from 'app/Components';
-
-const styles = require( "../../assets/css/style");
-const dstyles= require('../../assets/css/detailStyle');
+import { styles, DetailStyle } from 'app/css';
 
 export default class DetailsView extends Component
 {
-  constructor(props){
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params.title}`,
+  });
+
+  constructor(props) {
     super(props);
     this.state = {
       results: '',
     }
+    console.log(props);
+    this.location = props.navigation.state.params.rowDat;
   }
 
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
@@ -27,13 +28,13 @@ export default class DetailsView extends Component
   render() {
     return (
       <View style={styles.container}>
-        <View style={dstyles.titleSec}>
-          {/*renderImage(this.state.results.results.category,'details')*/}
-          <Text style={dstyles.title}>
+        <View style={DetailStyle.titleSec}>
+          {RenderIcon(this.location.category_id,'details')}
+          <Text style={DetailStyle.title}>
             blah
           </Text>
         </View>
-        <Text style={dstyles.dist}>
+        <Text style={DetailStyle.dist}>
           {/*feetCalc(this.state.curLocation.latitude,
                     this.state.curLocation.longitude,
                     this.state.results.results.lat,

@@ -1,17 +1,16 @@
 /**
  * Created by Daniel on 2/3/2017.
  */
-const React = require("react-native");
+import React from 'react';
 import {
     StyleSheet,
     Dimensions
-} from "react-native";
-import MapView from 'react-native-maps'
+} from 'react-native';
 
 var {height, width} = Dimensions.get('window');
 var windowWidth = Dimensions.get('window').width;
 
-module.exports = StyleSheet.create({
+export default StyleSheet.create({
     baseText:{
         fontFamily:'sans-serif-thin'
     },
@@ -73,6 +72,16 @@ module.exports = StyleSheet.create({
     locations:{
         width: width - 40
     },
+    locList:{
+        flex:1,
+        width:width
+    }
+    ,
+    listHeader:{
+        flex:4,
+        width:width
+    }
+    ,
     distText:{
         fontSize:16,
         color: '#B8B8B8'
@@ -83,7 +92,7 @@ module.exports = StyleSheet.create({
     },
     locText:{
         padding:20,
-        fontSize:18,
+        fontSize:25,
         color: '#5b73a4'
     },
     loadingLocText:{
@@ -137,9 +146,12 @@ module.exports = StyleSheet.create({
         top: 40
     },
     wrapper: {
+        flex:1,
         flexWrap: 'wrap',
         alignItems: 'flex-start',
-        flexDirection:'row'
+        flexDirection:'row',
+        height:80,
+        width:width,
     },
     btnContainer: {
         flex: 1,

@@ -15,10 +15,14 @@ import {
 
 import { GetLandmarkList } from 'app/DataManager';
 
+
 import Hr from 'react-native-hr';
 
 const styles = require( "../../assets/css/style");
 const dirStyles = require( "../../assets/css/directionsStyle");
+
+import { styles } from 'app/css';
+
 
 
 export default class DirectionsView extends Component

@@ -17,49 +17,19 @@ import {
 import { debounce } from 'lodash';
 
 import MapView from 'react-native-maps';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import SearchBar from 'react-native-searchbar';
 
 import {
-  DistancePrioritize,
   popPrioritize,
   LocToData,
-  LocToIcon
 } from 'app/Utils';
 
-import {
-  ListItem,
-  TBTItem,
-} from 'app/Components';
+import { GetLandmarkList, GetLandmarkById } from 'app/DataManager';
+import {popLocation} from 'app/LocationPopManager'
 
-import { GetLandmarkList } from 'app/DataManager';
+import { GetIcon, dot1 } from 'app/Assets';
 
-const styles = require( "../../assets/css/style");
-
-const MAPIMAGES = {
-  image1: require('../../assets/new_sizes/1.png'), // statically analyzed
-  image2: require('../../assets/new_sizes/2.png'), // statically analyzed
-  image3: require('../../assets/new_sizes/3.png'), // statically analyzed
-  image4: require('../../assets/new_sizes/4.png'), // statically analyzed
- // image5: require('../../assets/new_sizes/5.png'), // statically analyzed
-  image6: require('../../assets/new_sizes/6.png'), // statically analyzed
-  image7: require('../../assets/new_sizes/7.png'), // statically analyzed
-  image8: require('../../assets/new_sizes/8.png'), // statically analyzed
-  image9: require('../../assets/new_sizes/9.png'), // statically analyzed
-  image10: require('../../assets/new_sizes/10.png'), // statically analyzed
-  image11: require('../../assets/new_sizes/11.png'), // statically analyzed
-  image12: require('../../assets/new_sizes/12.png'), // statically analyzed
-  image13: require('../../assets/new_sizes/13.png'), // statically analyzed
-  image14: require('../../assets/new_sizes/14.png'), // statically analyzed
-  image15: require('../../assets/new_sizes/15.png'), // statically analyzed
-  image16: require('../../assets/new_sizes/17.png'), // statically analyzed
-  image18: require('../../assets/new_sizes/18.png'), // statically analyzed
-  image20: require('../../assets/new_sizes/20.png'), // statically analyzed
-  image61: require('../../assets/new_sizes/61.png'), // statically analyzed
-  image321: require('../../assets/new_sizes/321.png'), // statically analyzed
-  image961: require('../../assets/new_sizes/961.png'), // statically analyzed
-  image1285: require('../../assets/new_sizes/1285.png'), // statically analyzed
-}
+import { styles, CustomMapStyle } from 'app/css';
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 var mapSettinger='popular';
@@ -130,9 +100,7 @@ export default class MainMapView extends Component {
 
           case 'distance':
             //if map setting is nearby, prioritize top 10 location by distance
-            temp = DistancePrioritize(initialPosition.coords.latitude,
-                                      initialPosition.coords.longitude,
-                                      val);
+
             break;
 
           case 'popular':
@@ -143,8 +111,7 @@ export default class MainMapView extends Component {
                                  this.state.region.latitude,
                                  this.state.region.longitude,
                                  this.state.region.latitudeDelta,
-                                 this.state.region.longitudeDelta);
-            //console.log("region",this.state.region);
+                                 this.state.region.longitudeDelta,"All");
             break;
         }
 
@@ -176,6 +143,21 @@ export default class MainMapView extends Component {
         }
         markersTemp.splice(0,1);
         markersTemp.slice(0,10);
+
+        // add the selected location if needed
+        const selected = this.state.selectedLocation;
+        if (selected && !markersTemp.find(l => l.id == selected.id)) {
+          console.log(selected);
+          markersTemp.push({
+            title: selected.name,
+            lat: selected.lat,
+            long: selected.long,
+            srcID: selected.category_id,
+            location: selected.name,
+            id: selected.id,
+          });
+        }
+
         this.setState({
             markers:markersTemp
         });
@@ -309,6 +291,45 @@ export default class MainMapView extends Component {
         tbt = true;
     }
 
+    // marker deselected
+    onPressMap = () => {
+      this.setState({
+        selectedLocation: undefined,
+      });
+    }
+
+    // marker selected
+    onPressMarker = (id) => {
+      return (event) => {
+        GetLandmarkById(id)
+          .then(landmark => {
+            console.log(landmark);
+            this.setState({
+              selectedLocation: landmark,
+            });
+          })
+          .catch(console.error);
+      };
+    }
+
+    // TODO: this should work when Daniel's branch is merged
+    onCalloutPress = (id) => {
+      return (event) => {
+        GetLandmarkById(id)
+          .then(landmark => {
+            console.log(landmark);
+            console.log(this.props);
+            this.props.navigation.navigate('Details', {
+                id: 'Details',
+                rowDat: landmark,
+                locID: id,
+                title: landmark.name,
+            });
+          })
+          .catch(console.error);
+      };
+    }
+
     render() {
         if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
         {
@@ -336,12 +357,15 @@ export default class MainMapView extends Component {
                     hideBack={true}
                 />
                 <MapView style={styles.map}
+                    provider="google"
                     initialRegion={this.state.region}
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
+                    customMapStyle={CustomMapStyle}
+                    onPress={this.onPressMap}
                     >
                     <MapView.Marker
-                        image={require('../../assets/images/dot1.png')}
+                        image={dot1}
                         coordinate={initialPosition.coords}
                     />
 
@@ -353,7 +377,9 @@ export default class MainMapView extends Component {
                           coordinate={{latitude: marker.lat, longitude: marker.long}}
                           title={marker.title}
                           description={marker.description}
-                          image={MAPIMAGES['image' + marker.srcID]}
+                          image={GetIcon(marker.srcID)}
+                          onPress={this.onPressMarker(marker.id)}
+                          onCalloutPress={this.onCalloutPress(marker.id)}
                         />
                       )
                     )}
