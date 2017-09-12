@@ -42,7 +42,7 @@ export default class SearchContainer extends Component {
                               .slice(0, props.maxResults);
 
     this.state = {
-      results: this.popularLocations
+      results: this.popularLocations,
     };
   }
 
@@ -75,10 +75,19 @@ export default class SearchContainer extends Component {
     return results.map(result => result.original);
   }
 
+  onResultSelect(location) {
+    this.props.onResultSelect(location);
+
+    // fill the text input with the selected result
+    // WARNING: calling private function, so this may break if
+    // react-native-searchbar is upgraded
+    this.searchBar._onChangeText(location.name);
+  }
+
   render() {
     const {
       locations,
-      onResultSelect,
+      searchText,
     } = this.props;
 
     return (
@@ -96,7 +105,7 @@ export default class SearchContainer extends Component {
                   <Button
                     fontColor='red'
                     title={loc.name}
-                    onPress={() => onResultSelect(loc)}
+                    onPress={this.onResultSelect.bind(this, loc)}
                   />
                 </View>
               ))
@@ -109,8 +118,10 @@ export default class SearchContainer extends Component {
             handleSearch={this.handleSearch}
             showOnLoad
             hideBack={true}
-            placeholder={this.props.searchText}
+            placeholder={searchText}
             heightAdjust={-10}
+            focusOnLayout={false}
+            autoCorrect={false}
           />
         </View>
     );
