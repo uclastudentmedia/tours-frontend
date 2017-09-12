@@ -7,8 +7,8 @@ import {
     Dimensions
 } from 'react-native';
 
-var {height, width} = Dimensions.get('window');
-var windowWidth = Dimensions.get('window').width;
+const {height, width} = Dimensions.get('window');
+const windowWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
     baseText:{
@@ -19,14 +19,6 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent:'flex-end',
         backgroundColor: 'white',
-        width:width,
-        height:height
-    },
-    dirContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent:'flex-end',
-        backgroundColor: '#EEEEEE',
         width:width,
         height:height
     },

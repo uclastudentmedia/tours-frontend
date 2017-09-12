@@ -9,14 +9,15 @@ import {
 import fuzzy from 'fuzzy';
 import SearchBar from 'react-native-searchbar';
 
-import { styles } from 'app/css';
-const dirStyles = require( "../../assets/css/directionsStyle");
+import {
+  styles,
+  DirectionsStyle
+} from 'app/css';
 
 export default class SearchContainer extends Component {
 
   static propTypes = {
     locations: PropTypes.array,
-    title: PropTypes.string,
     maxResults: PropTypes.number,
     onResultSelect: PropTypes.func,
     searchText: PropTypes.string
@@ -24,8 +25,7 @@ export default class SearchContainer extends Component {
 
   static defaultProps = {
     locations: [],
-    title: "Suggestions",
-    maxResults: 30,
+    maxResults: 5,
     onResultSelect: res => console.warn('result clicked (no callback)', res),
     searchText: "Search"
   };
@@ -78,7 +78,6 @@ export default class SearchContainer extends Component {
   render() {
     const {
       locations,
-      title,
       onResultSelect,
     } = this.props;
 
@@ -89,13 +88,15 @@ export default class SearchContainer extends Component {
 
           <View style={{marginTop: 60, marginBottom: 15}}>
             {
-              this.state.results.map((result, i) => (
-                <View style={dirStyles.button}>
+              this.state.results.map((loc, i) => (
+                <View
+                  style={DirectionsStyle.button}
+                  key={loc.id}
+                >
                   <Button
                     fontColor='red'
-                    key={i}
-                    title={result.name}
-                    onPress={() => onResultSelect(result)}
+                    title={loc.name}
+                    onPress={() => onResultSelect(loc)}
                   />
                 </View>
               ))

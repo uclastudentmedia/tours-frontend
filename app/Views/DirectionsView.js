@@ -8,6 +8,8 @@ import {
   Button,
 } from 'react-native';
 
+import Hr from 'react-native-hr';
+
 import {
   TBTItem,
   SearchContainer,
@@ -15,11 +17,10 @@ import {
 
 import { GetLandmarkList } from 'app/DataManager';
 
-
-import Hr from 'react-native-hr';
-const dirStyles = require( "../../assets/css/directionsStyle");
-
-import { styles } from 'app/css';
+import {
+  styles,
+  DirectionsStyle
+} from 'app/css';
 
 
 
@@ -36,7 +37,7 @@ export default class DirectionsView extends Component
     this.state = {
       directions: {},
       locations: [],
-    }
+    };
   }
 
   componentDidMount() {
@@ -62,25 +63,25 @@ export default class DirectionsView extends Component
     }
     else {
       return (
-        <View style={styles.dirContainer}>
+        <View style={DirectionsStyle.container}>
 
           <Text>{JSON.stringify(directions)}</Text>
 
           <Text style={{textAlign: 'center', fontWeight: 'bold', marginBottom: 10}}>Start Location</Text>
-          <View style={dirStyles.search}>
+          <View style={DirectionsStyle.search}>
             <SearchContainer style={{marginTop: 200, flexDirection: 'column'}}
-            locations={locations}
-            onResultSelect={this.setStartLocation.bind(this)}
-            maxResults={3}
+              locations={locations}
+              onResultSelect={this.setStartLocation.bind(this)}
+              maxResults={3}
             />
 
             <Hr lineColor='#b3b3b3' />
 
             <Text style={{textAlign: 'center', fontWeight: 'bold', marginTop: 10, marginBottom: 10}}>End Location</Text>
             <SearchContainer style={{marginTop: 10, flexDirection: 'column'}}
-            locations={locations}
-            onResultSelect={this.setEndLocation.bind(this)}
-            maxResults={3}
+              locations={locations}
+              onResultSelect={this.setEndLocation.bind(this)}
+              maxResults={3}
             />
           </View>
 
