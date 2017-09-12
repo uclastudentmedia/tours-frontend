@@ -52,11 +52,11 @@ export default class DetailsView extends Component
         <View style={DetailStyle.titleSec}>
           {RenderIcon(this.location.category_id,'details')}
           <Text style={DetailStyle.title}>
-            blah
+              {this.location.name}
           </Text>
         </View>
         <Text style={DetailStyle.dist}>
-          {this.location.FeetAway(position)} feet away
+            {this.location.text_description}
         </Text>
       </View>
     );
