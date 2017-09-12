@@ -10,6 +10,7 @@ import fuzzy from 'fuzzy';
 import SearchBar from 'react-native-searchbar';
 
 const styles = require( "../../assets/css/style");
+const dirStyles = require( "../../assets/css/directionsStyle");
 
 export default class SearchContainer extends Component {
 
@@ -18,13 +19,15 @@ export default class SearchContainer extends Component {
     title: PropTypes.string,
     maxResults: PropTypes.number,
     onResultSelect: PropTypes.func,
+    searchText: PropTypes.string
   };
 
   static defaultProps = {
     locations: [],
-    title: "Searchbar Title",
+    title: "Suggestions",
     maxResults: 30,
-    onResultSelect: res => console.warn('result clicked (no callback)', res)
+    onResultSelect: res => console.warn('result clicked (no callback)', res),
+    searchText: "Search"
   };
 
   constructor(props) {
@@ -81,18 +84,20 @@ export default class SearchContainer extends Component {
 
     return (
         <View style={styles.wrapper}>
-          <Text style={{marginTop: 80}}>
-            {title}
+          <Text style={{marginTop: 60}}>
           </Text>
 
-          <View style={{marginTop: 110}}>
+          <View style={{marginTop: 60, marginBottom: 15}}>
             {
               this.state.results.map((result, i) => (
-                <Button
-                  key={i}
-                  title={result.name}
-                  onPress={() => onResultSelect(result)}
-                />
+                <View style={dirStyles.button}>
+                  <Button
+                    fontColor='red'
+                    key={i}
+                    title={result.name}
+                    onPress={() => onResultSelect(result)}
+                  />
+                </View>
               ))
             }
           </View>
@@ -102,6 +107,9 @@ export default class SearchContainer extends Component {
             data={locations}
             handleSearch={this.handleSearch}
             showOnLoad
+            hideBack={true}
+            placeholder={this.props.searchText}
+            heightAdjust={-10}
           />
         </View>
     );

@@ -23,6 +23,14 @@ module.exports = StyleSheet.create({
         width:width,
         height:height
     },
+    dirContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent:'flex-end',
+        backgroundColor: '#EEEEEE',
+        width:width,
+        height:height
+    },
     loadMapContainer: {
         flex: 1,
         alignItems: 'center',
