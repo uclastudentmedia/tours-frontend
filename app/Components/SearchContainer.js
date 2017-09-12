@@ -9,7 +9,7 @@ import {
 import fuzzy from 'fuzzy';
 import SearchBar from 'react-native-searchbar';
 
-const styles = require( "../../assets/css/style");
+import { styles } from 'app/css';
 const dirStyles = require( "../../assets/css/directionsStyle");
 
 export default class SearchContainer extends Component {
