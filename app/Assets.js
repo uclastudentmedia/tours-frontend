@@ -2,7 +2,7 @@
 
 export const icon_ph = require('../assets/images/icon_ph.png');
 export const dot1 = require('../assets/images/dot1.png');
-export const logo = require('../assets/images/logo.png');
+export const logo = require('../assets/images/logo_1x.png');
 export const logoArtboard = require('../assets/images/logoArtboard.png');
 
 const icons = {

@@ -89,8 +89,8 @@ const MainScreenNavigator = TabNavigator(
   {
     tabBarPosition: 'bottom',
     tabBarOptions: {
-      activeTintColor:   Platform.OS === 'ios' ? '#e91e63' : '#fff',
-      inactiveTintColor: Platform.OS === 'ios' ? '#f06595' : '#ccc',
+      activeTintColor: '#fff',
+      inactiveTintColor: '#b3b3b3',
       showIcon: true,
       showLabel: true,
       tabStyle: AppStyle.tab,

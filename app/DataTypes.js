@@ -15,7 +15,7 @@ class ImmutableObject {
 
 export class Location extends ImmutableObject {
   FeetAway(from) {
-    if (from.latitude && from.longitude) {
+    if (from && from.latitude && from.longitude) {
       const dist = feetCalc(from.latitude, from.longitude, this.lat, this.long);
       return Math.round(dist);
     }

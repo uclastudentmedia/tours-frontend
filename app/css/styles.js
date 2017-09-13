@@ -6,7 +6,8 @@
 import React from 'react';
 import {
     StyleSheet,
-    Dimensions
+    Dimensions,
+    Platform,
 } from 'react-native';
 
 const {height, width} = Dimensions.get('window');
@@ -14,7 +15,10 @@ const windowWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
     baseText:{
-        fontFamily:'sans-serif-thin'
+        fontFamily: Platform.select({
+          android: 'sans-serif-thin',
+          ios: 'Helvetica-Light',
+        })
     },
     container: {
         flex: 1,

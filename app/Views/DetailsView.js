@@ -4,12 +4,15 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
+  Image,
+  ScrollView,
 } from 'react-native';
 
 import { Location } from 'app/DataTypes';
 import GPSManager from 'app/GPSManager';
 import { RenderIcon } from 'app/Utils';
 
+import { logo } from 'app/Assets';
 import { styles, DetailStyle } from 'app/css';
 
 export default class DetailsView extends Component
@@ -39,6 +42,13 @@ export default class DetailsView extends Component
       results: '',
     }
     this.location = props.navigation.state.params.location;
+
+    if (this.location.images.length != 0) {
+      this.displayImage = { uri: this.location.images[0].display };
+    }
+    else {
+      this.displayImage = logo;
+    }
   }
 
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
@@ -48,17 +58,40 @@ export default class DetailsView extends Component
     const position = this.GPSManager.getPosition();
 
     return (
-      <View style={styles.container}>
-        <View style={DetailStyle.titleSec}>
-          {RenderIcon(this.location.category_id,'details')}
-          <Text style={DetailStyle.title}>
-            blah
+      <ScrollView>
+        <View style={styles.container}>
+
+          <View style={DetailStyle.titleSec}>
+            {RenderIcon(this.location.category_id,'details')}
+            <Text style={DetailStyle.title}>
+                {this.location.name}
+            </Text>
+          </View>
+
+          <Image
+            source={this.displayImage}
+            style={DetailStyle.displayImage}
+          />
+
+          <Text style={DetailStyle.dist}>
+              {Math.round(this.location.FeetAway(position)/264 * 100) / 100} walking minutes away
           </Text>
+
+          <Text style={DetailStyle.description}>
+              {this.location.text_description}
+          </Text>
+
+{/*
+          {this.location.images.map((image, idx) => (
+            <Image
+              key={idx}
+              source={{uri: image.thumbnail}}
+              style={DetailStyle.thumbnailImage}
+            />
+           ))}
+*/}
         </View>
-        <Text style={DetailStyle.dist}>
-          {this.location.FeetAway(position)} feet away
-        </Text>
-      </View>
+      </ScrollView>
     );
   }
 }
