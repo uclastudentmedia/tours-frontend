@@ -25,5 +25,13 @@ export default StyleSheet.create({
     },
     icon:{height: 40, width: 40},
     dist:{marginTop:-10, },
-    description:{flex:1, flexDirection:'row',padding:15}
+    description:{flex:1, flexDirection:'row',padding:15},
+    displayImage: {
+      width: width,
+      height: width * 0.75,
+    },
+    thumbnailImage: {
+      width: 100,
+      height: 75,
+    }
 });

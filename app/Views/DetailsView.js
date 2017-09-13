@@ -4,12 +4,15 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
+  Image,
+  ScrollView,
 } from 'react-native';
 
 import { Location } from 'app/DataTypes';
 import GPSManager from 'app/GPSManager';
 import { RenderIcon } from 'app/Utils';
 
+import { logo } from 'app/Assets';
 import { styles, DetailStyle } from 'app/css';
 
 export default class DetailsView extends Component
@@ -39,6 +42,13 @@ export default class DetailsView extends Component
       results: '',
     }
     this.location = props.navigation.state.params.location;
+
+    if (this.location.images.length != 0) {
+      this.displayImage = { uri: this.location.images[0].display };
+    }
+    else {
+      this.displayImage = logo;
+    }
   }
 
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
@@ -48,21 +58,40 @@ export default class DetailsView extends Component
     const position = this.GPSManager.getPosition();
 
     return (
-      <View style={styles.container}>
-        <View style={DetailStyle.titleSec}>
-          {RenderIcon(this.location.category_id,'details')}
-          <Text style={DetailStyle.title}>
-              {this.location.name}
+      <ScrollView>
+        <View style={styles.container}>
+
+          <View style={DetailStyle.titleSec}>
+            {RenderIcon(this.location.category_id,'details')}
+            <Text style={DetailStyle.title}>
+                {this.location.name}
+            </Text>
+          </View>
+
+          <Image
+            source={this.displayImage}
+            style={DetailStyle.displayImage}
+          />
+
+          <Text style={DetailStyle.dist}>
+              {this.location.FeetAway(position)} feet away
           </Text>
-        </View>
-        <Text style={DetailStyle.dist}>
-            {this.location.FeetAway(this.location)}
-        </Text>
-          <Image source={{uri:"https://tours.bruinmobile.com/media/photologue/photos/cache/31_1_thumbnail.jpg"}} style={{width: 400, height: 400}}/>
+
           <Text style={DetailStyle.description}>
               {this.location.text_description}
           </Text>
-      </View>
+
+{/*
+          {this.location.images.map((image, idx) => (
+            <Image
+              key={idx}
+              source={{uri: image.thumbnail}}
+              style={DetailStyle.thumbnailImage}
+            />
+           ))}
+*/}
+        </View>
+      </ScrollView>
     );
   }
 }
