@@ -74,7 +74,7 @@ export default class DetailsView extends Component
           />
 
           <Text style={DetailStyle.dist}>
-              {this.location.FeetAway(position)} feet away
+              {Math.round(this.location.FeetAway(position)/264 * 100) / 100} walking minutes away
           </Text>
 
           <Text style={DetailStyle.description}>

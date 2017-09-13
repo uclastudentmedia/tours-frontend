@@ -24,9 +24,10 @@ export default StyleSheet.create({
         marginLeft:10
     },
     icon:{height: 40, width: 40},
-    dist:{marginTop:-10, },
-    description:{flex:1, flexDirection:'row',padding:15},
+    dist:{ },
+    description:{flex:1, flexDirection:'row',padding:15, fontSize:20},
     displayImage: {
+        marginTop:20,
       width: width,
       height: width * 0.75,
     },
