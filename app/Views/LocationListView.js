@@ -19,7 +19,7 @@ import {popPrioritize, RenderIcon} from 'app/Utils'
 import { styles } from 'app/css';
 
 var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 export default class LocationListView extends Component
 {
@@ -47,6 +47,8 @@ export default class LocationListView extends Component
           longitudeDelta: 0.0345,
       };
 
+      this.locations = GetLocationList();
+
       this.state = {
           dataSource: ds.cloneWithRows([]),
           markers: [],
@@ -58,12 +60,7 @@ export default class LocationListView extends Component
   }
   componentDidMount() {
       this.getPosition();
-      this.getData();
-  }
-
-  getData() {
-        this.locations = GetLocationList();
-        this.getLocations('All');
+      this.getLocations('All');
   }
 
   getPosition() {
@@ -109,6 +106,7 @@ export default class LocationListView extends Component
       <View style={styles.container}>
           <ListView
               enableEmptySections={true}
+              removeClippedSubviews={false}
               dataSource={this.state.dataSource}
               renderRow={(loc) =>
                 <TouchableOpacity onPress={this.gotoDescription.bind(this, loc)} style={styles.wrapper}>

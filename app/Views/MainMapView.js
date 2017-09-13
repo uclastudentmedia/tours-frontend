@@ -8,11 +8,7 @@ import {
     StyleSheet,
     Text,
     View,
-    AsyncStorage,
     ListView,
-    TouchableHighlight,
-    Dimensions,
-    TouchableOpacity,
     TextInput,
 } from 'react-native';
 
@@ -265,7 +261,6 @@ export default class MainMapView extends Component {
       };
     }
 
-    // TODO: this should work when Daniel's branch is merged
     onCalloutPress = (location) => {
       return (event) => {
         console.log(location);
@@ -305,10 +300,10 @@ export default class MainMapView extends Component {
                     hideBack={true}
                 />
                 <MapView style={styles.map}
+                    customMapStyle={CustomMapStyle}
                     initialRegion={this.initialRegion}
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
-                    customMapStyle={CustomMapStyle}
                     onPress={this.onPressMap}
                     >
                     <MapView.Marker
@@ -323,7 +318,7 @@ export default class MainMapView extends Component {
                           key={loc.id}
                           coordinate={{latitude: loc.lat, longitude: loc.long}}
                           title={loc.name}
-                          description={loc.text_description}
+                          //description={loc.text_description}
                           image={GetIcon(loc.category_id)}
                           onPress={this.onPressMarker(loc)}
                           onCalloutPress={this.onCalloutPress(loc)}
