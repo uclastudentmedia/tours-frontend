@@ -56,8 +56,12 @@ export default class DetailsView extends Component
           </Text>
         </View>
         <Text style={DetailStyle.dist}>
-            {this.location.text_description}
+            {this.location.FeetAway(this.location)}
         </Text>
+          <Image source={{uri:"https://tours.bruinmobile.com/media/photologue/photos/cache/31_1_thumbnail.jpg"}} style={{width: 400, height: 400}}/>
+          <Text style={DetailStyle.description}>
+              {this.location.text_description}
+          </Text>
       </View>
     );
   }
