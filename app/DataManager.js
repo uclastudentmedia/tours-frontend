@@ -93,7 +93,6 @@ async function getCacheTime(endpoint) {
       return parseInt(data);
     }
   } catch(error) {
-    console.error(error);
   }
 
   // not found, force cache update
@@ -110,7 +109,6 @@ async function updateCacheTime(endpoint) {
   try {
     await AsyncStorage.setItem(key, timestamp.toString());
   } catch(error) {
-    console.error(error);
   }
 }
 
@@ -126,7 +124,6 @@ async function getCachedData(endpoint) {
       return JSON.parse(data);
     }
   } catch(error) {
-    console.error(error);
   }
   return null;
 }
@@ -140,7 +137,6 @@ async function setCachedData(endpoint, data) {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(data));
   } catch(error) {
-    console.error(error);
   }
 }
 
@@ -151,7 +147,6 @@ async function queryEndpoint(endpoint, transformData) {
    * @return Promise
    */
 
-  //console.info(`queryEndpoint('${endpoint}')`);
 
   // default: no transform
   transformData = transformData || (data => data);
@@ -196,7 +191,6 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
   try {
     newData = await queryEndpoint(endpoint, transformData);
   } catch(error) {
-    console.error(error);
     return null;
   }
 
@@ -219,7 +213,6 @@ function getDataSync(endpoint) {
    */
 
   if (!DATA_LOADED) {
-    console.error('The data has not been loaded yet.');
     return;
   }
 
@@ -257,7 +250,6 @@ export async function LoadAllData() {
    */
 
   if (DATA_LOADED) {
-    console.warn('LoadAllData has already been called.');
     return;
   }
 

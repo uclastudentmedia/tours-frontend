@@ -54,7 +54,6 @@ export default class DetailsView extends Component
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
   //{this.state.results.results.name}
   render() {
-    console.log(this.location);
     const position = this.GPSManager.getPosition();
 
     return (

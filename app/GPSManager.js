@@ -19,7 +19,7 @@ export default class GPSManager {
   }
 
   watchPosition(geo_success,
-                geo_error = console.warn,
+                geo_error = () => {},
                 options = this.options) {
 
     navigator.geolocation.getCurrentPosition(geo_success, geo_error, options);

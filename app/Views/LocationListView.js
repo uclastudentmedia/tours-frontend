@@ -78,8 +78,6 @@ export default class LocationListView extends Component
   }
 
   getLocations(category){
-      console.log("hi");
-      console.log(this.locations);
       //Get list of top 10 locations
       let results = popPrioritize(this.region, category);
 

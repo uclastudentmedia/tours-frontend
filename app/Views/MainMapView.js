@@ -94,7 +94,6 @@ export default class MainMapView extends Component {
         // add the selected location if needed
         const selected = this.state.selectedLocation;
         if (selected && !markerLocations.find(l => l.id == selected.id)) {
-            console.log(selected);
             markerLocations.push(selected);
         }
 
@@ -127,7 +126,6 @@ export default class MainMapView extends Component {
 
     onCalloutPress = (location) => {
       return (event) => {
-        console.log(location);
 
         this.props.navigation.navigate('Details', {
             id: 'Details',
