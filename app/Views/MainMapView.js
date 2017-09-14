@@ -12,6 +12,7 @@ import {
     TextInput,
 } from 'react-native';
 
+import PubSub from 'pubsub-js';
 import { debounce } from 'lodash';
 
 import MapView from 'react-native-maps';
@@ -148,6 +149,7 @@ export default class MainMapView extends Component {
 
     onRegionChange(region) {
       this.setState({ region:region });
+      PubSub.publish('MainMapView.onRegionChange', region);
       this.updateMapIcons();
     }
 

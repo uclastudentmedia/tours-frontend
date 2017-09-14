@@ -9,6 +9,7 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "navbar-native": "1.6.1",
+    "pubsub-js": "^1.5.7",
     "react": "15.4.2",
     "react-native": "0.41.1",
     "react-native-maps": "0.13.0",
