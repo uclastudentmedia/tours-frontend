@@ -104,6 +104,12 @@ export default class LocationListView extends Component
 
     return (
       <View style={styles.container}>
+          <Button
+              onPress={this.getLocations("Food")}
+              title="Learn More"
+              color="#841584"
+              accessibilityLabel="Learn more about this purple button"
+          />
           <ListView
               enableEmptySections={true}
               removeClippedSubviews={false}
