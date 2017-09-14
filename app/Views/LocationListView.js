@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
   Button,
 } from 'react-native';
+import PubSub from 'pubsub-js';
+
 import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import GPSManager from 'app/GPSManager';
 import { GetLocationList } from 'app/DataManager';
@@ -40,27 +42,30 @@ export default class LocationListView extends Component
           longitude: -118.443413,
       };
 
-      this.initialRegion = {
-          latitude: 34.070286,
-          longitude: -118.443413,
-          latitudeDelta: 0.0045,
-          longitudeDelta: 0.0345,
+      this.region = {
+          latitude: 34.0700086,
+          longitude: -118.446003,
+          latitudeDelta: 0.03,
+          longitudeDelta: 0.02,
       };
 
       this.locations = GetLocationList();
 
+      this.category = 'All';
+
       this.state = {
           dataSource: ds.cloneWithRows([]),
-          markers: [],
           position: this.initialPosition,
-          region: this.initialRegion,
-          results: []
       };
-      console.log(this.state);
   }
   componentDidMount() {
       this.getPosition();
-      this.getLocations('All');
+      this.getLocations(this.category);
+
+      PubSub.subscribe('MainMapView.onRegionChange', (msg, region) => {
+        this.region = region;
+        this.getLocations(this.category);
+      });
   }
 
   getPosition() {
@@ -78,8 +83,7 @@ export default class LocationListView extends Component
   getLocations(category){
       console.log(this.locations);
       //Get list of top 10 locations
-      //edit: need to change to current gps location, NOT initial position
-      let results = popPrioritize(this.state.region, category);
+      let results = popPrioritize(this.region, category);
 
       results = results.slice(0, 10);
 
