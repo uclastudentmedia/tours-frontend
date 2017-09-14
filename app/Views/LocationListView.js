@@ -76,7 +76,6 @@ export default class LocationListView extends Component
   }
 
   getLocations(category){
-      console.log("hi");
       console.log(this.locations);
       //Get list of top 10 locations
       //edit: need to change to current gps location, NOT initial position
@@ -96,7 +95,7 @@ export default class LocationListView extends Component
           location: location,
       });
   }
-
+//this.getLocations.bind(this,"Food")
   render() {
     //make modules into ListView, each module will have an id, based on which
     //id, the ListView will render that module
@@ -105,7 +104,7 @@ export default class LocationListView extends Component
     return (
       <View style={styles.container}>
           <Button
-              onPress={this.getLocations("Food")}
+              onPress={this.getLocations.bind(this,"Parking")}
               title="Learn More"
               color="#841584"
               accessibilityLabel="Learn more about this purple button"
