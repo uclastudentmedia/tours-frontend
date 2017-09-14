@@ -7,7 +7,9 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
+  ListView,
   Button,
+  TouchableOpacity,
 } from 'react-native';
 
 import {
@@ -30,9 +32,11 @@ import {
 } from 'app/css';
 
 
+let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 export default class DirectionsView extends Component
 {
+
   static propTypes = {
     navigation: PropTypes.object.isRequired,
     screenProps: PropTypes.shape({
@@ -44,6 +48,7 @@ export default class DirectionsView extends Component
     super(props);
     this.state = {
       directions: {},
+      dataSource: ds.cloneWithRows([]),
     };
     this.locations = GetLocationList();
   }
@@ -71,8 +76,20 @@ export default class DirectionsView extends Component
 
     return (
       <View style={DirectionsStyle.container}>
-
-        <Text>{JSON.stringify(directions)}</Text>
+        <ListView
+            dataSource={this.state.dataSource}
+            renderRow={(rowData) =>
+                <TouchableOpacity style={styles.wrapper}>
+                    <View style={styles.wrapper}>
+                      <Text style={styles.baseText}>
+                        <Text style={styles.locText}>
+                          {rowData.verbal_pre_transition_instruction}
+                        </Text>
+                      </Text>
+                    </View>
+                </TouchableOpacity>
+            }
+        />
 
         <Button
           title={"Select start location"}
@@ -84,7 +101,7 @@ export default class DirectionsView extends Component
           onPress={this.searchEndLocation}
         />
 
-        <View style={{marginBottom: 10}}> 
+        <View style={{marginBottom: 10}}>
           <Text>From: {startLocation ? startLocation.name : ''}</Text>
           <Text>To: {endLocation ? endLocation.name : ''}</Text>
           <View style={{marginTop: 10}}>
@@ -112,7 +129,11 @@ export default class DirectionsView extends Component
     const extraOptions = {};
 
     RouteTBT(startLocation, endLocation, extraOptions)
-      .then(data => this.setState({directions: data}))
+      .then(data => this.setState({
+          directions: data.trip.legs[0].maneuvers,
+          dataSource: ds.cloneWithRows(data.trip.legs[0].maneuvers)
+      }))
       .catch(console.error);
+      console.log(this.state.directions);
   }
 }
