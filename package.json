@@ -8,12 +8,10 @@
   },
   "dependencies": {
     "lodash": "^4.17.4",
-    "navbar-native": "1.6.1",
     "pubsub-js": "^1.5.7",
     "react": "15.4.2",
     "react-native": "0.41.1",
     "react-native-maps": "0.13.0",
-    "react-native-searchbar": "1.10.0",
     "react-native-vector-icons": "4.1.1",
     "react-navigation": "^1.0.0-beta.11"
   },

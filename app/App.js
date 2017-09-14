@@ -11,7 +11,6 @@ import {
   LoadingView,
   MainMapView,
   LocationListView,
-  DirectionsView,
   DetailsView
 } from 'app/Views';
 
@@ -49,19 +48,6 @@ class MainMapScreen extends Component {
   }
 }
 
-class DirectionsScreen extends Component {
-  static navigationOptions = {
-    tabBarLabel: 'Directions',
-    tabBarIcon: makeIcon('navigation')
-  };
-
-  render() {
-    return (
-      <DirectionsView {...this.props} />
-    );
-  }
-}
-
 class LocationListScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Explore',
@@ -83,7 +69,6 @@ class LocationListScreen extends Component {
 const MainScreenNavigator = TabNavigator(
   {
     MainMap: { screen: MainMapScreen },
-    Directions: { screen: DirectionsScreen },
     LocationList: { screen: LocationListScreen },
   },
   {

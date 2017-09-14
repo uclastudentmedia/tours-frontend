@@ -9,18 +9,15 @@ import {
   View,
   ListView,
   TouchableOpacity,
-  Button
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
-import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import GPSManager from 'app/GPSManager';
 import { GetLocationList } from 'app/DataManager';
 import {popPrioritize, RenderIcon} from 'app/Utils'
 
 import { styles } from 'app/css';
 
-var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 export default class LocationListView extends Component
