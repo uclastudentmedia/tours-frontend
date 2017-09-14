@@ -9,7 +9,7 @@ import {
   View,
   ListView,
   TouchableOpacity,
-  Button
+  Button,
 } from 'react-native';
 import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import GPSManager from 'app/GPSManager';
@@ -103,12 +103,36 @@ export default class LocationListView extends Component
 
     return (
       <View style={styles.container}>
-          <Button
-              onPress={this.getLocations.bind(this,"Parking")}
-              title="Learn More"
-              color="#841584"
-              accessibilityLabel="Learn more about this purple button"
-          />
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={this.getLocations.bind(this,"All")}
+                title="All"
+                color="#F89406"
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                  onPress={this.getLocations.bind(this,"Parking")}
+                  title="Parking"
+                  color="#F89406"
+              />
+            </View>
+              <View style={styles.buttonContainer}>
+              <Button
+                  onPress={this.getLocations.bind(this,"Food & Beverage")}
+                  title="Food"
+                  color="#F89406"
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                  onPress={this.getLocations.bind(this,"Libraries")}
+                  title="Libraries"
+                  color="#F89406"
+              />
+            </View>
+          </View>
           <ListView
               enableEmptySections={true}
               removeClippedSubviews={false}
