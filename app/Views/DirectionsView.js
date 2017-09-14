@@ -10,15 +10,19 @@ import {
   Button,
 } from 'react-native';
 
-import Hr from 'react-native-hr';
-
 import {
   TBTItem,
-  SearchContainer,
 } from 'app/Components';
 
+import {
+  SearchView,
+} from 'app/Views';
+
 import GPSManager from 'app/GPSManager';
-import { GetLocationList } from 'app/DataManager';
+import {
+  GetLocationList,
+  RouteTBT,
+} from 'app/DataManager';
 
 import {
   styles,
@@ -36,15 +40,26 @@ export default class DirectionsView extends Component
     }),
   };
 
-  static defaultProps = {
-  };
-
   constructor(props){
     super(props);
     this.state = {
       directions: {},
     };
     this.locations = GetLocationList();
+  }
+
+  searchStartLocation = () => {
+    this.props.navigation.navigate('Search', {
+      onResultSelect: loc => this.setState({startLocation: loc}),
+      title: "Select start location"
+    });
+  }
+
+  searchEndLocation = () => {
+    this.props.navigation.navigate('Search', {
+      onResultSelect: loc => this.setState({endLocation: loc}),
+      title: "Select end location"
+    });
   }
 
   render() {
@@ -59,23 +74,15 @@ export default class DirectionsView extends Component
 
         <Text>{JSON.stringify(directions)}</Text>
 
-        <Text style={{textAlign: 'center', fontWeight: 'bold', marginBottom: 10}}>Start Location</Text>
-        <View style={DirectionsStyle.search}>
-          <SearchContainer style={{marginTop: 10, flexDirection: 'column'}}
-            locations={this.locations}
-            onResultSelect={this.setStartLocation.bind(this)}
-            maxResults={3}
-          />
+        <Button
+          title={"Select start location"}
+          onPress={this.searchStartLocation}
+        />
 
-          <Hr lineColor='#b3b3b3' />
-
-          <Text style={{textAlign: 'center', fontWeight: 'bold', marginTop: 10, marginBottom: 10}}>End Location</Text>
-          <SearchContainer style={{marginTop: 10, flexDirection: 'column'}}
-            locations={this.locations}
-            onResultSelect={this.setEndLocation.bind(this)}
-            maxResults={3}
-          />
-        </View>
+        <Button
+          title={"Select end location"}
+          onPress={this.searchEndLocation}
+        />
 
         <View style={{marginBottom: 10}}> 
           <Text>From: {startLocation ? startLocation.name : ''}</Text>
@@ -90,18 +97,6 @@ export default class DirectionsView extends Component
 
       </View>
     );
-  }
-
-  setStartLocation(result) {
-    this.setState({
-      startLocation: result
-    });
-  }
-
-  setEndLocation(result) {
-    this.setState({
-      endLocation: result
-    });
   }
 
   async getDirections() {
