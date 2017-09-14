@@ -69,10 +69,10 @@ export default class MainMapView extends Component {
         };
 
         this.initialRegion = {
-          latitude: 34.070286,
-          longitude: -118.443413,
-          latitudeDelta: 0.0045,
-          longitudeDelta: 0.0345,
+          latitude: 34.0700086,
+          longitude: -118.446003,
+          latitudeDelta: 0.001367,
+          longitudeDelta: 0.02,
         };
 
         this.state = {
