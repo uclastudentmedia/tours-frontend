@@ -9,6 +9,7 @@ import {
   View,
   ListView,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
@@ -95,7 +96,7 @@ export default class LocationListView extends Component
           location: location,
       });
   }
-
+//this.getLocations.bind(this,"Food")
   render() {
     //make modules into ListView, each module will have an id, based on which
     //id, the ListView will render that module
@@ -103,23 +104,59 @@ export default class LocationListView extends Component
 
     return (
       <View style={styles.container}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={this.getLocations.bind(this,"All")}
+                title="All"
+                color="#F89406"
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                  onPress={this.getLocations.bind(this,"Parking")}
+                  title="Parking"
+                  color="#F89406"
+              />
+            </View>
+              <View style={styles.buttonContainer}>
+              <Button
+                  onPress={this.getLocations.bind(this,"Food & Beverage")}
+                  title="Food"
+                  color="#F89406"
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                  onPress={this.getLocations.bind(this,"Libraries")}
+                  title="Libraries"
+                  color="#F89406"
+              />
+            </View>
+          </View>
           <ListView
               enableEmptySections={true}
               removeClippedSubviews={false}
               dataSource={this.state.dataSource}
               renderRow={(loc) =>
                 <TouchableOpacity onPress={this.gotoDescription.bind(this, loc)} style={styles.wrapper}>
-                    <View style={styles.wrapper}>
-                      {RenderIcon(loc.category_id)}
-                      <Text style={styles.baseText}>
-                        <Text style={styles.locText}>
-                          {loc.name}{'\n'}
-                          <Text style={styles.distText}>
-                            {loc.FeetAway(position)} feet away
-                          </Text>
-                        </Text>
-                      </Text>
+                    <View style={styles.itemWrapper}>
+                        <View style={styles.wrapper}>
+                            {RenderIcon(loc.category_id)}
+                            <View style={styles.listWrapper}>
+                                <Text style={styles.baseText}>
+                                    <Text style={styles.locText}>
+                                        {loc.name}{'\n'}
+                                        <Text style={styles.distText}>
+                                            {loc.FeetAway(position)} feet away
+                                        </Text>
+                                    </Text>
+                                </Text>
+                            </View>
+                        </View>
                     </View>
+
+
                 </TouchableOpacity>
               }
           />
