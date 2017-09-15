@@ -128,10 +128,13 @@ export function DistancePrioritize(currentLat, currentLong) {
 
 export function RenderIcon(category, view) {
     let styleClass;
-    if(view==='details'){
+    switch(view) {
+      case 'details':
         styleClass=DetailStyle.icon;
-    }
-    else{
+        break;
+      case 'locationlist':
+        styleClass=styles.locListIcon;
+      default:
         styleClass=styles.placeholder;
     }
 

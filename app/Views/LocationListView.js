@@ -119,7 +119,7 @@ export default class LocationListView extends Component
                   color="#F89406"
               />
             </View>
-              <View style={styles.buttonContainer}>
+            <View style={styles.buttonContainer}>
               <Button
                   onPress={this.getLocations.bind(this,"Food & Beverage")}
                   title="Food"
@@ -129,7 +129,7 @@ export default class LocationListView extends Component
             <View style={styles.buttonContainer}>
               <Button
                   onPress={this.getLocations.bind(this,"Libraries")}
-                  title="Libraries"
+                  title="Library"
                   color="#F89406"
               />
             </View>
@@ -142,14 +142,14 @@ export default class LocationListView extends Component
                 <TouchableOpacity onPress={this.gotoDescription.bind(this, loc)} style={styles.wrapper}>
                     <View style={styles.itemWrapper}>
                         <View style={styles.wrapper}>
-                            {RenderIcon(loc.category_id)}
+                            {RenderIcon(loc.category_id, 'locationlist')}
                             <View style={styles.listWrapper}>
                                 <Text style={styles.baseText}>
                                     <Text style={styles.locText}>
                                         {loc.name}{'\n'}
-                                        <Text style={styles.distText}>
-                                            {loc.FeetAway(position)} feet away
-                                        </Text>
+                                    </Text>
+                                    <Text style={styles.distText}>
+                                        {loc.FeetAway(position)} feet away
                                     </Text>
                                 </Text>
                             </View>
