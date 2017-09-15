@@ -1080,6 +1080,7 @@
 				DEVELOPMENT_TEAM = V4Z45C29H6;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = toursfrontend/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1088,6 +1089,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.uclastudentmedia.UCLA-Maps";
 				PRODUCT_NAME = toursfrontend;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1101,6 +1103,7 @@
 				DEVELOPMENT_TEAM = V4Z45C29H6;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = toursfrontend/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1109,6 +1112,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.uclastudentmedia.UCLA-Maps";
 				PRODUCT_NAME = toursfrontend;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
