@@ -23,7 +23,7 @@ export default StyleSheet.create({
         fontSize:30,
         marginLeft:10
     },
-    icon:{height: 40, width: 40},
+    icon:{height: 40, width: 40,marginBottom:20},
     dist:{ },
     description:{flex:1, flexDirection:'row',padding:15, fontSize:20},
     displayImage: {

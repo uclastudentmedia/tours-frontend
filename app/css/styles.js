@@ -89,9 +89,19 @@ export default StyleSheet.create({
         color: '#B8B8B8'
     },
     locText:{
-        padding:20,
+        padding:0,
         fontSize:25,
-        color: '#5b73a4'
+        color: '#5b73a4',
+    },
+    listWrapper:{
+        marginTop:10,
+        width:width*.9,
+        padding:2,
+    },
+    itemWrapper:{
+        borderWidth: 0.5,
+        borderColor: '#dddddd',
+        paddingBottom:20
     },
     loadingLocText:{
         paddingTop: 20,
@@ -104,6 +114,8 @@ export default StyleSheet.create({
         width: 40
     },
     separator: {
+        width:width*.9,
+        paddingLeft:width*.025,
         height: 1,
         backgroundColor: '#dddddd'
     },
@@ -148,7 +160,7 @@ export default StyleSheet.create({
         flexWrap: 'wrap',
         alignItems: 'flex-start',
         flexDirection:'row',
-        height:80,
+        height:90,
         width:width,
     },
     btnContainer: {

@@ -143,17 +143,23 @@ export default class LocationListView extends Component
               dataSource={this.state.dataSource}
               renderRow={(loc) =>
                 <TouchableOpacity onPress={this.gotoDescription.bind(this, loc)} style={styles.wrapper}>
-                    <View style={styles.wrapper}>
-                      {RenderIcon(loc.category_id)}
-                      <Text style={styles.baseText}>
-                        <Text style={styles.locText}>
-                          {loc.name}{'\n'}
-                          <Text style={styles.distText}>
-                            {loc.FeetAway(position)} feet away
-                          </Text>
-                        </Text>
-                      </Text>
+                    <View style={styles.itemWrapper}>
+                        <View style={styles.wrapper}>
+                            {RenderIcon(loc.category_id)}
+                            <View style={styles.listWrapper}>
+                                <Text style={styles.baseText}>
+                                    <Text style={styles.locText}>
+                                        {loc.name}{'\n'}
+                                        <Text style={styles.distText}>
+                                            {loc.FeetAway(position)} feet away
+                                        </Text>
+                                    </Text>
+                                </Text>
+                            </View>
+                        </View>
                     </View>
+
+
                 </TouchableOpacity>
               }
           />
