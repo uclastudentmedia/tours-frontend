@@ -96,7 +96,8 @@ export default StyleSheet.create({
     listWrapper:{
         marginTop:10,
         width:width*.9,
-        padding:2,
+        padding:5,
+        flex: 1,
     },
     itemWrapper:{
         borderWidth: 0.5,
@@ -212,5 +213,9 @@ export default StyleSheet.create({
     },
     buttonContainer: {
         flex: 1,
+        marginTop: 20,
     },
+    locListIcon: {
+        flex: 1
+    }
 });
