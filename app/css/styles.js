@@ -73,8 +73,12 @@ export default StyleSheet.create({
     locList:{
         flex:1,
         width:width
-    }
-    ,
+    },
+    locListIcon: {
+        flex: 1,
+        maxWidth: 40,
+        alignSelf: 'center'
+    },
     listHeader:{
         flex:4,
         width:width
@@ -93,16 +97,13 @@ export default StyleSheet.create({
         fontSize:25,
         color: '#5b73a4',
     },
-    listWrapper:{
-        marginTop:10,
-        width:width*.9,
+    listItemText:{
         padding:5,
         flex: 1,
     },
-    itemWrapper:{
-        borderWidth: 0.5,
+    listItemBorder:{
+        borderBottomWidth: 1,
         borderColor: '#dddddd',
-        paddingBottom:20
     },
     loadingLocText:{
         paddingTop: 20,
@@ -161,8 +162,8 @@ export default StyleSheet.create({
         flexWrap: 'wrap',
         alignItems: 'flex-start',
         flexDirection:'row',
-        height:90,
         width:width,
+        padding: 5
     },
     btnContainer: {
         flex: 1,
@@ -214,8 +215,5 @@ export default StyleSheet.create({
     buttonContainer: {
         flex: 1,
         marginTop: 20,
-    },
-    locListIcon: {
-        flex: 1
     }
 });

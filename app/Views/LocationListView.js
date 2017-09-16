@@ -10,13 +10,15 @@ import {
   ListView,
   TouchableOpacity,
   Button,
+  Image,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
 import GPSManager from 'app/GPSManager';
 import { GetLocationList } from 'app/DataManager';
-import {popPrioritize, RenderIcon} from 'app/Utils'
+import {popPrioritize} from 'app/Utils'
 
+import { GetIcon } from 'app/Assets';
 import { styles } from 'app/css';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -139,24 +141,21 @@ export default class LocationListView extends Component
               removeClippedSubviews={false}
               dataSource={this.state.dataSource}
               renderRow={(loc) =>
-                <TouchableOpacity onPress={this.gotoDescription.bind(this, loc)} style={styles.wrapper}>
-                    <View style={styles.itemWrapper}>
-                        <View style={styles.wrapper}>
-                            {RenderIcon(loc.category_id, 'locationlist')}
-                            <View style={styles.listWrapper}>
-                                <Text style={styles.baseText}>
-                                    <Text style={styles.locText}>
-                                        {loc.name}{'\n'}
-                                    </Text>
-                                    <Text style={styles.distText}>
-                                        {loc.FeetAway(position)} feet away
-                                    </Text>
-                                </Text>
-                            </View>
-                        </View>
+                <TouchableOpacity onPress={this.gotoDescription.bind(this, loc)} style={[styles.wrapper, styles.listItemBorder]}>
+                    <Image
+                      style={styles.locListIcon}
+                      source={GetIcon(loc.category_id)}
+                    />
+                    <View style={styles.listItemText}>
+                        <Text style={styles.baseText}>
+                            <Text style={styles.locText}>
+                                {loc.name}{'\n'}
+                            </Text>
+                            <Text style={styles.distText}>
+                                {loc.FeetAway(this.position)} feet away
+                            </Text>
+                        </Text>
                     </View>
-
-
                 </TouchableOpacity>
               }
           />
