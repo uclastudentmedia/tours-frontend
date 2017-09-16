@@ -8,7 +8,7 @@ import {
   Text,
   View,
   ListView,
-  TouchableOpacity,
+  TouchableHighlight,
   Button,
   Image,
 } from 'react-native';
@@ -141,22 +141,28 @@ export default class LocationListView extends Component
               removeClippedSubviews={false}
               dataSource={this.state.dataSource}
               renderRow={(loc) =>
-                <TouchableOpacity onPress={this.gotoDescription.bind(this, loc)} style={[styles.wrapper, styles.listItemBorder]}>
-                    <Image
-                      style={styles.locListIcon}
-                      source={GetIcon(loc.category_id)}
-                    />
-                    <View style={styles.listItemText}>
-                        <Text style={styles.baseText}>
-                            <Text style={styles.locText}>
-                                {loc.name}{'\n'}
-                            </Text>
-                            <Text style={styles.distText}>
-                                {loc.FeetAway(this.position)} feet away
-                            </Text>
-                        </Text>
-                    </View>
-                </TouchableOpacity>
+                  <TouchableHighlight
+                    underlayColor='#ddd'
+                    onPress={this.gotoDescription.bind(this, loc)}
+                    style={[styles.wrapper, styles.listItemBorder]}
+                  >
+                      <View>
+                          <Image
+                            style={styles.locListIcon}
+                            source={GetIcon(loc.category_id)}
+                          />
+                          <View style={styles.listItemText}>
+                              <Text style={styles.baseText}>
+                                  <Text style={styles.locText}>
+                                      {loc.name}{'\n'}
+                                  </Text>
+                                  <Text style={styles.distText}>
+                                      {loc.FeetAway(this.position)} feet away
+                                  </Text>
+                              </Text>
+                          </View>
+                      </View>
+                  </TouchableHighlight>
               }
           />
       </View>
