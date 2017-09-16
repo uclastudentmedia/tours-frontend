@@ -105,6 +105,10 @@ export default StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: '#dddddd',
     },
+    listItemContainer: {
+        flex: 1,
+        flexDirection: 'row',
+    },
     loadingLocText:{
         paddingTop: 20,
         fontSize: 30,
