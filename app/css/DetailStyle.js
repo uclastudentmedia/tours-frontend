@@ -12,22 +12,35 @@ import {
 var {height, width} = Dimensions.get('window');
 
 export default StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent:'flex-end',
+        backgroundColor: 'white',
+    },
     titleSec:{
-        flex:.1,
+        flex:1,
         flexDirection:'row',
-        marginTop:10,
+        margin:10,
         alignItems:'center',
     },
     title: {
+        flex: 1,
         color:'rgb(95,115,139)',
         fontSize:30,
-        marginLeft:10
+        marginLeft:10,
     },
-    icon:{height: 40, width: 40,marginBottom:20},
-    dist:{ },
-    description:{flex:1, flexDirection:'row',padding:15, fontSize:20},
+    icon:{
+      height: 40,
+      width: 40,
+    },
+    dist:{
+    },
+    description:{
+      padding:15,
+      fontSize:16
+    },
     displayImage: {
-        marginTop:20,
       width: width,
       height: width * 0.75,
     },

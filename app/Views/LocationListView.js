@@ -146,7 +146,7 @@ export default class LocationListView extends Component
                     onPress={this.gotoDescription.bind(this, loc)}
                     style={[styles.wrapper, styles.listItemBorder]}
                   >
-                      <View>
+                      <View style={styles.listItemContainer}>
                           <Image
                             style={styles.locListIcon}
                             source={GetIcon(loc.category_id)}
