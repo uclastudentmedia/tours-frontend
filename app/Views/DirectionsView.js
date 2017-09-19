@@ -235,7 +235,7 @@ export default class DirectionsView extends Component
       })
       .catch(error => {
         this.setState({
-          error: error,
+          error: error.message,
           loading: false,
         });
       });

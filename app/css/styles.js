@@ -223,5 +223,9 @@ export default StyleSheet.create({
     errorText: {
         color: '#d61414',
         fontSize: 22,
-    }
+    },
+    warningText: {
+        color: '#ffbf00',
+        fontSize: 22,
+    },
 });

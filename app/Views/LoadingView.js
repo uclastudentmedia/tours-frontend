@@ -5,7 +5,7 @@ import {
     View,
     Image,
     ActivityIndicator,
-    Button
+    Text,
 } from 'react-native';
 
 import { LoadAllData } from 'app/DataManager';
@@ -22,7 +22,9 @@ export default class LoadingView extends Component {
   constructor(props) {
     super(props);
 
-    this.TIMEOUT = 30 * 1000; // 30 seconds
+    this.TIMEOUT = 15 * 1000; // 15 seconds
+
+    this.state = {};
   }
 
   componentDidMount() {
@@ -50,11 +52,19 @@ export default class LoadingView extends Component {
 
     return new Promise((resolve, reject) => {
       var done = false;
+      var firstTry = true;
 
       const tryToLoad = () => {
         if (done) {
           return;
         }
+        if (!firstTry) {
+          this.setState({
+            error: 'Network connection timed out. Retrying...'
+          });
+        }
+
+        firstTry = false;
 
         //this.testRetry()
         LoadAllData()
@@ -62,7 +72,11 @@ export default class LoadingView extends Component {
             done = true;
             resolve();
           })
-          .catch(() => {});
+          .catch(error => {
+            this.setState({
+              error: (error.message || error) + '. Retrying...',
+            })
+          });
 
         // if network request times out, retry
         if (!done) {
@@ -102,6 +116,7 @@ export default class LoadingView extends Component {
         <View style={styles.loading}>
           <ActivityIndicator color={'yellow'} size={'large'} />
         </View>
+        <Text style={styles.warningText}>{this.state.error}</Text>
       </Image>
     );
   }
