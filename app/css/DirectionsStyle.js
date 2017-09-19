@@ -20,7 +20,16 @@ export default StyleSheet.create({
         flex: 1
     },
     button:{
+        backgroundColor: 'white',
         width: windowWidth,
-        marginBottom: 1
+        height: 60,
+        marginBottom: 1,
+        borderWidth: 0.5,
+        borderColor: '#EEEEEE'
+    },
+    buttonText:{
+        marginTop: 15,
+        marginLeft: 20,
+        fontSize: 20
     }
 });

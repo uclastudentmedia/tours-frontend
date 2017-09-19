@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import {
+    Text,
     View,
     Button,
     ScrollView,
+    TouchableHighlight
 } from 'react-native';
 
 import fuzzy from 'fuzzy';
@@ -108,13 +110,12 @@ export default class SearchView extends Component {
               {
                 this.state.results.map(loc => (
                   <View
-                    style={DirectionsStyle.button}
                     key={loc.id}
                   >
-                    <Button
-                      title={loc.name}
-                      onPress={this.handleOnResultSelect.bind(this, loc)}
-                    />
+                    <TouchableHighlight underlayColor="#DDDDDD" style={DirectionsStyle.button } 
+                      onPress={this.handleOnResultSelect.bind(this, loc)}>
+                      <Text style={DirectionsStyle.buttonText}>{loc.name}</Text>
+                    </TouchableHighlight>
                   </View>
                 ))
               }
@@ -125,3 +126,5 @@ export default class SearchView extends Component {
     );
   }
 }
+
+
