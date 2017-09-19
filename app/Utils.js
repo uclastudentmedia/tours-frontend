@@ -10,7 +10,7 @@ import { Image, Navigator } from 'react-native';
 import { GetLocationList, GetCategoryByName } from 'app/DataManager';
 
 import { GetIcon } from 'app/Assets';
-import { styles, DetailStyle } from 'app/css';
+import { styles } from 'app/css';
 
 export function feetCalc(lat,long,curLat,curLong){
     // haversine :: (Num, Num) -> (Num, Num) -> Num
@@ -124,18 +124,4 @@ export function DistancePrioritize(currentLat, currentLong) {
     });
 
     return results;
-}
-
-export function RenderIcon(category, view) {
-    let styleClass;
-    if(view==='details'){
-        styleClass=DetailStyle.icon;
-    }
-    else{
-        styleClass=styles.placeholder;
-    }
-
-    return (
-        <Image style={styleClass} source={GetIcon(category)}/>
-    );
 }

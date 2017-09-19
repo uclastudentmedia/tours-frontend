@@ -26,7 +26,7 @@ export default StyleSheet.create({
         justifyContent:'flex-end',
         backgroundColor: 'white',
         width:width,
-        height:height
+        height:height,
     },
     loadMapContainer: {
         flex: 1,
@@ -73,8 +73,12 @@ export default StyleSheet.create({
     locList:{
         flex:1,
         width:width
-    }
-    ,
+    },
+    locListIcon: {
+        flex: 1,
+        maxWidth: 40,
+        alignSelf: 'center'
+    },
     listHeader:{
         flex:4,
         width:width
@@ -89,9 +93,21 @@ export default StyleSheet.create({
         color: '#B8B8B8'
     },
     locText:{
-        padding:20,
+        padding:0,
         fontSize:25,
-        color: '#5b73a4'
+        color: '#5b73a4',
+    },
+    listItemText:{
+        padding:5,
+        flex: 1,
+    },
+    listItemBorder:{
+        borderBottomWidth: 1,
+        borderColor: '#dddddd',
+    },
+    listItemContainer: {
+        flex: 1,
+        flexDirection: 'row',
     },
     loadingLocText:{
         paddingTop: 20,
@@ -104,6 +120,8 @@ export default StyleSheet.create({
         width: 40
     },
     separator: {
+        width:width*.9,
+        paddingLeft:width*.025,
         height: 1,
         backgroundColor: '#dddddd'
     },
@@ -148,8 +166,8 @@ export default StyleSheet.create({
         flexWrap: 'wrap',
         alignItems: 'flex-start',
         flexDirection:'row',
-        height:80,
         width:width,
+        padding: 5
     },
     btnContainer: {
         flex: 1,
@@ -160,7 +178,11 @@ export default StyleSheet.create({
         justifyContent: 'center',
         width: windowWidth,
         backgroundColor:'#dddddd',
-        padding:2
+        padding:0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        top: 0,
+        bottom: 0
     },
     handlerText: {
         color: 'white',
@@ -193,5 +215,9 @@ export default StyleSheet.create({
     },
     slideContainer: {
         paddingRight: 359
+    },
+    buttonContainer: {
+        flex: 1,
+        marginTop: 20,
     }
 });

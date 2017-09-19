@@ -10,10 +10,9 @@ import {
 
 import { Location } from 'app/DataTypes';
 import GPSManager from 'app/GPSManager';
-import { RenderIcon } from 'app/Utils';
 
-import { logo } from 'app/Assets';
-import { styles, DetailStyle } from 'app/css';
+import { GetIcon, logo } from 'app/Assets';
+import { DetailStyle } from 'app/css';
 
 export default class DetailsView extends Component
 {
@@ -58,11 +57,12 @@ export default class DetailsView extends Component
     const position = this.GPSManager.getPosition();
 
     return (
-      <ScrollView>
-        <View style={styles.container}>
+      <ScrollView contentContainerStyle={{flex:0}}>
+        <View style={DetailStyle.container}>
 
           <View style={DetailStyle.titleSec}>
-            {RenderIcon(this.location.category_id,'details')}
+            <Image style={DetailStyle.icon}
+              source={GetIcon(this.location.category_id)}/>
             <Text style={DetailStyle.title}>
                 {this.location.name}
             </Text>
@@ -77,9 +77,11 @@ export default class DetailsView extends Component
               {Math.round(this.location.FeetAway(position)/264 * 100) / 100} walking minutes away
           </Text>
 
-          <Text style={DetailStyle.description}>
-              {this.location.text_description}
-          </Text>
+          <View style={{flex: 1}}>
+              <Text style={DetailStyle.description}>
+                  {this.location.text_description}
+              </Text>
+          </View>
 
 {/*
           {this.location.images.map((image, idx) => (

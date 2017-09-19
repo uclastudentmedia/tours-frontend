@@ -21,11 +21,14 @@ export default class LoadingView extends Component {
 
   constructor(props) {
     super(props);
+
+    this.TIMEOUT = 30 * 1000; // 30 seconds
   }
 
   componentDidMount() {
     this.initializeApp();
   }
+
 
   initializeApp() {
     const {
@@ -36,11 +39,39 @@ export default class LoadingView extends Component {
       this.getAPIData(),
       //this.testDelay(),
     ]).then(onLoadComplete)
-      .catch(console.error);
+      .catch(() => {}); // should never fail, only retry
   }
 
   async getAPIData() {
-    await LoadAllData();
+    /**
+     * Load the data from the server. If the requests time out, resend the
+     * requests (individual API requests are cached when they succeed).
+     */
+
+    return new Promise((resolve, reject) => {
+      var done = false;
+
+      const tryToLoad = () => {
+        if (done) {
+          return;
+        }
+
+        //this.testRetry()
+        LoadAllData()
+          .then(() => {
+            done = true;
+            resolve();
+          })
+          .catch(() => {});
+
+        // if network request times out, retry
+        if (!done) {
+          setTimeout(tryToLoad, this.TIMEOUT);
+        }
+      };
+
+      tryToLoad();
+    });
   }
 
   // create 5 second artificial loading time
@@ -49,6 +80,19 @@ export default class LoadingView extends Component {
       setTimeout(() => {
         resolve();
       }, 5000);
+    });
+  }
+
+  // fail 5 times then succeed
+  async testRetry() {
+    var counter = 0;
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (counter++ < 5)
+          resolve();
+        else
+          reject();
+      }, 2000);
     });
   }
 

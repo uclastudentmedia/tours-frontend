@@ -5,13 +5,12 @@
  */
 import React, { Component, PropTypes } from 'react';
 import {
-    StyleSheet,
-    Text,
     View,
     ListView,
-    TextInput,
+    TouchableWithoutFeedback,
 } from 'react-native';
 
+import PubSub from 'pubsub-js';
 import { debounce } from 'lodash';
 
 import MapView from 'react-native-maps';
@@ -19,7 +18,6 @@ import SearchBar from 'react-native-searchbar';
 
 import {
   popPrioritize,
-  LocToData,
 } from 'app/Utils';
 
 import {
@@ -71,7 +69,7 @@ export default class MainMapView extends Component {
         this.initialRegion = {
           latitude: 34.0700086,
           longitude: -118.446003,
-          latitudeDelta: 0.001367,
+          latitudeDelta: 0.03,
           longitudeDelta: 0.02,
         };
 
@@ -83,6 +81,8 @@ export default class MainMapView extends Component {
         };
         this._handleResults = this._handleResults.bind(this);
         this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
+
+        this.markerRefs = {};
     }
 
     componentDidMount() {
@@ -148,6 +148,7 @@ export default class MainMapView extends Component {
 
     onRegionChange(region) {
       this.setState({ region:region });
+      PubSub.publish('MainMapView.onRegionChange', region);
       this.updateMapIcons();
     }
 
@@ -247,16 +248,29 @@ export default class MainMapView extends Component {
 
     // marker deselected
     onPressMap = () => {
+      /*
       this.setState({
         selectedLocation: undefined,
       });
+      */
     }
 
     // marker selected
-    onPressMarker = (location) => {
+    onPressMarker = (loc) => {
       return (event) => {
+        const ref = this.markerRefs[loc.id];
+        if (ref) {
+          // hide the callout when tapping on the icon with a visible callout
+          if (ref.calloutVisible) {
+            ref.hideCallout();
+          } else {
+            ref.showCallout();
+          }
+          ref.calloutVisible = !ref.calloutVisible;
+        }
+
         this.setState({
-          selectedLocation: location,
+          selectedLocation: loc,
         })
       };
     }
@@ -305,7 +319,7 @@ export default class MainMapView extends Component {
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
-                    >
+                >
                     <MapView.Marker
                         image={dot1}
                         coordinate={this.initialPosition}
@@ -316,15 +330,21 @@ export default class MainMapView extends Component {
                     {this.state.markerLocations.map(loc => (
                         <MapView.Marker
                           key={loc.id}
+                          ref={marker => this.markerRefs[loc.id] = marker}
                           coordinate={{latitude: loc.lat, longitude: loc.long}}
                           title={loc.name}
                           //description={loc.text_description}
                           image={GetIcon(loc.category_id)}
-                          onPress={this.onPressMarker(loc)}
                           onCalloutPress={this.onCalloutPress(loc)}
-                        />
-                      )
-                    )}
+                          calloutVisible={false}
+                        >
+                          <TouchableWithoutFeedback
+                            onPress={this.onPressMarker(loc)}
+                          >
+                            <View style={{width:35,height:35}}></View>
+                          </TouchableWithoutFeedback>
+                        </MapView.Marker>
+                    ))}
 
                 </MapView>
             </View>

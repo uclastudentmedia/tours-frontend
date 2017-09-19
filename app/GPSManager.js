@@ -18,8 +18,12 @@ export default class GPSManager {
     this.position = position.coords;
   }
 
+  warn(error) {
+    console.warn(error.message || error);
+  }
+
   watchPosition(geo_success,
-                geo_error = console.warn,
+                geo_error = this.warn,
                 options = this.options) {
 
     navigator.geolocation.getCurrentPosition(geo_success, geo_error, options);
