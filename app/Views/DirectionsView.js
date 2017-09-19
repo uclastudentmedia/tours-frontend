@@ -145,12 +145,14 @@ export default class DirectionsView extends Component
     } = this.state;
 
     if (!startLocation || !endLocation) {
-      return console.log('getDirections: start/end location not selected');
+      this.setState({
+        error: 'Select a start and end location.'
+      });
+      return;
     }
 
     // begin directions request
     this.setState({ loading: true });
-    console.log('start');
 
     const extraOptions = {};
 
@@ -168,7 +170,6 @@ export default class DirectionsView extends Component
           dataSource: this.ds.cloneWithRows(directions),
           loading: false,
         });
-        console.log('done');
       })
       .catch(error => {
         this.setState({
