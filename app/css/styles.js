@@ -219,5 +219,9 @@ export default StyleSheet.create({
     buttonContainer: {
         flex: 1,
         marginTop: 20,
+    },
+    errorText: {
+        color: '#d61414',
+        fontSize: 22,
     }
 });

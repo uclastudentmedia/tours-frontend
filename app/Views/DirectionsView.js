@@ -32,8 +32,6 @@ import {
 } from 'app/css';
 
 
-let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
 export default class DirectionsView extends Component
 {
 
@@ -46,9 +44,12 @@ export default class DirectionsView extends Component
 
   constructor(props){
     super(props);
+
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
     this.state = {
-      directions: {},
-      dataSource: ds.cloneWithRows([]),
+      error: null,
+      dataSource: this.ds.cloneWithRows([]),
     };
     this.locations = GetLocationList();
   }
@@ -71,12 +72,14 @@ export default class DirectionsView extends Component
     const {
       startLocation,
       endLocation,
-      directions,
+      error,
     } = this.state;
 
     return (
       <View style={DirectionsStyle.container}>
+        <Text style={styles.errorText}>{error}</Text>
         <ListView
+            enableEmptySections={true}
             dataSource={this.state.dataSource}
             renderRow={(rowData) =>
                 <TouchableOpacity style={styles.wrapper}>
@@ -129,11 +132,19 @@ export default class DirectionsView extends Component
     const extraOptions = {};
 
     RouteTBT(startLocation, endLocation, extraOptions)
-      .then(data => this.setState({
-          directions: data.trip.legs[0].maneuvers,
-          dataSource: ds.cloneWithRows(data.trip.legs[0].maneuvers)
-      }))
+      .then(data => {
+        if (data.error) {
+          this.setState({
+            error: data.error,
+            dataSource: this.ds.cloneWithRows([])
+          });
+        } else {
+          this.setState({
+            error: null,
+            dataSource: this.ds.cloneWithRows(data.trip.legs[0].maneuvers)
+          });
+        }
+      })
       .catch(console.error);
-      console.log(this.state.directions);
   }
 }
