@@ -35,14 +35,11 @@ import { GetIcon, dot1 } from 'app/Assets';
 
 import { styles, CustomMapStyle } from 'app/css';
 
+// how the locations are prioritized
 var mapSettinger='popular';
-let flag1 = {latitude: 0, longitude: 0};
-var flag2 = {latitude: 0, longitude: 0};
-var initCoords = {};
-var route = [ ];
-var serverRoute = {};
-var serverRouteChecked = false;
-let tbt = false;
+
+// hide the normal locations?
+const ONLY_SHOW_ROUTE = true;
 
 export default class MainMapView extends Component {
     static propTypes = {
@@ -56,10 +53,6 @@ export default class MainMapView extends Component {
         super(props);
 
         this.GPSManager = props.screenProps.GPSManager;
-
-        this.dataSourceTBT = new ListView.DataSource({
-          rowHasChanged: (r1, r2) => r1 !== r2
-        });
 
         this.landmarks = GetLocationList();
 
@@ -89,6 +82,7 @@ export default class MainMapView extends Component {
 
         PubSub.subscribe('DirectionsView.showRouteOnMap', (msg, route) => {
           this.setState({ route });
+          this.updateMapIcons();
         });
     }
 
@@ -112,7 +106,25 @@ export default class MainMapView extends Component {
           return;
         }
 
+        const {
+          region,
+          selectedLocation,
+          route,
+        } = this.state;
+
         var markerLocations = [];
+
+        if (route.startLocation && route.endLocation) {
+          markerLocations = markerLocations.concat(route.startLocation,
+                                                   route.endLocation);
+
+          if (ONLY_SHOW_ROUTE) {
+            this.setState({
+              markerLocations: markerLocations
+            });
+            return;
+          }
+        }
 
         switch (mapSettinger) {
           case 'tour':
@@ -128,8 +140,7 @@ export default class MainMapView extends Component {
           default:
             //if map setting is campus map. prioritize top 10 locations by popularity/category
             //this is default
-            markerLocations = popPrioritize(this.state.region,
-                                            'All');
+            markerLocations = popPrioritize(region, 'All');
                                             //'Food & Beverage');
             break;
         }
@@ -138,7 +149,7 @@ export default class MainMapView extends Component {
         markerLocations = markerLocations.slice(0, 10);
 
         // add the selected location if needed
-        const selected = this.state.selectedLocation;
+        const selected = selectedLocation;
         if (selected && !markerLocations.find(l => l.id == selected.id)) {
             markerLocations.push(selected);
         }
@@ -164,112 +175,18 @@ export default class MainMapView extends Component {
     }
 
     renderPolyline = () => {
-      const polyline = this.state.route.polyline;
+      const path = this.state.route.path;
 
-      if (!polyline) {
+      if (!path) {
         return null;
       }
 
-      let route = this.decode(polyline).map(coord => ({
-        latitude: coord[0],
-        longitude: coord[1]
-      }));
-
       return (
         <MapView.Polyline
-          coordinates={route}
+          coordinates={path}
           strokeWidth={3}
         />
       );
-    }
-
-    decode(str, precision) {
-        var index = 0,
-            lat = 0,
-            lng = 0,
-            coordinates = [],
-            shift = 0,
-            result = 0,
-            byte = null,
-            latitude_change,
-            longitude_change,
-            factor = Math.pow(10, precision || 6);
-
-        // Coordinates have variable length when encoded, so just keep
-        // track of whether we've hit the end of the string. In each
-        // loop iteration, a single coordinate is decoded.
-        while (index < str.length) {
-
-            // Reset shift, result, and byte
-            byte = null;
-            shift = 0;
-            result = 0;
-
-            do {
-                byte = str.charCodeAt(index++) - 63;
-                result |= (byte & 0x1f) << shift;
-                shift += 5;
-            } while (byte >= 0x20);
-
-            latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
-
-            shift = result = 0;
-
-            do {
-                byte = str.charCodeAt(index++) - 63;
-                result |= (byte & 0x1f) << shift;
-                shift += 5;
-            } while (byte >= 0x20);
-
-            longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
-
-            lat += latitude_change;
-            lng += longitude_change;
-
-            coordinates.push([lat / factor, lng / factor]);
-        }
-
-        return coordinates;
-    }
-
-    extractRoute(){
-        serverRouteChecked = true;
-
-        let ply = serverRoute.trip.legs[0].shape;
-
-        console.log(ply);
-
-        let troute = this.decode(ply);
-        route = [];
-        for(var i = 0; i < troute.length; i++)
-        {
-            let temp1 = troute[i][0];
-            let temp2 = troute[i][1];
-
-            route.push({
-                latitude: temp1,
-                longitude: temp2
-            });
-        }
-
-        flag1.latitude = this.initialPosition.latitude;
-        flag1.longitude = this.initialPosition.longitude;
-
-        flag2.latitude = initCoords.latitude;
-        flag2.longitude = initCoords.longitude;
-
-        this.setState({
-            markers: [{
-                lat: flag1.latitude,
-                long: flag1.longitude
-             },
-             {
-                 lat: flag2.latitude,
-                 long: flag2.longitude
-             }],
-        });
-        this.dataSourceTBT.cloneWithRows(serverRoute.trip.legs[0].maneuvers),
-        tbt = true;
     }
 
     // marker deselected
@@ -314,10 +231,6 @@ export default class MainMapView extends Component {
     }
 
     render() {
-        if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
-        {
-            this.extractRoute();
-        }
 
         return (
             <View style={styles.container}>

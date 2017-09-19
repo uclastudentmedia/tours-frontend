@@ -23,6 +23,10 @@ import {
   MainMapView,
 } from 'app/Views';
 
+import {
+  DecodePolyline
+} from 'app/Utils';
+
 import GPSManager from 'app/GPSManager';
 import {
   GetLocationList,
@@ -73,12 +77,45 @@ export default class DirectionsView extends Component
   }
 
   showRouteOnMap = () => {
+    const {
+      startLocation,
+      endLocation
+    } = this.state;
+
+    let path = DecodePolyline(this.trip.legs[0].shape).map(coord => ({
+      latitude: coord[0],
+      longitude: coord[1]
+    }));
+
+    const startCoords = {
+      latitude: startLocation.lat,
+      longitude: startLocation.long
+    };
+    const endCoords = {
+      latitude: endLocation.lat,
+      longitude: endLocation.long
+    };
+
+    // connect to the map icons
+    path = [].concat(startCoords, path, endCoords);
+
     PubSub.publish('DirectionsView.showRouteOnMap', {
-      polyline: this.trip.legs[0].shape,
-      startLocation: this.state.startLocation,
-      endLocation: this.state.endLocation,
+      path: path,
+      startLocation: startLocation,
+      endLocation: endLocation,
     });
     this.props.navigation.navigate('MainMap');
+  }
+
+  clear = () => {
+    this.setState({
+      error: null,
+      startLocation: null,
+      endLocation: null,
+      dataSource: this.ds.cloneWithRows([]),
+    });
+    this.trip = null;
+    PubSub.publish('DirectionsView.showRouteOnMap', {}); // clear route info
   }
 
   renderSpinner = () => {
@@ -151,6 +188,11 @@ export default class DirectionsView extends Component
             />
           </View>
         </View>
+
+        <Button
+          title={"Clear"}
+          onPress={this.clear}
+        />
 
       </View>
     );
