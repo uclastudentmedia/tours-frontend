@@ -25,6 +25,8 @@ import {
   GetLocationById,
 } from 'app/DataManager';
 
+import { Location } from 'app/DataTypes';
+
 import GPSManager from 'app/GPSManager';
 
 import {popLocation} from 'app/LocationPopManager'
@@ -77,12 +79,17 @@ export default class MainMapView extends Component {
             position: this.initialPosition,
             markerLocations: [],
             region: this.initialRegion,
-            results: []
+            results: [],
+            route: {}
         };
         this._handleResults = this._handleResults.bind(this);
         this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
 
         this.markerRefs = {};
+
+        PubSub.subscribe('DirectionsView.showRouteOnMap', (msg, route) => {
+          this.setState({ route });
+        });
     }
 
     componentDidMount() {
@@ -133,7 +140,6 @@ export default class MainMapView extends Component {
         // add the selected location if needed
         const selected = this.state.selectedLocation;
         if (selected && !markerLocations.find(l => l.id == selected.id)) {
-            console.log(selected);
             markerLocations.push(selected);
         }
 
@@ -155,6 +161,26 @@ export default class MainMapView extends Component {
     changeMapSetting(setting){
         mapSettinger=setting;
         this.updateMapIcons();
+    }
+
+    renderPolyline = () => {
+      const polyline = this.state.route.polyline;
+
+      if (!polyline) {
+        return null;
+      }
+
+      let route = this.decode(polyline).map(coord => ({
+        latitude: coord[0],
+        longitude: coord[1]
+      }));
+
+      return (
+        <MapView.Polyline
+          coordinates={route}
+          strokeWidth={3}
+        />
+      );
     }
 
     decode(str, precision) {
@@ -293,16 +319,6 @@ export default class MainMapView extends Component {
             this.extractRoute();
         }
 
-        let polyline = null;
-        if (tbt != true) {
-          polyline = (
-            <MapView.Polyline
-              coordinates={route}
-              strokeWidth={3}
-            />
-          );
-        }
-
         return (
             <View style={styles.container}>
                 <SearchBar
@@ -325,7 +341,7 @@ export default class MainMapView extends Component {
                         coordinate={this.initialPosition}
                     />
 
-                    {polyline}
+                    {this.renderPolyline()}
 
                     {this.state.markerLocations.map(loc => (
                         <MapView.Marker

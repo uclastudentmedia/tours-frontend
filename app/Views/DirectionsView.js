@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import PubSub from 'pubsub-js';
 
 import {
   TBTItem,
@@ -19,6 +20,7 @@ import {
 
 import {
   SearchView,
+  MainMapView,
 } from 'app/Views';
 
 import GPSManager from 'app/GPSManager';
@@ -70,6 +72,15 @@ export default class DirectionsView extends Component
     });
   }
 
+  showRouteOnMap = () => {
+    PubSub.publish('DirectionsView.showRouteOnMap', {
+      polyline: this.trip.legs[0].shape,
+      startLocation: this.state.startLocation,
+      endLocation: this.state.endLocation,
+    });
+    this.props.navigation.navigate('MainMap');
+  }
+
   renderSpinner = () => {
     if (this.state.loading) {
       return (
@@ -112,6 +123,13 @@ export default class DirectionsView extends Component
                 </TouchableOpacity>
             }
         />
+
+        { this.trip &&
+            <Button
+              title={"Show route on map"}
+              onPress={this.showRouteOnMap}
+            />
+        }
 
         <Button
           title={"Select start location"}
@@ -164,6 +182,8 @@ export default class DirectionsView extends Component
           error = null;
           directions = data.trip.legs[0].maneuvers;
         }
+
+        this.trip = data.trip;
 
         this.setState({
           error: error,
