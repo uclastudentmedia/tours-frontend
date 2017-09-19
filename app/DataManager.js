@@ -87,13 +87,9 @@ async function getCacheTime(endpoint) {
    */
 
   let key = TIMESTAMP_PREFIX + endpoint;
-  try {
-    const data = await AsyncStorage.getItem(key);
-    if (data !== null) {
-      return parseInt(data);
-    }
-  } catch(error) {
-    console.error(error);
+  const data = await AsyncStorage.getItem(key);
+  if (data !== null) {
+    return parseInt(data);
   }
 
   // not found, force cache update
@@ -107,11 +103,7 @@ async function updateCacheTime(endpoint) {
 
   let key = TIMESTAMP_PREFIX + endpoint;
   let timestamp = Date.now();
-  try {
-    await AsyncStorage.setItem(key, timestamp.toString());
-  } catch(error) {
-    console.error(error);
-  }
+  await AsyncStorage.setItem(key, timestamp.toString());
 }
 
 async function getCachedData(endpoint) {
@@ -120,13 +112,9 @@ async function getCachedData(endpoint) {
    */
 
   let key = CACHE_PREFIX + endpoint;
-  try {
-    const data = await AsyncStorage.getItem(key);
-    if (data !== null) {
-      return JSON.parse(data);
-    }
-  } catch(error) {
-    console.error(error);
+  const data = await AsyncStorage.getItem(key);
+  if (data !== null) {
+    return JSON.parse(data);
   }
   return null;
 }
@@ -137,11 +125,7 @@ async function setCachedData(endpoint, data) {
    */
 
   let key = CACHE_PREFIX + endpoint;
-  try {
-    await AsyncStorage.setItem(key, JSON.stringify(data));
-  } catch(error) {
-    console.error(error);
-  }
+  await AsyncStorage.setItem(key, JSON.stringify(data));
 }
 
 async function queryEndpoint(endpoint, transformData) {
@@ -193,12 +177,7 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
 
   // there is no up-to-date cached data, need to query server
   let newData;
-  try {
-    newData = await queryEndpoint(endpoint, transformData);
-  } catch(error) {
-    console.error(error);
-    return null;
-  }
+  newData = await queryEndpoint(endpoint, transformData);
 
   if (newData !== null) {
     // save the data in the cache
