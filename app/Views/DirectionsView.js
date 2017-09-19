@@ -10,6 +10,7 @@ import {
   ListView,
   Button,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 
 import {
@@ -50,6 +51,7 @@ export default class DirectionsView extends Component
     this.state = {
       error: null,
       dataSource: this.ds.cloneWithRows([]),
+      loading: false,
     };
     this.locations = GetLocationList();
   }
@@ -68,27 +70,44 @@ export default class DirectionsView extends Component
     });
   }
 
+  renderSpinner = () => {
+    if (this.state.loading) {
+      return (
+        <View style={styles.loading}>
+          <ActivityIndicator
+            color={'#246dd5'}
+            size={'large'}
+          />
+        </View>
+      );
+    }
+    return null;
+  }
+
   render() {
     const {
       startLocation,
       endLocation,
       error,
+      loading,
     } = this.state;
 
     return (
       <View style={DirectionsStyle.container}>
+
         <Text style={styles.errorText}>{error}</Text>
+
+        {this.renderSpinner()}
+
         <ListView
             enableEmptySections={true}
             dataSource={this.state.dataSource}
             renderRow={(rowData) =>
                 <TouchableOpacity style={styles.wrapper}>
                     <View style={styles.wrapper}>
-                      <Text style={styles.baseText}>
-                        <Text style={styles.locText}>
+                        <Text style={[styles.baseText, styles.locText]}>
                           {rowData.verbal_pre_transition_instruction}
                         </Text>
-                      </Text>
                     </View>
                 </TouchableOpacity>
             }
@@ -129,22 +148,33 @@ export default class DirectionsView extends Component
       return console.log('getDirections: start/end location not selected');
     }
 
+    // begin directions request
+    this.setState({ loading: true });
+    console.log('start');
+
     const extraOptions = {};
 
     RouteTBT(startLocation, endLocation, extraOptions)
       .then(data => {
-        if (data.error) {
-          this.setState({
-            error: data.error,
-            dataSource: this.ds.cloneWithRows([])
-          });
-        } else {
-          this.setState({
-            error: null,
-            dataSource: this.ds.cloneWithRows(data.trip.legs[0].maneuvers)
-          });
+        let error = data.error;
+        let directions = [];
+        if (data && !data.error) {
+          error = null;
+          directions = data.trip.legs[0].maneuvers;
         }
+
+        this.setState({
+          error: error,
+          dataSource: this.ds.cloneWithRows(directions),
+          loading: false,
+        });
+        console.log('done');
       })
-      .catch(console.error);
+      .catch(error => {
+        this.setState({
+          error: error,
+          loading: false,
+        });
+      });
   }
 }
