@@ -80,10 +80,8 @@ export default class MainMapView extends Component {
 
         this.markerRefs = {};
 
-        PubSub.subscribe('DirectionsView.showRouteOnMap', (msg, route) => {
-          this.setState({ route });
-          this.updateMapIcons();
-        });
+
+        this.subscribe();
     }
 
     componentDidMount() {
@@ -99,6 +97,33 @@ export default class MainMapView extends Component {
 
     componentWillUnmount(){
         this.GPSManager.clearWatch(this.watchID);
+    }
+
+    subscribe() {
+      PubSub.subscribe('DirectionsView.showRouteOnMap', (msg, route) => {
+        this.setState({ route });
+        this.updateMapIcons();
+
+        this.mapView.fitToCoordinates(route.path, {
+          edgePadding: {
+            top: 400, left: 200, right: 200, bottom: 200,
+          }
+        });
+      });
+
+      PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
+        // hacky, need to fix lmao
+        setTimeout(() => {
+        this.mapView.fitToCoordinates([{
+            latitude: location.lat,
+            longitude: location.long
+          }], {
+            edgePadding: {
+              top: 1000, left: 800, right: 800, bottom: 800,
+            }
+          });
+        }, 2000);
+      });
     }
 
     updateMapIcons() {
@@ -243,6 +268,7 @@ export default class MainMapView extends Component {
                     hideBack={true}
                 />
                 <MapView style={styles.map}
+                    ref={(ref) => this.mapView = ref}
                     customMapStyle={CustomMapStyle}
                     initialRegion={this.initialRegion}
                     zoomEnabled
