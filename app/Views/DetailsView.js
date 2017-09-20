@@ -54,7 +54,12 @@ export default class DetailsView extends Component
 
   showLocationOnMap = () => {
     PubSub.publish('DetailsView.showLocationOnMap', this.location);
-    this.props.navigation.navigate('MainMap');
+
+    // https://github.com/react-community/react-navigation/issues/1127
+    this.props.navigation.goBack();
+    setTimeout(() => {
+      this.props.navigation.navigate('MainMap');
+    }, 0);
   }
 
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>

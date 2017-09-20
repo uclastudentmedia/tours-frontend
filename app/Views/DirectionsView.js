@@ -82,7 +82,7 @@ export default class DirectionsView extends Component
       endLocation
     } = this.state;
 
-    let path = DecodePolyline(this.trip.legs[0].shape).map(coord => ({
+    let polyline = DecodePolyline(this.trip.legs[0].shape).map(coord => ({
       latitude: coord[0],
       longitude: coord[1]
     }));
@@ -97,10 +97,10 @@ export default class DirectionsView extends Component
     };
 
     // connect to the map icons
-    path = [].concat(startCoords, path, endCoords);
+    polyline = [].concat(startCoords, polyline, endCoords);
 
     PubSub.publish('DirectionsView.showRouteOnMap', {
-      path: path,
+      polyline: polyline,
       startLocation: startLocation,
       endLocation: endLocation,
     });
@@ -115,7 +115,7 @@ export default class DirectionsView extends Component
       dataSource: this.ds.cloneWithRows([]),
     });
     this.trip = null;
-    PubSub.publish('DirectionsView.showRouteOnMap', {}); // clear route info
+    PubSub.publish('DirectionsView.clearRoute');
   }
 
   renderSpinner = () => {

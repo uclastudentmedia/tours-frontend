@@ -38,9 +38,6 @@ import { styles, CustomMapStyle } from 'app/css';
 // how the locations are prioritized
 var mapSettinger='popular';
 
-// hide the normal locations?
-const ONLY_SHOW_ROUTE = true;
-
 export default class MainMapView extends Component {
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -54,7 +51,7 @@ export default class MainMapView extends Component {
 
         this.GPSManager = props.screenProps.GPSManager;
 
-        this.landmarks = GetLocationList();
+        this.locations = GetLocationList();
 
         this.initialPosition = {
           latitude: 34.070286,
@@ -79,7 +76,7 @@ export default class MainMapView extends Component {
         this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
 
         this.markerRefs = {};
-
+        this.specialMarkerLocations = []; // for route start/end, details, etc.
 
         this.subscribe();
     }
@@ -100,37 +97,48 @@ export default class MainMapView extends Component {
     }
 
     subscribe() {
+
       PubSub.subscribe('DirectionsView.showRouteOnMap', (msg, route) => {
-        this.setState({ route });
+        const {
+          startLocation,
+          endLocation,
+          polyline,
+        } = route;
+
+        this.specialMarkerLocations = [startLocation, endLocation];
         this.updateMapIcons();
 
-        this.mapView.fitToCoordinates(route.path, {
-          edgePadding: {
-            top: 400, left: 200, right: 200, bottom: 200,
-          }
+        this.setState({ polyline: polyline });
+
+        this.mapView.fitToCoordinates(polyline, {
+          edgePadding: { top: 400, left: 200, right: 200, bottom: 200 }
         });
       });
 
+      PubSub.subscribe('DirectionsView.clearRoute', () => {
+        this.setState({
+          polyline: null
+        });
+        this.specialMarkerLocations = [];
+        this.updateMapIcons();
+      });
+
+
       PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
-        // hacky, need to fix lmao
-        setTimeout(() => {
-        this.mapView.fitToCoordinates([{
-            latitude: location.lat,
-            longitude: location.long
-          }], {
-            edgePadding: {
-              top: 1000, left: 800, right: 800, bottom: 800,
-            }
-          });
-        }, 2000);
+        this.specialMarkerLocations = [location];
+        this.updateMapIcons();
+
+        this.mapView.animateToRegion({
+          latitude: location.lat,
+          longitude: location.long,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }, 1000);
+        this.markerRefs[location.id].showCallout();
       });
     }
 
     updateMapIcons() {
-        if(!this.landmarks) {
-          return;
-        }
-
         const {
           region,
           selectedLocation,
@@ -138,18 +146,6 @@ export default class MainMapView extends Component {
         } = this.state;
 
         var markerLocations = [];
-
-        if (route.startLocation && route.endLocation) {
-          markerLocations = markerLocations.concat(route.startLocation,
-                                                   route.endLocation);
-
-          if (ONLY_SHOW_ROUTE) {
-            this.setState({
-              markerLocations: markerLocations
-            });
-            return;
-          }
-        }
 
         switch (mapSettinger) {
           case 'tour':
@@ -173,11 +169,21 @@ export default class MainMapView extends Component {
         // limit the number of markers
         markerLocations = markerLocations.slice(0, 10);
 
+
+        // is this location not in the marker array?
+        const notAddedYet = (loc) => !markerLocations.find(l => l.id == loc.id);
+
         // add the selected location if needed
-        const selected = selectedLocation;
-        if (selected && !markerLocations.find(l => l.id == selected.id)) {
-            markerLocations.push(selected);
+        if (selectedLocation && notAddedYet(selectedLocation)) {
+            markerLocations.push(selectedLocation);
         }
+
+        // add special marker locations
+        this.specialMarkerLocations.forEach(loc => {
+          if (notAddedYet(loc)) {
+            markerLocations.push(loc);
+          }
+        });
 
         this.setState({
             markerLocations: markerLocations
@@ -200,15 +206,15 @@ export default class MainMapView extends Component {
     }
 
     renderPolyline = () => {
-      const path = this.state.route.path;
+      const polyline = this.state.polyline;
 
-      if (!path) {
+      if (!polyline) {
         return null;
       }
 
       return (
         <MapView.Polyline
-          coordinates={path}
+          coordinates={polyline}
           strokeWidth={3}
         />
       );
@@ -274,6 +280,9 @@ export default class MainMapView extends Component {
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
+                    toolbarEnabled={false}
+                    showsTraffic={false}
+                    showsPointsOfIntereset={false}
                 >
                     <MapView.Marker
                         image={dot1}
