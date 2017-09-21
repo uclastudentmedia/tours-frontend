@@ -46,8 +46,9 @@ export default StyleSheet.create({
         color:'white',
     },
     map: {
-        height: (height * 0.9),
-        width: width
+        height: height,
+        width: width,
+        zIndex: -1,
     },
     instructions: {
         textAlign: 'center',
@@ -228,4 +229,13 @@ export default StyleSheet.create({
         color: '#ffbf00',
         fontSize: 22,
     },
+    myLocationBtn: {
+        position: 'absolute',
+        bottom: 30,
+        right: 30,
+        height: 30,
+        width: 30,
+        borderRadius: 15,
+        borderWidth: 2,
+    }
 });

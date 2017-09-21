@@ -8,7 +8,9 @@ import {
     View,
     ListView,
     TouchableWithoutFeedback,
+    TouchableOpacity,
 } from 'react-native';
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import PubSub from 'pubsub-js';
 import { debounce } from 'lodash';
@@ -136,6 +138,15 @@ export default class MainMapView extends Component {
         }, 1000);
         this.markerRefs[location.id].showCallout();
       });
+    }
+
+    zoomToCurrentLocation = () => {
+        this.mapView.animateToRegion({
+          latitude: this.initialPosition.latitude,
+          longitude: this.initialPosition.longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }, 500);
     }
 
     updateMapIcons() {
@@ -273,6 +284,12 @@ export default class MainMapView extends Component {
                     focusOnLayout={false}
                     hideBack={true}
                 />
+
+                <TouchableOpacity style={styles.myLocationBtn}
+                  onPress={this.zoomToCurrentLocation}>
+                    <MaterialsIcon color='#2af' size={24} name={'near-me'}/>
+                </TouchableOpacity>
+
                 <MapView style={styles.map}
                     ref={(ref) => this.mapView = ref}
                     customMapStyle={CustomMapStyle}
