@@ -8,7 +8,9 @@ import {
     View,
     ListView,
     TouchableWithoutFeedback,
+    TouchableOpacity,
 } from 'react-native';
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import PubSub from 'pubsub-js';
 import { debounce } from 'lodash';
@@ -25,6 +27,8 @@ import {
   GetLocationById,
 } from 'app/DataManager';
 
+import { Location } from 'app/DataTypes';
+
 import GPSManager from 'app/GPSManager';
 
 import {popLocation} from 'app/LocationPopManager'
@@ -33,14 +37,8 @@ import { GetIcon, dot1 } from 'app/Assets';
 
 import { styles, CustomMapStyle } from 'app/css';
 
+// how the locations are prioritized
 var mapSettinger='popular';
-let flag1 = {latitude: 0, longitude: 0};
-var flag2 = {latitude: 0, longitude: 0};
-var initCoords = {};
-var route = [ ];
-var serverRoute = {};
-var serverRouteChecked = false;
-let tbt = false;
 
 export default class MainMapView extends Component {
     static propTypes = {
@@ -55,11 +53,7 @@ export default class MainMapView extends Component {
 
         this.GPSManager = props.screenProps.GPSManager;
 
-        this.dataSourceTBT = new ListView.DataSource({
-          rowHasChanged: (r1, r2) => r1 !== r2
-        });
-
-        this.landmarks = GetLocationList();
+        this.locations = GetLocationList();
 
         this.initialPosition = {
           latitude: 34.070286,
@@ -77,12 +71,16 @@ export default class MainMapView extends Component {
             position: this.initialPosition,
             markerLocations: [],
             region: this.initialRegion,
-            results: []
+            results: [],
+            route: {}
         };
         this._handleResults = this._handleResults.bind(this);
         this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
 
         this.markerRefs = {};
+        this.specialMarkerLocations = []; // for route start/end, details, etc.
+
+        this.subscribe();
     }
 
     componentDidMount() {
@@ -100,10 +98,63 @@ export default class MainMapView extends Component {
         this.GPSManager.clearWatch(this.watchID);
     }
 
+    subscribe() {
+
+      PubSub.subscribe('DirectionsView.showRouteOnMap', (msg, route) => {
+        const {
+          startLocation,
+          endLocation,
+          polyline,
+        } = route;
+
+        this.specialMarkerLocations = [startLocation, endLocation];
+        this.updateMapIcons();
+
+        this.setState({ polyline: polyline });
+
+        this.mapView.fitToCoordinates(polyline, {
+          edgePadding: { top: 400, left: 200, right: 200, bottom: 200 }
+        });
+      });
+
+      PubSub.subscribe('DirectionsView.clearRoute', () => {
+        this.setState({
+          polyline: null
+        });
+        this.specialMarkerLocations = [];
+        this.updateMapIcons();
+      });
+
+
+      PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
+        this.specialMarkerLocations = [location];
+        this.updateMapIcons();
+
+        this.mapView.animateToRegion({
+          latitude: location.lat,
+          longitude: location.long,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }, 1000);
+        this.markerRefs[location.id].showCallout();
+      });
+    }
+
+    zoomToCurrentLocation = () => {
+        this.mapView.animateToRegion({
+          latitude: this.initialPosition.latitude,
+          longitude: this.initialPosition.longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }, 500);
+    }
+
     updateMapIcons() {
-        if(!this.landmarks) {
-          return;
-        }
+        const {
+          region,
+          selectedLocation,
+          route,
+        } = this.state;
 
         var markerLocations = [];
 
@@ -121,8 +172,7 @@ export default class MainMapView extends Component {
           default:
             //if map setting is campus map. prioritize top 10 locations by popularity/category
             //this is default
-            markerLocations = popPrioritize(this.state.region,
-                                            'All');
+            markerLocations = popPrioritize(region, 'All');
                                             //'Food & Beverage');
             break;
         }
@@ -130,12 +180,21 @@ export default class MainMapView extends Component {
         // limit the number of markers
         markerLocations = markerLocations.slice(0, 10);
 
+
+        // is this location not in the marker array?
+        const notAddedYet = (loc) => !markerLocations.find(l => l.id == loc.id);
+
         // add the selected location if needed
-        const selected = this.state.selectedLocation;
-        if (selected && !markerLocations.find(l => l.id == selected.id)) {
-            console.log(selected);
-            markerLocations.push(selected);
+        if (selectedLocation && notAddedYet(selectedLocation)) {
+            markerLocations.push(selectedLocation);
         }
+
+        // add special marker locations
+        this.specialMarkerLocations.forEach(loc => {
+          if (notAddedYet(loc)) {
+            markerLocations.push(loc);
+          }
+        });
 
         this.setState({
             markerLocations: markerLocations
@@ -157,93 +216,19 @@ export default class MainMapView extends Component {
         this.updateMapIcons();
     }
 
-    decode(str, precision) {
-        var index = 0,
-            lat = 0,
-            lng = 0,
-            coordinates = [],
-            shift = 0,
-            result = 0,
-            byte = null,
-            latitude_change,
-            longitude_change,
-            factor = Math.pow(10, precision || 6);
+    renderPolyline = () => {
+      const polyline = this.state.polyline;
 
-        // Coordinates have variable length when encoded, so just keep
-        // track of whether we've hit the end of the string. In each
-        // loop iteration, a single coordinate is decoded.
-        while (index < str.length) {
+      if (!polyline) {
+        return null;
+      }
 
-            // Reset shift, result, and byte
-            byte = null;
-            shift = 0;
-            result = 0;
-
-            do {
-                byte = str.charCodeAt(index++) - 63;
-                result |= (byte & 0x1f) << shift;
-                shift += 5;
-            } while (byte >= 0x20);
-
-            latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
-
-            shift = result = 0;
-
-            do {
-                byte = str.charCodeAt(index++) - 63;
-                result |= (byte & 0x1f) << shift;
-                shift += 5;
-            } while (byte >= 0x20);
-
-            longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
-
-            lat += latitude_change;
-            lng += longitude_change;
-
-            coordinates.push([lat / factor, lng / factor]);
-        }
-
-        return coordinates;
-    }
-
-    extractRoute(){
-        serverRouteChecked = true;
-
-        let ply = serverRoute.trip.legs[0].shape;
-
-        console.log(ply);
-
-        let troute = this.decode(ply);
-        route = [];
-        for(var i = 0; i < troute.length; i++)
-        {
-            let temp1 = troute[i][0];
-            let temp2 = troute[i][1];
-
-            route.push({
-                latitude: temp1,
-                longitude: temp2
-            });
-        }
-
-        flag1.latitude = this.initialPosition.latitude;
-        flag1.longitude = this.initialPosition.longitude;
-
-        flag2.latitude = initCoords.latitude;
-        flag2.longitude = initCoords.longitude;
-
-        this.setState({
-            markers: [{
-                lat: flag1.latitude,
-                long: flag1.longitude
-             },
-             {
-                 lat: flag2.latitude,
-                 long: flag2.longitude
-             }],
-        });
-        this.dataSourceTBT.cloneWithRows(serverRoute.trip.legs[0].maneuvers),
-        tbt = true;
+      return (
+        <MapView.Polyline
+          coordinates={polyline}
+          strokeWidth={3}
+        />
+      );
     }
 
     // marker deselected
@@ -288,20 +273,6 @@ export default class MainMapView extends Component {
     }
 
     render() {
-        if(!(Object.keys(serverRoute).length === 0 && serverRoute.constructor === Object) && !serverRouteChecked)
-        {
-            this.extractRoute();
-        }
-
-        let polyline = null;
-        if (tbt != true) {
-          polyline = (
-            <MapView.Polyline
-              coordinates={route}
-              strokeWidth={3}
-            />
-          );
-        }
 
         return (
             <View style={styles.container}>
@@ -313,19 +284,29 @@ export default class MainMapView extends Component {
                     focusOnLayout={false}
                     hideBack={true}
                 />
+
+                <TouchableOpacity style={styles.myLocationBtn}
+                  onPress={this.zoomToCurrentLocation}>
+                    <MaterialsIcon color='#2af' size={24} name={'near-me'}/>
+                </TouchableOpacity>
+
                 <MapView style={styles.map}
+                    ref={(ref) => this.mapView = ref}
                     customMapStyle={CustomMapStyle}
                     initialRegion={this.initialRegion}
                     zoomEnabled
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
+                    toolbarEnabled={false}
+                    showsTraffic={false}
+                    showsPointsOfIntereset={false}
                 >
                     <MapView.Marker
                         image={dot1}
                         coordinate={this.initialPosition}
                     />
 
-                    {polyline}
+                    {this.renderPolyline()}
 
                     {this.state.markerLocations.map(loc => (
                         <MapView.Marker

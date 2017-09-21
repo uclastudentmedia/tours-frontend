@@ -6,7 +6,9 @@ import {
   View,
   Image,
   ScrollView,
+  Button,
 } from 'react-native';
+import PubSub from 'pubsub-js';
 
 import { Location } from 'app/DataTypes';
 import GPSManager from 'app/GPSManager';
@@ -50,6 +52,16 @@ export default class DetailsView extends Component
     }
   }
 
+  showLocationOnMap = () => {
+    PubSub.publish('DetailsView.showLocationOnMap', this.location);
+
+    // https://github.com/react-community/react-navigation/issues/1127
+    this.props.navigation.goBack();
+    setTimeout(() => {
+      this.props.navigation.navigate('MainMap');
+    }, 0);
+  }
+
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
   //{this.state.results.results.name}
   render() {
@@ -76,6 +88,8 @@ export default class DetailsView extends Component
           <Text style={DetailStyle.dist}>
               {Math.round(this.location.FeetAway(position)/264 * 100) / 100} walking minutes away
           </Text>
+
+          <Button title='Show on map' onPress={this.showLocationOnMap} />
 
           <View style={{flex: 1}}>
               <Text style={DetailStyle.description}>

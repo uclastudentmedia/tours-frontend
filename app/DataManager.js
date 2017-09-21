@@ -1,5 +1,7 @@
 'use strict';
 
+import { merge } from 'lodash';
+
 // TODO: import real AsyncStorage for running on device
 //import { AsyncStorage } from 'react-native';
 import { AsyncStorage } from 'app/__fakes__/FakeAsyncStorage';
@@ -27,6 +29,7 @@ const ENDPOINTS = {
   CATEGORIES: '/api/category/',
   TOURS: '/api/tour/',
   INDOOR_BUILDINGS: '/indoor/building/',
+  ROUTE_TBT: '/route',
 };
 
 // has LoadAllData been called?
@@ -128,14 +131,14 @@ async function setCachedData(endpoint, data) {
   await AsyncStorage.setItem(key, JSON.stringify(data));
 }
 
-async function queryEndpoint(endpoint, transformData) {
+async function queryAPI(endpoint, transformData) {
   /**
    * Fetch data from the server
    * @param endpoint string
    * @return Promise
    */
 
-  //console.info(`queryEndpoint('${endpoint}')`);
+  //console.info(`queryAPI('${endpoint}')`);
 
   // default: no transform
   transformData = transformData || (data => data);
@@ -177,7 +180,7 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
 
   // there is no up-to-date cached data, need to query server
   let newData;
-  newData = await queryEndpoint(endpoint, transformData);
+  newData = await queryAPI(endpoint, transformData);
 
   if (newData !== null) {
     // save the data in the cache
@@ -357,4 +360,32 @@ export function GetIndoorBuildingById(id) {
    * @return IndoorBuilding
    */
   return find(GetIndoorBuildingList(), 'landmark_id', id);
+}
+
+export async function RouteTBT(start, end, extraOptions) {
+  /**
+   * @param start Landmark object
+   * @param end Landmark object
+   * @param extraOptions object: additional parameters
+   */
+
+  let options = {
+    locations: [
+      { lat: start.lat, lon: start.long },
+      { lat: end.lat, lon: end.long }
+    ],
+    costing: 'pedestrian',
+    directions_options: {
+      units: 'miles'
+    }
+  };
+
+  if (extraOptions) {
+    merge(options, extraOptions);
+  }
+
+  const endpoint = `${ENDPOINTS.ROUTE_TBT}?json=${JSON.stringify(options)}`;
+  console.log(API_DOMAIN + endpoint);
+  return fetch(API_DOMAIN + endpoint)
+    .then(response => response.json());
 }

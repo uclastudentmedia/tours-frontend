@@ -12,7 +12,8 @@ import {
   MainMapView,
   LocationListView,
   DirectionsView,
-  DetailsView
+  DetailsView,
+  SearchView,
 } from 'app/Views';
 
 import GPSManager from 'app/GPSManager';
@@ -114,6 +115,7 @@ const MainNavigator = StackNavigator(
   {
     Home: { screen: MainScreenNavigator },
     Details: { screen: DetailsView },
+    Search: { screen: SearchView },
   },
   {
 

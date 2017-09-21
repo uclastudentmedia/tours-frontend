@@ -1,8 +1,3 @@
-'use strict';
-
-import React from 'react';
-import { StyleSheet } from 'react-native';
-
 // generated with https://mapstyle.withgoogle.com/
 export default [
   {

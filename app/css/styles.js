@@ -10,8 +10,8 @@ import {
     Platform,
 } from 'react-native';
 
-var {height, width} = Dimensions.get('window');
-var windowWidth = Dimensions.get('window').width;
+const {height, width} = Dimensions.get('window');
+const windowWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
     baseText:{
@@ -46,8 +46,9 @@ export default StyleSheet.create({
         color:'white',
     },
     map: {
-        height: (height * 0.9),
-        width: width
+        height: height,
+        width: width,
+        zIndex: -1,
     },
     instructions: {
         textAlign: 'center',
@@ -219,5 +220,22 @@ export default StyleSheet.create({
     buttonContainer: {
         flex: 1,
         marginTop: 20,
+    },
+    errorText: {
+        color: '#d61414',
+        fontSize: 22,
+    },
+    warningText: {
+        color: '#ffbf00',
+        fontSize: 22,
+    },
+    myLocationBtn: {
+        position: 'absolute',
+        bottom: 30,
+        right: 30,
+        height: 30,
+        width: 30,
+        borderRadius: 15,
+        borderWidth: 2,
     }
 });
