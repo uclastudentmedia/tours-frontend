@@ -16,7 +16,6 @@ import PubSub from 'pubsub-js';
 import { debounce } from 'lodash';
 
 import MapView from 'react-native-maps';
-import SearchBar from 'react-native-searchbar';
 
 import {
   popPrioritize,
@@ -149,6 +148,20 @@ export default class MainMapView extends Component {
         }, 500);
     }
 
+    openSearchMenu = () => {
+        const {
+          navigation
+        } = this.props;
+
+        navigation.navigate('Search', {
+          onResultSelect: loc => navigation.navigate('Details', {
+            location: loc
+          }),
+          title: 'Find a Location',
+          goBack: false,
+        });
+    }
+
     updateMapIcons() {
         const {
           region,
@@ -265,8 +278,6 @@ export default class MainMapView extends Component {
         console.log(location);
 
         this.props.navigation.navigate('Details', {
-            id: 'Details',
-            title: location.name,
             location: location,
         });
       };
@@ -276,17 +287,14 @@ export default class MainMapView extends Component {
 
         return (
             <View style={styles.container}>
-                <SearchBar
-                    ref={(ref) => this.searchBar = ref}
-                    handleResults={this._handleResults}
-                    autoCorrect
-                    showOnLoad
-                    focusOnLayout={false}
-                    hideBack={true}
-                />
 
-                <TouchableOpacity style={styles.myLocationBtn}
-                  onPress={this.zoomToCurrentLocation}>
+                <TouchableOpacity onPress={this.openSearchMenu}
+                  style={[styles.mapViewBtn, styles.searchBtn]}>
+                    <MaterialsIcon color='#2af' size={24} name={'search'}/>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={this.zoomToCurrentLocation}
+                  style={[styles.mapViewBtn, styles.myLocationBtn]}>
                     <MaterialsIcon color='#2af' size={24} name={'near-me'}/>
                 </TouchableOpacity>
 

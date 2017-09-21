@@ -22,7 +22,6 @@ export default class DetailsView extends Component
     navigation: PropTypes.shape({
       state: PropTypes.shape({
         params: PropTypes.shape({
-          title: PropTypes.string.isRequired,
           location: PropTypes.instanceOf(Location).isRequired,
         })
       })
@@ -33,7 +32,7 @@ export default class DetailsView extends Component
   };
 
   static navigationOptions = ({ navigation }) => ({
-    title: `${navigation.state.params.title}`,
+    title: `${navigation.state.params.location.name}`,
   });
 
   constructor(props) {

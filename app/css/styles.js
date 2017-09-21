@@ -229,13 +229,19 @@ export default StyleSheet.create({
         color: '#ffbf00',
         fontSize: 22,
     },
-    myLocationBtn: {
+    mapViewBtn: {
         position: 'absolute',
-        bottom: 30,
-        right: 30,
         height: 30,
         width: 30,
         borderRadius: 15,
         borderWidth: 2,
+    },
+    myLocationBtn: {
+        bottom: 30,
+        right: 30,
+    },
+    searchBtn: {
+        top: 30,
+        right: 30,
     }
 });

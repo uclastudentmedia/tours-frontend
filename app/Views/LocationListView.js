@@ -95,8 +95,6 @@ export default class LocationListView extends Component
 
   gotoDescription(location) {
       this.props.navigation.navigate('Details', {
-          id: 'Details',
-          title: location.name,
           location: location,
       });
   }

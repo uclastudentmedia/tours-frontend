@@ -29,20 +29,24 @@ export default class SearchView extends Component {
       state: PropTypes.shape({
         params: PropTypes.shape({
           onResultSelect: PropTypes.func.isRequired,
+          title: PropTypes.string,
+
+          // set to false if you want SearchView to stay on the navigation stack
+          goBack: PropTypes.bool,
         })
       })
     }),
   };
 
   static navigationOptions = ({ navigation }) => ({
-    title: `${navigation.state.params.title}`,
+    title: `${navigation.state.params.title || ''}`,
   });
 
   constructor(props) {
     console.log(props);
     super(props);
 
-    this.onResultSelect = props.navigation.state.params.onResultSelect;
+    this.params = props.navigation.state.params;
 
     this.locations = GetLocationList();
 
@@ -85,8 +89,10 @@ export default class SearchView extends Component {
   }
 
   handleOnResultSelect(loc) {
-    this.onResultSelect(loc);
-    this.props.navigation.goBack();
+    this.params.onResultSelect(loc);
+    if (this.params.goBack !== false) {
+      this.props.navigation.goBack();
+    }
   }
 
   render() {
@@ -109,12 +115,14 @@ export default class SearchView extends Component {
             <View style={{marginTop: 60, marginBottom: 15}}>
               {
                 this.state.results.map(loc => (
-                  <View
-                    key={loc.id}
-                  >
-                    <TouchableHighlight underlayColor="#DDDDDD" style={DirectionsStyle.button } 
+                  <View key={loc.id}>
+                    <TouchableHighlight
+                      underlayColor="#DDDDDD"
+                      style={DirectionsStyle.button}
                       onPress={this.handleOnResultSelect.bind(this, loc)}>
+
                       <Text style={DirectionsStyle.buttonText}>{loc.name}</Text>
+
                     </TouchableHighlight>
                   </View>
                 ))
