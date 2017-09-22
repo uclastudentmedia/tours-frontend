@@ -11,14 +11,19 @@
         android:targetSdkVersion="22" />
 
     <application
-      android:name=".MainApplication"
-      android:allowBackup="true"
-      android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
-      android:theme="@style/AppTheme">
+        android:name=".MainApplication"
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@style/AppTheme">
+
+        <!--
+            Debug:   AIzaSyA1w2qIY6IL3Mk63AklU_1ZZCXCtYVbQrU
+            Release: AIzaSyAwxA0X2eX2zDYU7xrnQlzLrk4AiWF73zw
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBk8CTaXpN33qW8rBXLlJYlGoOcKEyy3RI"></meta-data>
+            android:value="AIzaSyA1w2qIY6IL3Mk63AklU_1ZZCXCtYVbQrU"/>
 
         <activity
             android:name=".SplashActivity"
