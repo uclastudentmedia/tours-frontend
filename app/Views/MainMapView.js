@@ -158,13 +158,17 @@ export default class MainMapView extends Component {
                 <MapView style={styles.map}
                     customMapStyle={CustomMapStyle}
                     initialRegion={this.initialRegion}
-                    zoomEnabled
+                    zoomEnabled={true}
+                    toolBarEnabled={false}
+                    showsTraffic={false}
+                    showsPointsOfInterest={false}
+                    showsIndoors={false}
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
                 >
                     <MapView.Marker
                         image={dot1}
-                        coordinate={this.initialPosition}
+                        coordinate={this.state.position}
                     />
 
                     {this.state.markerLocations.map(loc => (
