@@ -53,6 +53,13 @@ export default class LocationListView extends Component
 
       this.locations = GetLocationList();
 
+      this.categories = [
+        { name: 'All', title: 'All' },
+        { name: 'Parking', title: 'Parking' },
+        { name: 'Food & Beverage', title: 'Food' },
+        { name: 'Libraries', title: 'Library' },
+      ];
+
       this.category = 'All';
 
       this.state = {
@@ -62,11 +69,11 @@ export default class LocationListView extends Component
   }
   componentDidMount() {
       this.getPosition();
-      this.getLocations(this.category);
+      this.updateLocations();
 
       PubSub.subscribe('MainMapView.onRegionChange', (msg, region) => {
         this.region = region;
-        this.getLocations(this.category);
+        this.updateLocations();
       });
   }
 
@@ -82,9 +89,9 @@ export default class LocationListView extends Component
       this.GPSManager.clearWatch(this.watchID);
   }
 
-  getLocations(category){
+  updateLocations(){
       //Get list of top 10 locations
-      let results = popPrioritize(this.region, category);
+      let results = popPrioritize(this.region, this.category);
 
       results = results.slice(0, 10);
 
@@ -93,49 +100,36 @@ export default class LocationListView extends Component
       });
   }
 
+  setCategory(category) {
+      this.category = category;
+      this.updateLocations();
+  }
+
   gotoDescription(location) {
       this.props.navigation.navigate('Details', {
           location: location,
       });
   }
-//this.getLocations.bind(this,"Food")
+
   render() {
-    //make modules into ListView, each module will have an id, based on which
-    //id, the ListView will render that module
     const position = this.GPSManager.getPosition();
 
     return (
       <View style={styles.container}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View style={styles.buttonContainer}>
-              <Button
-                onPress={this.getLocations.bind(this,"All")}
-                title="All"
-                color="#F89406"
-              />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                  onPress={this.getLocations.bind(this,"Parking")}
-                  title="Parking"
-                  color="#F89406"
-              />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                  onPress={this.getLocations.bind(this,"Food & Beverage")}
-                  title="Food"
-                  color="#F89406"
-              />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                  onPress={this.getLocations.bind(this,"Libraries")}
-                  title="Library"
-                  color="#F89406"
-              />
-            </View>
+            {
+              this.categories.map((cat, i) => (
+                <View style={styles.buttonContainer} key={i}>
+                  <Button
+                    onPress={this.setCategory.bind(this, cat.name)}
+                    title={cat.title}
+                    color={this.category == cat.name ? '#f8bc06' : '#f89406'}
+                  />
+                </View>
+              ))
+            }
           </View>
+
           <ListView
               enableEmptySections={true}
               removeClippedSubviews={false}
@@ -157,7 +151,7 @@ export default class LocationListView extends Component
                                       {loc.name}{'\n'}
                                   </Text>
                                   <Text style={styles.distText}>
-                                      {loc.FeetAway(this.position)} feet away
+                                      {loc.FeetAway(position)} feet away
                                   </Text>
                               </Text>
                           </View>
