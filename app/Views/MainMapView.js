@@ -302,16 +302,17 @@ export default class MainMapView extends Component {
                     ref={(ref) => this.mapView = ref}
                     customMapStyle={CustomMapStyle}
                     initialRegion={this.initialRegion}
-                    zoomEnabled
+                    zoomEnabled={true}
+                    toolBarEnabled={false}
+                    showsTraffic={false}
+                    showsPointsOfInterest={false}
+                    showsIndoors={false}
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
-                    toolbarEnabled={false}
-                    showsTraffic={false}
-                    showsPointsOfIntereset={false}
                 >
                     <MapView.Marker
                         image={dot1}
-                        coordinate={this.initialPosition}
+                        coordinate={this.state.position}
                     />
 
                     {this.renderPolyline()}

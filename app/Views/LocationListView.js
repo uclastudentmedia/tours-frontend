@@ -112,7 +112,9 @@ export default class LocationListView extends Component
   }
 
   render() {
-    const position = this.GPSManager.getPosition();
+    const {
+      position
+    } = this.state;
 
     return (
       <View style={styles.container}>
