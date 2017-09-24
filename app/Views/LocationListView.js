@@ -143,10 +143,9 @@ export default class LocationListView extends Component
                     style={[styles.wrapper, styles.listItemBorder]}
                   >
                       <View style={styles.listItemContainer}>
-                          <Image
-                            style={styles.locListIcon}
-                            source={GetIcon(loc.category_id)}
-                          />
+                          <View style={styles.locListIcon}>
+                            <Image source={GetIcon(loc.category_id)} />
+                          </View>
                           <View style={styles.listItemText}>
                               <Text style={styles.baseText}>
                                   <Text style={styles.locText}>

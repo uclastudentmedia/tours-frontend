@@ -141,8 +141,8 @@ export default class MainMapView extends Component {
 
     zoomToCurrentLocation = () => {
         this.mapView.animateToRegion({
-          latitude: this.initialPosition.latitude,
-          longitude: this.initialPosition.longitude,
+          latitude: this.state.position.latitude,
+          longitude: this.state.position.longitude,
           latitudeDelta: 0.005,
           longitudeDelta: 0.005,
         }, 500);
