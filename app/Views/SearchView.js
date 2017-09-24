@@ -30,6 +30,8 @@ export default class SearchView extends Component {
         params: PropTypes.shape({
           onResultSelect: PropTypes.func.isRequired,
           title: PropTypes.string,
+          data: PropTypes.arrayOf(PropTypes.string),
+          defaultResults: PropTypes.arrayOf(PropTypes.string),
 
           // set to false if you want SearchView to stay on the navigation stack
           goBack: PropTypes.bool,
@@ -46,27 +48,28 @@ export default class SearchView extends Component {
     console.log(props);
     super(props);
 
-    this.params = props.navigation.state.params;
+    const params = props.navigation.state.params;
+    this.onResultSelect = params.onResultSelect;
+    this.goBack = params.goBack;
+    this.data = params.data || [];
+    this.defaultResults = params.defaultResults || this.data;
 
-    this.locations = GetLocationList();
+    if (this.data.length == 0) {
+      console.warn('SearchView created with no data.');
+    }
 
     this.maxResults = 30;
 
-    this.popularLocations = this.locations
-                              .sort((a,b) => a.priority - b.priority)
-                              .slice(0, this.maxResults);
-
     this.state = {
-      results: this.popularLocations,
+      results: this.defaultResults.slice(0, this.maxResults)
     };
   }
 
   handleSearch = (input) => {
 
-    // show popular locations on empty input
     if (input == '') {
       this.setState({
-        results: this.popularLocations
+        results: this.defaultResults.slice(0, this.maxResults)
       });
     }
     else {
@@ -79,18 +82,14 @@ export default class SearchView extends Component {
 
   searchByName = (input) => {
 
-    let options = {
-      extract: loc => loc.name
-    };
-
-    const results = fuzzy.filter(input, this.locations, options);
+    const results = fuzzy.filter(input, this.data);
 
     return results.map(result => result.original);
   }
 
   handleOnResultSelect(loc) {
-    this.params.onResultSelect(loc);
-    if (this.params.goBack !== false) {
+    this.onResultSelect(loc);
+    if (this.goBack !== false) {
       this.props.navigation.goBack();
     }
   }
@@ -102,7 +101,7 @@ export default class SearchView extends Component {
 
           <SearchBar
             ref={(ref) => this.searchBar = ref}
-            data={this.locations}
+            data={this.data}
             handleSearch={this.handleSearch}
             showOnLoad
             hideBack={true}
@@ -114,15 +113,14 @@ export default class SearchView extends Component {
           <ScrollView>
             <View style={{marginTop: 60, marginBottom: 15}}>
               {
-                this.state.results.map(loc => (
-                  <View key={loc.id}>
+                this.state.results.map((item, i) => (
+                  <View key={i}>
                     <TouchableHighlight
                       underlayColor="#DDDDDD"
                       style={DirectionsStyle.button}
-                      onPress={this.handleOnResultSelect.bind(this, loc)}>
-
-                      <Text style={DirectionsStyle.buttonText}>{loc.name}</Text>
-
+                      onPress={this.handleOnResultSelect.bind(this, item)}
+                    >
+                      <Text style={DirectionsStyle.buttonText}>{item}</Text>
                     </TouchableHighlight>
                   </View>
                 ))

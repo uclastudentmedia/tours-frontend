@@ -30,6 +30,7 @@ import {
 import GPSManager from 'app/GPSManager';
 import {
   GetLocationList,
+  GetLocationByName,
   RouteTBT,
 } from 'app/DataManager';
 
@@ -59,20 +60,29 @@ export default class DirectionsView extends Component
       dataSource: this.ds.cloneWithRows([]),
       loading: false,
     };
-    this.locations = GetLocationList();
+
+    this.locationNames = GetLocationList()
+                            .sort((a,b) => a.priority - b.priority)
+                            .map(loc => loc.name);
   }
 
   searchStartLocation = () => {
     this.props.navigation.navigate('Search', {
-      onResultSelect: loc => this.setState({startLocation: loc}),
-      title: "Select start location"
+      title: 'Select start location',
+      data: this.locationNames,
+      onResultSelect: name => this.setState({
+        startLocation: GetLocationByName(name)
+      }),
     });
   }
 
   searchEndLocation = () => {
     this.props.navigation.navigate('Search', {
-      onResultSelect: loc => this.setState({endLocation: loc}),
-      title: "Select end location"
+      title: 'Select end location',
+      data: this.locationNames,
+      onResultSelect: name => this.setState({
+        endLocation: GetLocationByName(name)
+      }),
     });
   }
 

@@ -23,7 +23,7 @@ import {
 
 import {
   GetLocationList,
-  GetLocationById,
+  GetLocationByName,
 } from 'app/DataManager';
 
 import { Location } from 'app/DataTypes';
@@ -52,7 +52,9 @@ export default class MainMapView extends Component {
 
         this.GPSManager = props.screenProps.GPSManager;
 
-        this.locations = GetLocationList();
+        this.locationNames = GetLocationList()
+                                .sort((a,b) => a.priority - b.priority)
+                                .map(loc => loc.name);
 
         this.initialPosition = {
           latitude: 34.070286,
@@ -154,11 +156,12 @@ export default class MainMapView extends Component {
         } = this.props;
 
         navigation.navigate('Search', {
-          onResultSelect: loc => navigation.navigate('Details', {
-            location: loc
-          }),
           title: 'Find a Location',
           goBack: false,
+          data: this.locationNames,
+          onResultSelect: name => navigation.navigate('Details', {
+            location: GetLocationByName(name)
+          }),
         });
     }
 
