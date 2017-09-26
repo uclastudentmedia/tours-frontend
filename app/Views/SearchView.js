@@ -9,6 +9,7 @@ import {
 
 import fuzzy from 'fuzzy';
 import SearchBar from 'react-native-searchbar';
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import GPSManager from 'app/GPSManager';
 import { Location } from 'app/DataTypes';
@@ -35,6 +36,12 @@ export default class SearchView extends Component {
 
           // set to false if you want SearchView to stay on the navigation stack
           goBack: PropTypes.bool,
+
+          // special items that have a icon
+          dataWithIcons: PropTypes.arrayOf(PropTypes.shape({
+            text: PropTypes.string,
+            icon: PropTypes.string
+          }))
         })
       })
     }),
@@ -52,6 +59,7 @@ export default class SearchView extends Component {
     this.onResultSelect = params.onResultSelect;
     this.goBack = params.goBack;
     this.data = params.data || [];
+    this.dataWithIcons = params.dataWithIcons || [];
     this.defaultResults = params.defaultResults || this.data;
 
     if (this.data.length == 0) {
@@ -111,21 +119,40 @@ export default class SearchView extends Component {
           />
 
           <ScrollView>
-            <View style={{marginTop: 60, marginBottom: 15}}>
-              {
-                this.state.results.map((item, i) => (
-                  <View key={i}>
-                    <TouchableHighlight
-                      underlayColor="#DDDDDD"
-                      style={DirectionsStyle.button}
-                      onPress={this.handleOnResultSelect.bind(this, item)}
-                    >
-                      <Text style={DirectionsStyle.buttonText}>{item}</Text>
-                    </TouchableHighlight>
-                  </View>
-                ))
-              }
-            </View>
+            <View style={{marginTop: 50, marginBottom: 15}}/>
+            {
+              this.dataWithIcons.map((item, i) => (
+                <View key={i}>
+                  <TouchableHighlight
+                    underlayColor="#DDDDDD"
+                    style={DirectionsStyle.button}
+                    onPress={this.handleOnResultSelect.bind(this, item.text)}
+                  >
+                    <View style={[styles.flexRow]}>
+                      <MaterialsIcon color='#2af' size={24} name={item.icon}/>
+                      <View style={{width: 20}}/>
+                      <Text style={DirectionsStyle.buttonText}>
+                        {item.text}
+                      </Text>
+                    </View>
+                  </TouchableHighlight>
+                </View>
+              ))
+            }
+            <View style={{marginTop: 15}}/>
+            {
+              this.state.results.map((item, i) => (
+                <View key={i}>
+                  <TouchableHighlight
+                    underlayColor="#DDDDDD"
+                    style={DirectionsStyle.button}
+                    onPress={this.handleOnResultSelect.bind(this, item)}
+                  >
+                    <Text style={DirectionsStyle.buttonText}>{item}</Text>
+                  </TouchableHighlight>
+                </View>
+              ))
+            }
           </ScrollView>
 
         </View>

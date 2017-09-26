@@ -24,12 +24,14 @@ export default StyleSheet.create({
         width: windowWidth,
         height: 60,
         marginBottom: 1,
+        paddingLeft: 20,
         borderWidth: 0.5,
-        borderColor: '#EEEEEE'
+        borderColor: '#EEEEEE',
+        flex: 1,
+        justifyContent: 'center',
     },
     buttonText:{
-        marginTop: 15,
-        marginLeft: 20,
+        textAlignVertical: 'center',
         fontSize: 20
     }
 });

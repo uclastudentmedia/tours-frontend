@@ -33,6 +33,7 @@ import {
   GetLocationByName,
   RouteTBT,
 } from 'app/DataManager';
+import { Location } from 'app/DataTypes';
 
 import {
   styles,
@@ -55,6 +56,8 @@ export default class DirectionsView extends Component
 
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
+    this.GPSManager = props.screenProps.GPSManager;
+
     this.state = {
       error: null,
       dataSource: this.ds.cloneWithRows([]),
@@ -67,12 +70,34 @@ export default class DirectionsView extends Component
   }
 
   searchStartLocation = () => {
+    const currentLocationText = 'Current Location';
+
+    let onResultSelect = name => {
+      let startLocation;
+      if (name === currentLocationText) {
+        const position = this.GPSManager.getPosition();
+        //const position = { latitude: 34.070286, longitude: -118.443413 };
+
+        startLocation = new Location({
+          lat: position.latitude,
+          long: position.longitude,
+          name: currentLocationText,
+          id: -12345, // unique id
+        });
+      } else {
+        startLocation = GetLocationByName(name);
+      }
+
+      this.setState({
+        startLocation: startLocation
+      });
+    };
+
     this.props.navigation.navigate('Search', {
       title: 'Select start location',
       data: this.locationNames,
-      onResultSelect: name => this.setState({
-        startLocation: GetLocationByName(name)
-      }),
+      dataWithIcons: [{text: currentLocationText, icon: 'gps-fixed'}],
+      onResultSelect: onResultSelect,
     });
   }
 

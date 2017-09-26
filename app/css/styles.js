@@ -243,5 +243,10 @@ export default StyleSheet.create({
     searchBtn: {
         top: 30,
         right: 30,
+    },
+    flexRow: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
     }
 });
