@@ -30,6 +30,7 @@ const ENDPOINTS = {
   TOURS: '/api/tour/',
   INDOOR_BUILDINGS: '/indoor/building/',
   ROUTE_TBT: '/route',
+  ROUTE_INDOOR: '/indoor/route',
 };
 
 // has LoadAllData been called?
@@ -51,6 +52,14 @@ function find(data, key, value) {
     return null;
   }
   return matches[0];
+}
+
+function prependDomain(endpoint) {
+  /**
+   * @param endpoint string
+   * @return string full url
+   */
+  return API_DOMAIN + endpoint;
 }
 
 /**
@@ -143,7 +152,7 @@ async function queryAPI(endpoint, transformData) {
   // default: no transform
   transformData = transformData || (data => data);
 
-  let url = API_DOMAIN + endpoint;
+  let url = prependDomain(endpoint);
   return fetch(url)
     .then(response => response.json())
     .then(data => data['results'])
@@ -251,7 +260,7 @@ export async function LoadAllData() {
         // give images a full URL
         loc.images = loc.images.map(image => {
           for (let size in image) {
-            image[size] = API_DOMAIN + image[size];
+            image[size] = prependDomain(image[size]);
           }
           return image;
         });
@@ -393,11 +402,29 @@ export async function RouteTBT(start, end, extraOptions) {
   }
 
   const endpoint = `${ENDPOINTS.ROUTE_TBT}?json=${JSON.stringify(options)}`;
-  console.log(API_DOMAIN + endpoint);
-  return fetch(API_DOMAIN + endpoint)
+  const url = prependDomain(endpoint);
+  console.log(url);
+  return fetch(url)
     .then(response => response.json());
 }
 
-export async function RouteIndoor(building, startRoom, endRoom) {
-  return {};
+export async function RouteIndoor(landmarkId, start, end) {
+  /**
+   * @param landmarkId int building's landmark id
+   * @param start string starting room
+   * @param end string ending room
+   */
+
+  const endpoint = `${ENDPOINTS.ROUTE_INDOOR}/${landmarkId}/${start}/${end}`;
+  const url = prependDomain(endpoint);
+  console.log(url);
+  return fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      data.images = data.images.map(img => {
+        img.url = prependDomain(img.url);
+        return img;
+      });
+      return data;
+    });
 }

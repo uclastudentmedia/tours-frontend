@@ -8,6 +8,7 @@ import {
   Button,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 
 import {
@@ -32,14 +33,18 @@ export default class IndoorNavigationView extends Component
 
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-    this.state = {
-      error: null,
-      dataSource: this.ds.cloneWithRows([]),
-      loading: false,
-    };
-
     this.buildings = GetIndoorBuildingList();
     this.buildingNames = this.buildings.map(building => building.name);
+
+    this.state = {
+      error: null,
+      imageDataSource: this.ds.cloneWithRows([]),
+      loading: false,
+      building: this.buildings[0],
+      startRoom: 'B105',
+      endRoom: '2410',
+    };
+
   }
 
   selectBuilding = () => {
@@ -96,8 +101,12 @@ export default class IndoorNavigationView extends Component
       building: null,
       startRoom: null,
       endRoom: null,
-      dataSource: this.ds.cloneWithRows([]),
+      imageDataSource: this.ds.cloneWithRows([]),
     });
+  }
+
+  openImage = (image) => {
+    console.log(image);
   }
 
   renderSpinner = () => {
@@ -127,6 +136,23 @@ export default class IndoorNavigationView extends Component
       <View style={DirectionsStyle.container}>
 
         <Text style={styles.errorText}>{error}</Text>
+
+        <ListView
+          enableEmptySections={true}
+          dataSource={this.state.imageDataSource}
+          renderRow={(image) =>
+            <TouchableOpacity style={styles.wrapper}
+              onPress={() => this.openImage(image)}
+            >
+              <View style={styles.wrapper}>
+                <Text style={[styles.baseText, styles.locText]}>
+                  {building.name}, Floor {image.floor}
+                </Text>
+                <Image source={{uri: image.url}} style={{width: 40, height: 40}}/>
+              </View>
+            </TouchableOpacity>
+          }
+        />
 
         {this.renderSpinner()}
 
@@ -180,30 +206,16 @@ export default class IndoorNavigationView extends Component
       return;
     }
 
-    return;
-
     // begin directions request
     this.setState({ loading: true });
 
-    RouteIndoor(building, startRoom, endRoom)
+    RouteIndoor(building.landmark_id, startRoom, endRoom)
       .then(data => {
-        this.setState({loading:false});
-        /*
-        let error = data.error;
-        let directions = [];
-        if (data && !data.error) {
-          error = null;
-          directions = data.trip.legs[0].maneuvers;
-        }
-
-        this.trip = data.trip;
-
         this.setState({
-          error: error,
-          dataSource: this.ds.cloneWithRows(directions),
+          error: null,
+          imageDataSource: this.ds.cloneWithRows(data.images),
           loading: false,
         });
-        */
       })
       .catch(error => {
         this.setState({
