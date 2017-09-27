@@ -362,6 +362,14 @@ export function GetIndoorBuildingById(id) {
   return find(GetIndoorBuildingList(), 'landmark_id', id);
 }
 
+export function GetIndoorBuildingByName(name) {
+  /**
+   * @param name string landmark name
+   * @return IndoorBuilding
+   */
+  return find(GetIndoorBuildingList(), 'name', name);
+}
+
 export async function RouteTBT(start, end, extraOptions) {
   /**
    * @param start Landmark object
@@ -388,4 +396,8 @@ export async function RouteTBT(start, end, extraOptions) {
   console.log(API_DOMAIN + endpoint);
   return fetch(API_DOMAIN + endpoint)
     .then(response => response.json());
+}
+
+export async function RouteIndoor(building, startRoom, endRoom) {
+  return {};
 }

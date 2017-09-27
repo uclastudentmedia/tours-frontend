@@ -19,11 +19,6 @@ import {
 } from 'app/Components';
 
 import {
-  SearchView,
-  MainMapView,
-} from 'app/Views';
-
-import {
   DecodePolyline
 } from 'app/Utils';
 

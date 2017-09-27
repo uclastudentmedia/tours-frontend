@@ -14,6 +14,7 @@ import {
   DirectionsView,
   DetailsView,
   SearchView,
+  IndoorNavigationView,
 } from 'app/Views';
 
 import GPSManager from 'app/GPSManager';
@@ -76,6 +77,19 @@ class LocationListScreen extends Component {
   }
 }
 
+class IndoorNavigationScreen extends Component {
+  static navigationOptions = {
+    tabBarLabel: 'Indoor',
+    tabBarIcon: makeIcon('home')
+  };
+
+  render() {
+    return (
+      <IndoorNavigationView {...this.props} />
+    );
+  }
+}
+
 
 /**
  * Tab Navigator
@@ -86,6 +100,7 @@ const MainScreenNavigator = TabNavigator(
     MainMap: { screen: MainMapScreen },
     Directions: { screen: DirectionsScreen },
     LocationList: { screen: LocationListScreen },
+    IndoorNavigation: { screen: IndoorNavigationScreen },
   },
   {
     tabBarPosition: 'bottom',
