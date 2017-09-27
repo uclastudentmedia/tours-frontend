@@ -244,6 +244,10 @@ export default StyleSheet.create({
         top: 30,
         right: 30,
     },
+    zoomToCampusBtn: {
+        bottom: 80,
+        right: 30,
+    },
     flexRow: {
         flex: 1,
         flexDirection: 'row',

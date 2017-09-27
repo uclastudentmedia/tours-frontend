@@ -75,7 +75,6 @@ export default class MainMapView extends Component {
             results: [],
             route: {}
         };
-        this._handleResults = this._handleResults.bind(this);
         this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
 
         this.markerRefs = {};
@@ -150,6 +149,10 @@ export default class MainMapView extends Component {
         }, 500);
     }
 
+    zoomToCampus = () => {
+        this.mapView.animateToRegion(this.initialRegion, 500);
+    }
+
     openSearchMenu = () => {
         const {
           navigation
@@ -217,10 +220,6 @@ export default class MainMapView extends Component {
         });
     }
 
-    _handleResults(results) {
-        this.setState({ results });
-    }
-
     onRegionChange(region) {
       this.setState({ region:region });
       PubSub.publish('MainMapView.onRegionChange', region);
@@ -232,9 +231,15 @@ export default class MainMapView extends Component {
         this.updateMapIcons();
     }
 
+    getCompassDirection = () => {
+      // TODO: use react-native-simple-compass
+      let degrees = this.state.position.heading || 0;
+      // 0 degrees = north
+      return degrees - 73;
+    }
+
     renderPolyline = () => {
       const polyline = this.state.polyline;
-
       if (!polyline) {
         return null;
       }
@@ -243,6 +248,23 @@ export default class MainMapView extends Component {
         <MapView.Polyline
           coordinates={polyline}
           strokeWidth={3}
+          strokeColor={'#246dd5'}
+        />
+      );
+    }
+
+    renderLocationAccuracyCircle = () => {
+      const accuracy = this.state.position.accuracy;
+      if (accuracy === undefined) {
+        return null;
+      }
+
+      return (
+        <MapView.Circle
+            center={this.state.position}
+            radius={accuracy}
+            strokeColor={'#246dd5'}
+            fillColor={'#246dd544'}
         />
       );
     }
@@ -301,6 +323,11 @@ export default class MainMapView extends Component {
                     <MaterialsIcon color='#2af' size={24} name={'near-me'}/>
                 </TouchableOpacity>
 
+                <TouchableOpacity onPress={this.zoomToCampus}
+                  style={[styles.mapViewBtn, styles.zoomToCampusBtn]}>
+                    <MaterialsIcon color='#2af' size={24} name={'zoom-out-map'}/>
+                </TouchableOpacity>
+
                 <MapView style={styles.map}
                     ref={(ref) => this.mapView = ref}
                     customMapStyle={CustomMapStyle}
@@ -316,7 +343,10 @@ export default class MainMapView extends Component {
                     <MapView.Marker
                         image={dot1}
                         coordinate={this.state.position}
+                        rotation={this.getCompassDirection()}
+                        anchor={{x: 0.5, y: 0.5}}
                     />
+                    {this.renderLocationAccuracyCircle()}
 
                     {this.renderPolyline()}
 
@@ -325,6 +355,7 @@ export default class MainMapView extends Component {
                           key={loc.id}
                           ref={marker => this.markerRefs[loc.id] = marker}
                           coordinate={{latitude: loc.lat, longitude: loc.long}}
+                          anchor={{x: 0.5, y: 0.5}}
                           title={loc.name}
                           //description={loc.text_description}
                           image={GetIcon(loc.category_id)}
