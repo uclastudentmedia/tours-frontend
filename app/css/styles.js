@@ -252,5 +252,5 @@ export default StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-    }
+    },
 });

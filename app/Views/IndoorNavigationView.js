@@ -40,9 +40,9 @@ export default class IndoorNavigationView extends Component
       error: null,
       imageDataSource: this.ds.cloneWithRows([]),
       loading: false,
-      building: this.buildings[0],
-      startRoom: 'B105',
-      endRoom: '2410',
+      //building: this.buildings[0],
+      //startRoom: 'B105',
+      //endRoom: '2410',
     };
 
   }
@@ -106,7 +106,10 @@ export default class IndoorNavigationView extends Component
   }
 
   openImage = (image) => {
-    console.log(image);
+    this.props.navigation.navigate('Image', {
+      title: image.floor,
+      imageUrl: image.url,
+    });
   }
 
   renderSpinner = () => {
@@ -144,11 +147,13 @@ export default class IndoorNavigationView extends Component
             <TouchableOpacity style={styles.wrapper}
               onPress={() => this.openImage(image)}
             >
-              <View style={styles.wrapper}>
+              <View style={styles.flexRow}>
                 <Text style={[styles.baseText, styles.locText]}>
-                  {building.name}, Floor {image.floor}
+                  {image.floor}
                 </Text>
-                <Image source={{uri: image.url}} style={{width: 40, height: 40}}/>
+                <Image source={{uri: image.url}}
+                  style={{width: 40, height: 40}}
+                />
               </View>
             </TouchableOpacity>
           }

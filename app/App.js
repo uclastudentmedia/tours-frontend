@@ -15,6 +15,7 @@ import {
   DetailsView,
   SearchView,
   IndoorNavigationView,
+  ImageView,
 } from 'app/Views';
 
 import GPSManager from 'app/GPSManager';
@@ -131,6 +132,7 @@ const MainNavigator = StackNavigator(
     Home: { screen: MainScreenNavigator },
     Details: { screen: DetailsView },
     Search: { screen: SearchView },
+    Image: { screen: ImageView },
   },
   {
 
