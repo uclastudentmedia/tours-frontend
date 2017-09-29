@@ -33,6 +33,7 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* UCLAMapsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* UCLAMapsTests.m */; };
+		31F5A5871F7DD3140055E40F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31F5A5861F7DD3140055E40F /* LaunchScreen.storyboard */; };
 		3DF2C89BDE8C4ECD93AEE0E5 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C28201170149456A8EC118A4 /* Ionicons.ttf */; };
 		5B90F0441A104E0BAA70CA73 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05799BCE1064466EA29BB877 /* libRNVectorIcons.a */; };
 		5B9231F3EDE9498A8F505F6D /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EF74673443D4FAEA8714926 /* Zocial.ttf */; };
@@ -272,6 +273,7 @@
 		27C3C1A419AA454483CF915D /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* UCLAMaps-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UCLAMaps-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* UCLAMaps-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UCLAMaps-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		31F5A5861F7DD3140055E40F /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		37E7822866A94393AA675FD1 /* libAirMaps.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAirMaps.a; sourceTree = "<group>"; };
 		4EF74673443D4FAEA8714926 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
@@ -428,6 +430,7 @@
 		13B07FAE1A68108700A75B9A /* UCLAMaps */ = {
 			isa = PBXGroup;
 			children = (
+				31F5A5861F7DD3140055E40F /* LaunchScreen.storyboard */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -919,6 +922,7 @@
 				AF9C8A81F0664EE8A9F7397B /* MaterialCommunityIcons.ttf in Resources */,
 				EEC0C7BBE29144AD913D61E6 /* MaterialIcons.ttf in Resources */,
 				C782E48CEC974BE698D048ED /* Octicons.ttf in Resources */,
+				31F5A5871F7DD3140055E40F /* LaunchScreen.storyboard in Resources */,
 				D39DB10675C740EF8018E3EC /* SimpleLineIcons.ttf in Resources */,
 				5B9231F3EDE9498A8F505F6D /* Zocial.ttf in Resources */,
 			);
@@ -1074,7 +1078,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = V4Z45C29H6;
@@ -1098,7 +1101,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V4Z45C29H6;
 				HEADER_SEARCH_PATHS = "$(inherited)";
