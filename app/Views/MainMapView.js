@@ -56,10 +56,10 @@ export default class MainMapView extends Component {
                                 .sort((a,b) => a.priority - b.priority)
                                 .map(loc => loc.name);
 
-        this.initialPosition = {
-          latitude: 34.070286,
-          longitude: -118.443413,
-        };
+        //this.initialPosition = {
+        //  latitude: 34.070286,
+        //  longitude: -118.443413,
+        //};
 
         this.initialRegion = {
           latitude: 34.0700086,
@@ -69,7 +69,7 @@ export default class MainMapView extends Component {
         };
 
         this.state = {
-            position: this.initialPosition,
+            //position: this.initialPosition,
             markerLocations: [],
             region: this.initialRegion,
             results: [],
@@ -141,9 +141,16 @@ export default class MainMapView extends Component {
     }
 
     zoomToCurrentLocation = () => {
+        const {
+          position
+        } = this.state;
+        if (!position) {
+          alert('Unable to find your location.');
+          return;
+        }
         this.mapView.animateToRegion({
-          latitude: this.state.position.latitude,
-          longitude: this.state.position.longitude,
+          latitude: position.latitude,
+          longitude: position.longitude,
           latitudeDelta: 0.005,
           longitudeDelta: 0.005,
         }, 500);
@@ -232,9 +239,15 @@ export default class MainMapView extends Component {
     }
 
     getCompassDirection = () => {
-      // TODO: use react-native-simple-compass
-      let degrees = this.state.position.heading || 0;
+      const {
+        position
+      } = this.state;
       // 0 degrees = north
+      let degrees = 0;
+      if (position) {
+        // TODO: use react-native-simple-compass
+        degrees = position.heading;
+      }
       return degrees - 73;
     }
 
@@ -254,15 +267,17 @@ export default class MainMapView extends Component {
     }
 
     renderLocationAccuracyCircle = () => {
-      const accuracy = this.state.position.accuracy;
-      if (accuracy === undefined) {
+      const {
+        position
+      } = this.state;
+      if (!position || position.accuracy === undefined) {
         return null;
       }
 
       return (
         <MapView.Circle
-            center={this.state.position}
-            radius={accuracy}
+            center={position}
+            radius={position.accuracy}
             strokeColor={'#246dd5'}
             fillColor={'#246dd544'}
         />
@@ -340,12 +355,14 @@ export default class MainMapView extends Component {
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
                 >
-                    <MapView.Marker
-                        image={dot1}
-                        coordinate={this.state.position}
-                        rotation={this.getCompassDirection()}
-                        anchor={{x: 0.5, y: 0.5}}
-                    />
+                    {this.state.position ?
+                      <MapView.Marker
+                          image={dot1}
+                          coordinate={this.state.position}
+                          rotation={this.getCompassDirection()}
+                          anchor={{x: 0.5, y: 0.5}}
+                      />
+                    : null}
                     {this.renderLocationAccuracyCircle()}
 
                     {this.renderPolyline()}

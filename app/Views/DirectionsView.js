@@ -72,6 +72,12 @@ export default class DirectionsView extends Component
       if (name === currentLocationText) {
         const position = this.GPSManager.getPosition();
         //const position = { latitude: 34.070286, longitude: -118.443413 };
+        if (!position) {
+          this.setState({
+            error: 'Unable to find your location.'
+          });
+          return;
+        }
 
         startLocation = new Location({
           lat: position.latitude,
