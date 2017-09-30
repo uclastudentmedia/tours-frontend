@@ -223,6 +223,11 @@ export default class MainMapView extends Component {
           }
         });
 
+        // remove locations not in the view
+        markerLocations = markerLocations.filter(loc => {
+          return inRegion(region, loc.lat, loc.long);
+        });
+
         this.setState({
             markerLocations: markerLocations
         });
