@@ -19,6 +19,7 @@ import MapView from 'react-native-maps';
 
 import {
   popPrioritize,
+  inRegion,
 } from 'app/Utils';
 
 import {
@@ -324,6 +325,11 @@ export default class MainMapView extends Component {
     }
 
     render() {
+        const {
+          position,
+          region,
+          markerLocations,
+        } = this.state;
 
         return (
             <View style={styles.container}>
@@ -355,7 +361,7 @@ export default class MainMapView extends Component {
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
                 >
-                    {this.state.position ?
+                    {position && inRegion(region, position.latitude, position.longitude) ?
                       <MapView.Marker
                           image={dot1}
                           coordinate={this.state.position}
@@ -367,7 +373,7 @@ export default class MainMapView extends Component {
 
                     {this.renderPolyline()}
 
-                    {this.state.markerLocations.map(loc => (
+                    {markerLocations.map(loc => (
                         <MapView.Marker
                           key={loc.id}
                           ref={marker => this.markerRefs[loc.id] = marker}

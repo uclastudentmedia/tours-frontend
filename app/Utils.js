@@ -45,41 +45,31 @@ export function feetCalc(lat,long,curLat,curLong){
     return FeetConverter(haversine([lat,long],[curLat,curLong]));
 }
 
+export function inRegion(region, latitude, longitude) {
+
+  //create rectangular area
+  const minLat = region.latitude  - (region.latitudeDelta  / 2);
+  const maxLat = region.latitude  + (region.latitudeDelta  / 2);
+  const minLon = region.longitude - (region.longitudeDelta / 2);
+  const maxLon = region.longitude + (region.longitudeDelta / 2);
+
+  return (
+    latitude  > minLat &&
+    latitude  < maxLat &&
+    longitude > minLon &&
+    longitude < maxLon
+  );
+}
+
 export function popPrioritize(region, categoryName = 'All'){
     const locations = GetLocationList();
     if(!locations) {
         return [];
     }
 
-    const {
-      latitude,
-      longitude,
-      latitudeDelta,
-      longitudeDelta
-    } = region;
-
-    //create rectangular area
-    const topLeftCor = {
-        lat:latitude-(latitudeDelta/2),
-        long:longitude+(longitudeDelta/2)
-    };
-    const bottomRight = {
-        lat:latitude+(latitudeDelta/2),
-        long:longitude-(longitudeDelta/2)
-    };
-
     //filter out locations outside of viewport
-    var locInView = locations.filter(function(loc){
-        if(loc.long > topLeftCor.long ||
-            loc.long < bottomRight.long ||
-            loc.lat > bottomRight.lat ||
-            loc.lat < topLeftCor.lat)
-        {
-            return false;
-        }
-        else {
-            return true;
-        }
+    var locInView = locations.filter(loc => {
+      return inRegion(region, loc.lat, loc.long);
     });
 
     //check if category filter exists, if it doesn't, set category to all
