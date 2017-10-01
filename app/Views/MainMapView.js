@@ -170,9 +170,12 @@ export default class MainMapView extends Component {
           title: 'Find a Location',
           goBack: false,
           data: this.locationNames,
-          onResultSelect: name => navigation.navigate('Details', {
-            location: GetLocationByName(name)
-          }),
+          onResultSelect: function(name) {
+            navigation.navigate('Details', {
+              location: GetLocationByName(name),
+              goBackFrom: this.props.navigation.state.key // `this` is binded to SearchView
+            })
+          }
         });
     }
 

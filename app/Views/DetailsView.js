@@ -23,6 +23,7 @@ export default class DetailsView extends Component
       state: PropTypes.shape({
         params: PropTypes.shape({
           location: PropTypes.instanceOf(Location).isRequired,
+          goBackFrom: PropTypes.string,
         })
       })
     }),
@@ -42,6 +43,7 @@ export default class DetailsView extends Component
       results: '',
     }
     this.location = props.navigation.state.params.location;
+    this.goBackFrom = props.navigation.state.params.goBackFrom;
 
     if (this.location.images.length != 0) {
       this.displayImage = { uri: this.location.images[0].display };
@@ -54,8 +56,9 @@ export default class DetailsView extends Component
   showLocationOnMap = () => {
     PubSub.publish('DetailsView.showLocationOnMap', this.location);
 
+    this.props.navigation.goBack(this.goBackFrom || null);
+
     // https://github.com/react-community/react-navigation/issues/1127
-    this.props.navigation.goBack();
     setTimeout(() => {
       this.props.navigation.navigate('MainMap');
     }, 0);
