@@ -91,8 +91,6 @@ export default class MainMapView extends Component {
             position: this.GPSManager.getPosition()
           });
         });
-
-        this.updateMapIcons();
     }
 
     componentWillUnmount(){
@@ -368,6 +366,7 @@ export default class MainMapView extends Component {
                     showsIndoors={false}
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
+                    onMapReady={this.updateMapIcons}
                 >
                     {position && inRegion(region, position.latitude, position.longitude) ?
                       <MapView.Marker
@@ -375,6 +374,7 @@ export default class MainMapView extends Component {
                           coordinate={this.state.position}
                           rotation={this.getCompassDirection()}
                           anchor={{x: 0.5, y: 0.5}}
+                          style={{zIndex: 1}}
                       />
                     : null}
                     {this.renderLocationAccuracyCircle()}
