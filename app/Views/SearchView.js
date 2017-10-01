@@ -7,7 +7,7 @@ import {
     TouchableHighlight
 } from 'react-native';
 
-import fuzzy from 'fuzzy';
+import Fuse from 'fuse.js';
 import SearchBar from 'react-native-searchbar';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -71,28 +71,32 @@ export default class SearchView extends Component {
     this.state = {
       results: this.defaultResults.slice(0, this.maxResults)
     };
+
+    this.fuse = new Fuse(this.data, {
+      shouldSort: true,
+      threshold: 0.4,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 64,
+      minMatchCharLength: 2,
+    });
   }
 
   handleSearch = (input) => {
-
     if (input == '') {
       this.setState({
         results: this.defaultResults.slice(0, this.maxResults)
       });
     }
     else {
-      const results = this.searchByName(input);
+      const results = this.fuse.search(input)
+                          .slice(0, this.maxResults)
+                          .map(idx => this.data[idx]);
+
       this.setState({
-        results: results.slice(0, this.maxResults)
+        results: results
       });
     }
-  }
-
-  searchByName = (input) => {
-
-    const results = fuzzy.filter(input, this.data);
-
-    return results.map(result => result.original);
   }
 
   handleOnResultSelect(loc) {
@@ -114,7 +118,7 @@ export default class SearchView extends Component {
             showOnLoad
             hideBack={true}
             heightAdjust={-10}
-            focusOnLayout={false}
+            focusOnLayout={true}
             autoCorrect={false}
           />
 
