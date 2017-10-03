@@ -25,6 +25,7 @@ import {
 import GPSManager from 'app/GPSManager';
 import {
   GetLocationList,
+  GetIndoorBuildingById,
   GetLocationByName,
   RouteTBT,
 } from 'app/DataManager';
@@ -56,6 +57,7 @@ export default class DirectionsView extends Component
       error: null,
       dataSource: this.ds.cloneWithRows([]),
       loading: false,
+      endLocation: null,
     };
 
     this.locationNames = GetLocationList()
@@ -110,6 +112,24 @@ export default class DirectionsView extends Component
       }),
     });
   }
+
+  selectEndRoom = () => {
+      let building = GetIndoorBuildingById(this.state.endLocation.id);
+    if (!building) {
+      this.setState({
+        error: 'Select a end location first.'
+      });
+      return;
+    }
+    this.props.navigation.navigate('Search', {
+      title: 'Select end room',
+      data: building.pois,
+      onResultSelect: name => this.setState({
+        endRoom: name,
+      })
+    });
+    }
+
 
   showRouteOnMap = () => {
     const {
@@ -173,6 +193,7 @@ export default class DirectionsView extends Component
       endLocation,
       error,
       loading,
+      endRoom,
     } = this.state;
 
     return (
@@ -196,13 +217,6 @@ export default class DirectionsView extends Component
             }
         />
 
-        { this.trip &&
-            <Button
-              title={"Show route on map"}
-              onPress={this.showRouteOnMap}
-            />
-        }
-
         <Button
           title={"Select start location"}
           onPress={this.searchStartLocation}
@@ -213,9 +227,15 @@ export default class DirectionsView extends Component
           onPress={this.searchEndLocation}
         />
 
+        { (endLocation) && (GetIndoorBuildingById(this.state.endLocation.id).pois) ?
+        <Button
+          title={"Select end room"}
+          onPress={this.selectEndRoom}
+        />
+        : null }
         <View style={{marginBottom: 10}}>
           <Text>From: {startLocation ? startLocation.name : ''}</Text>
-          <Text>To: {endLocation ? endLocation.name : ''}</Text>
+          <Text>To: {endLocation ? endLocation.name : ''} {endRoom}</Text>
           <View style={{marginTop: 10}}>
             <Button
               title='Get Directions'
@@ -257,10 +277,11 @@ export default class DirectionsView extends Component
         let directions = [];
         if (data && !data.error) {
           error = null;
-          directions = data.trip.legs[0].maneuvers;
+            directions = data.trip.legs[0].maneuvers;
         }
 
         this.trip = data.trip;
+        this.showRouteOnMap();
 
         this.setState({
           error: error,
