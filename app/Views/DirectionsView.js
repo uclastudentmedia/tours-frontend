@@ -35,7 +35,6 @@ import {
   DirectionsStyle
 } from 'app/css';
 
-
 export default class DirectionsView extends Component
 {
 

@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Button,
+  Dimensions,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
@@ -15,6 +16,8 @@ import GPSManager from 'app/GPSManager';
 
 import { GetIcon, logo } from 'app/Assets';
 import { DetailStyle } from 'app/css';
+
+var {height, width} = Dimensions.get('window');
 
 export default class DetailsView extends Component
 {
@@ -46,7 +49,14 @@ export default class DetailsView extends Component
     this.goBackFrom = props.navigation.state.params.goBackFrom;
 
     if (this.location.images.length != 0) {
-      this.displayImage = { uri: this.location.images[0].display };
+        if(width >= 700)
+        {
+            this.displayImage = { uri: this.location.images[0].original }
+        }
+        else
+        {
+            this.displayImage = { uri: this.location.images[0].display };
+        }
     }
     else {
       this.displayImage = logo;
