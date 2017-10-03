@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Button,
+  Dimensions,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
