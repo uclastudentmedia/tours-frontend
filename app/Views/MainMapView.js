@@ -283,6 +283,7 @@ export default class MainMapView extends Component {
 
       return (
         <MapView.Circle
+            key={(position.longitude + position.latitude + position.accuracy).toString()}
             center={position}
             radius={position.accuracy}
             strokeColor={'#246dd5'}
