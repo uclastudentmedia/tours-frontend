@@ -343,17 +343,17 @@ export default class MainMapView extends Component {
 
                 <TouchableOpacity onPress={this.openSearchMenu}
                   style={[styles.mapViewBtn, styles.searchBtn]}>
-                    <MaterialsIcon color='#2af' size={24} name={'search'}/>
+                    <MaterialsIcon color='#ffffff' size={24} name={'search'}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.zoomToCurrentLocation}
                   style={[styles.mapViewBtn, styles.myLocationBtn]}>
-                    <MaterialsIcon color='#2af' size={24} name={'near-me'}/>
+                    <MaterialsIcon color='#ffffff' size={24} name={'near-me'}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.zoomToCampus}
                   style={[styles.mapViewBtn, styles.zoomToCampusBtn]}>
-                    <MaterialsIcon color='#2af' size={24} name={'zoom-out-map'}/>
+                    <MaterialsIcon color='#ffffff' size={24} name={'zoom-out-map'}/>
                 </TouchableOpacity>
 
                 <MapView style={styles.map}

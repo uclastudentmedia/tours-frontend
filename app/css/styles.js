@@ -234,7 +234,9 @@ export default StyleSheet.create({
         height: 30,
         width: 30,
         borderRadius: 15,
-        borderWidth: 2,
+        borderWidth: 1,
+        backgroundColor: '#246dd5', 
+        borderColor: '#ffffff',
     },
     myLocationBtn: {
         bottom: 30,
