@@ -265,6 +265,10 @@ export default StyleSheet.create({
         backgroundColor: '#246dd5', 
         borderColor: '#ffffff'
     },
+    toggleDirectionsBtn: {
+        bottom: 130,
+        right: 30,
+    },
     flexRow: {
         flex: 1,
         flexDirection: 'row',
@@ -273,7 +277,6 @@ export default StyleSheet.create({
 //Below: Edits the directions searchbar on MainMapView
 //Container
     directionsBar:{
-        top: 0,
         position: 'absolute',
         backgroundColor: "#246dd5",
         width: width,
