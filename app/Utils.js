@@ -87,13 +87,8 @@ export function popPrioritize(region, categoryName = 'All'){
         results = locInView.filter(loc => loc.category_id == category.id);
     }
 
-    //check if category is parking, if so reverse priority (most obscure parking lots to most popular parking lots)
-    if(categoryName === 'Parking'){
-        results = results.sort(function(a,b){return b.priority-a.priority;});
-    }
-    else {
-        results = results.sort(function(a,b){return a.priority-b.priority;});
-    }
+    // sort by priority
+    results = results.sort((a,b) => a.priority-b.priority);
 
     return results;
 }
