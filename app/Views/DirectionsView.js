@@ -207,9 +207,9 @@ export default class DirectionsView extends Component
 
     Animated.spring(this.state.translateYValue, {
       toValue: toValue,
-      velocity: 3,
-      tension: 2,
-      friction: 8
+      //velocity: 3,
+      //tension: 2,
+      //friction: 8
     }).start();
   }
 
