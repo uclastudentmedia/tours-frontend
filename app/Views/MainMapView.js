@@ -9,6 +9,7 @@ import {
     ListView,
     TouchableWithoutFeedback,
     TouchableOpacity,
+    Text
 } from 'react-native';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -341,10 +342,13 @@ export default class MainMapView extends Component {
         return (
             <View style={styles.container}>
 
-                <TouchableOpacity onPress={this.openSearchMenu}
-                  style={[styles.mapViewBtn, styles.searchBtn]}>
-                    <MaterialsIcon color='#ffffff' size={24} name={'search'}/>
-                </TouchableOpacity>
+                <View style={styles.searchBar}>
+                  <Text style={[styles.baseText, {margin: 15, fontSize: 20, left:10,textAlign:'left', color:'#ffffff'}]}>UCLA Map</Text>
+                  <TouchableOpacity onPress={this.openSearchMenu}
+                    style={[styles.mapViewSearchBtn, styles.searchBtn]}>
+                      <MaterialsIcon color='#ffffff' size={30} name={'search'}/>
+                  </TouchableOpacity>
+                </View>
 
                 <TouchableOpacity onPress={this.zoomToCurrentLocation}
                   style={[styles.mapViewBtn, styles.myLocationBtn]}>

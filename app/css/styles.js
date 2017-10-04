@@ -16,7 +16,13 @@ const windowWidth = Dimensions.get('window').width;
 export default StyleSheet.create({
     baseText:{
         fontFamily: Platform.select({
-          android: 'sans-serif-thin',
+          android: 'sans-serif',
+          ios: 'Helvetica-Light',
+        })
+    },
+    titleText:{
+        fontFamily: Platform.select({
+          android: 'sans-serif',
           ios: 'Helvetica-Light',
         })
     },
@@ -234,17 +240,41 @@ export default StyleSheet.create({
         height: 30,
         width: 30,
         borderRadius: 15,
-        borderWidth: 1,
+        paddingTop: 2.5,
+        paddingLeft:2.5,
+        // borderWidth: 1,
         backgroundColor: '#246dd5', 
-        borderColor: '#ffffff',
+        // borderColor: '#ffffff',
+        shadowOffset: { width: 10, height: 10 },
+        shadowColor: 'black',
+        shadowOpacity: 1,
+        elevation: 3
+    },
+    mapViewSearchBtn: {
+        position: 'absolute',
+        height: 30,
+        width: 30,
+        borderRadius: 15,
+        backgroundColor: '#246dd5', 
+    },
+    searchBar: {
+        position: 'absolute',
+        top: 0,
+        height: 60,
+        width: width,
+        backgroundColor: '#246dd5', 
+        shadowOffset: { width: 10, height: 10 },
+        shadowColor: 'black',
+        shadowOpacity: 1,
+        elevation: 3
     },
     myLocationBtn: {
         bottom: 30,
         right: 30,
     },
     searchBtn: {
-        top: 30,
-        right: 30,
+        top: 15,
+        right: 25,
     },
     zoomToCampusBtn: {
         bottom: 80,
