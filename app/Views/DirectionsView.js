@@ -10,6 +10,7 @@ import {
   ListView,
   Button,
   TouchableOpacity,
+  TouchableHighlight,
   ActivityIndicator,
 } from 'react-native';
 import PubSub from 'pubsub-js';
@@ -114,6 +115,7 @@ export default class DirectionsView extends Component
   }
 
   selectEndRoom = () => {
+    if (!this.state.endLocation) return;
       let building = GetIndoorBuildingById(this.state.endLocation.id);
     if (!building) {
       this.setState({
@@ -217,37 +219,46 @@ export default class DirectionsView extends Component
             }
         />
 
-        <Button
-          title={"Select start location"}
-          onPress={this.searchStartLocation}
-        />
+        <View style={styles.directionsBar}>
 
-        <Button
-          title={"Select end location"}
-          onPress={this.searchEndLocation}
-        />
+          <TouchableHighlight
+            style={styles.directionsBtnTop}
+            onPress={this.searchStartLocation}
+          >
+            <Text style={styles.directionsText}>Search from</Text>
+          </TouchableHighlight>
 
-        { (endLocation) && (GetIndoorBuildingById(this.state.endLocation.id).pois) ?
-        <Button
-          title={"Select end room"}
-          onPress={this.selectEndRoom}
-        />
-        : null }
-        <View style={{marginBottom: 10}}>
-          <Text>From: {startLocation ? startLocation.name : ''}</Text>
-          <Text>To: {endLocation ? endLocation.name : ''} {endRoom}</Text>
-          <View style={{marginTop: 10}}>
-            <Button
-              title='Get Directions'
-              onPress={this.getDirections.bind(this)}
-            />
+          <TouchableHighlight
+            style={styles.directionsBtnBot}
+            onPress={this.searchEndLocation}
+          >
+            <Text style={styles.directionsText}>Search destination</Text>
+          </TouchableHighlight>
+
+          { (endLocation) && (GetIndoorBuildingById(this.state.endLocation.id).pois) ?
+          <TouchableHighlight
+            style={styles.directionsBtnBot}
+            onPress={this.selectEndRoom}
+          >
+            <Text style={styles.directionsText}>Select end room</Text>
+          </TouchableHighlight>
+          : null }
+          <View style={{marginBottom: 10}}>
+            <Text>From: {startLocation ? startLocation.name : ''}</Text>
+            <Text>To: {endLocation ? endLocation.name : ''} {endRoom}</Text>
+            <View style={{marginTop: 10}}>
+              <Button
+                title='Get Directions'
+                onPress={this.getDirections.bind(this)}
+              />
+            </View>
           </View>
-        </View>
 
-        <Button
-          title={"Clear"}
-          onPress={this.clear}
-        />
+          <Button
+            title={"Clear"}
+            onPress={this.clear}
+          />
+        </View>
 
       </View>
     );

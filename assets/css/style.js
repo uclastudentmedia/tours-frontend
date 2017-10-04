@@ -1,24 +1,19 @@
-'use strict';
-
 /**
  * Created by Daniel on 2/3/2017.
  */
-import React from 'react';
+const React = require("react-native");
 import {
     StyleSheet,
-    Dimensions,
-    Platform,
-} from 'react-native';
+    Dimensions
+} from "react-native";
+import MapView from 'react-native-maps'
 
-const {height, width} = Dimensions.get('window');
-const windowWidth = Dimensions.get('window').width;
+var {height, width} = Dimensions.get('window');
+var windowWidth = Dimensions.get('window').width;
 
-export default StyleSheet.create({
+module.exports = StyleSheet.create({
     baseText:{
-        fontFamily: Platform.select({
-          android: 'sans-serif-thin',
-          ios: 'Helvetica-Light',
-        })
+        fontFamily:'sans-serif-thin'
     },
     container: {
         flex: 1,
@@ -26,7 +21,15 @@ export default StyleSheet.create({
         justifyContent:'flex-end',
         backgroundColor: 'white',
         width:width,
-        height:height,
+        height:height
+    },
+    dirContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent:'flex-end',
+        backgroundColor: '#EEEEEE',
+        width:width,
+        height:height
     },
     loadMapContainer: {
         flex: 1,
@@ -46,9 +49,8 @@ export default StyleSheet.create({
         color:'white',
     },
     map: {
-        height: height,
-        width: width,
-        zIndex: -1,
+        height: (height * 0.9),
+        width: width
     },
     instructions: {
         textAlign: 'center',
@@ -71,20 +73,6 @@ export default StyleSheet.create({
     locations:{
         width: width - 40
     },
-    locList:{
-        flex:1,
-        width:width
-    },
-    locListIcon: {
-        flex: 1,
-        maxWidth: 40,
-        alignSelf: 'center'
-    },
-    listHeader:{
-        flex:4,
-        width:width
-    }
-    ,
     distText:{
         fontSize:16,
         color: '#B8B8B8'
@@ -94,21 +82,9 @@ export default StyleSheet.create({
         color: '#B8B8B8'
     },
     locText:{
-        padding:0,
-        fontSize:25,
-        color: '#5b73a4',
-    },
-    listItemText:{
-        padding:5,
-        flex: 1,
-    },
-    listItemBorder:{
-        borderBottomWidth: 1,
-        borderColor: '#dddddd',
-    },
-    listItemContainer: {
-        flex: 1,
-        flexDirection: 'row',
+        padding:20,
+        fontSize:18,
+        color: '#5b73a4'
     },
     loadingLocText:{
         paddingTop: 20,
@@ -121,8 +97,6 @@ export default StyleSheet.create({
         width: 40
     },
     separator: {
-        width:width*.9,
-        paddingLeft:width*.025,
         height: 1,
         backgroundColor: '#dddddd'
     },
@@ -163,12 +137,9 @@ export default StyleSheet.create({
         top: 40
     },
     wrapper: {
-        flex:1,
         flexWrap: 'wrap',
         alignItems: 'flex-start',
-        flexDirection:'row',
-        width:width,
-        padding: 5
+        flexDirection:'row'
     },
     btnContainer: {
         flex: 1,
@@ -179,11 +150,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         width: windowWidth,
         backgroundColor:'#dddddd',
-        padding:0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        top: 0,
-        bottom: 0
+        padding:2
     },
     handlerText: {
         color: 'white',
@@ -216,71 +183,5 @@ export default StyleSheet.create({
     },
     slideContainer: {
         paddingRight: 359
-    },
-    buttonContainer: {
-        flex: 1,
-        marginTop: 20,
-    },
-    errorText: {
-        color: '#d61414',
-        fontSize: 22,
-    },
-    warningText: {
-        color: '#ffbf00',
-        fontSize: 22,
-    },
-    mapViewBtn: {
-        position: 'absolute',
-        height: 30,
-        width: 30,
-        borderRadius: 15,
-        borderWidth: 1,
-        backgroundColor: '#246dd5', 
-        borderColor: '#ffffff',
-    },
-    myLocationBtn: {
-        bottom: 30,
-        right: 30,
-    },
-    searchBtn: {
-        top: 30,
-        right: 30,
-    },
-    zoomToCampusBtn: {
-        bottom: 80,
-        right: 30,
-    },
-    flexRow: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    directionsBar:{
-        top: 0,
-        position: 'absolute',
-        backgroundColor: "#246dd5",
-        width: width,
-        alignItems: 'center'
-    },
-    directionsBtnTop:{
-        backgroundColor: '#ffffff',
-        borderRadius: 5,
-        height: 30,
-        width: width - 10,
-        marginTop: 10,
-        marginBottom: 5
-    },
-    directionsBtnBot:{
-        backgroundColor: '#ffffff',
-        borderRadius: 5,
-        height: 30,
-        width: width - 10,
-        marginTop: 5,
-        marginBottom: 10
-    },    
-    directionsText:{
-        marginTop: 5,
-        marginLeft: 10,
-        fontSize: 17
     }
 });
