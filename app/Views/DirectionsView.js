@@ -252,14 +252,18 @@ export default class DirectionsView extends Component
             style={styles.directionsBtnTop}
             onPress={this.searchStartLocation}
           >
-            <Text style={styles.directionsText}>Search from</Text>
+            <Text style={styles.directionsText}>
+              {startLocation ? startLocation.name : 'Search from'}
+            </Text>
           </TouchableHighlight>
 
           <TouchableHighlight
             style={styles.directionsBtnBot}
             onPress={this.searchEndLocation}
           >
-            <Text style={styles.directionsText}>Search destination</Text>
+            <Text style={styles.directionsText}>
+              {endLocation ? endLocation.name : 'Search destination'} {endRoom}
+            </Text>
           </TouchableHighlight>
 
           { endLocation && endLocation.indoor_nav ?
@@ -271,8 +275,6 @@ export default class DirectionsView extends Component
             </TouchableHighlight>
           : null }
           <View style={{marginBottom: 10}}>
-            <Text>From: {startLocation ? startLocation.name : ''}</Text>
-            <Text>To: {endLocation ? endLocation.name : ''} {endRoom}</Text>
             <View style={{marginTop: 10}}>
               <Button
                 title='Get Directions'
