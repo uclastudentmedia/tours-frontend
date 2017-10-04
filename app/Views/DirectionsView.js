@@ -250,7 +250,7 @@ export default class DirectionsView extends Component
         <Animated.View style={[styles.directionsBar, {top: translateYValue}]}>
 
           <TouchableHighlight
-            style={[styles.directionsBtnTop, styles.directionBtnColor]}
+            style={[styles.directionsBtnTop, styles.directionsBtnColor]}
             onPress={this.searchStartLocation}
           >
             <Text style={styles.directionsText}>
@@ -259,7 +259,7 @@ export default class DirectionsView extends Component
           </TouchableHighlight>
 
           <TouchableHighlight
-            style={[styles.directionsBtnBot, styles.directionBtnColor]}
+            style={[styles.directionsBtnBot, styles.directionsBtnColor]}
             onPress={this.searchEndLocation}
           >
             <Text style={styles.directionsText}>
@@ -269,7 +269,7 @@ export default class DirectionsView extends Component
 
           { endLocation && endLocation.indoor_nav ?
             <TouchableHighlight
-              style={[styles.directionsBtnBot, styles.directionBtnColor]}
+              style={[styles.directionsBtnBot, styles.directionsBtnColor]}
               onPress={this.selectEndRoom}
             >
               <Text style={styles.directionsText}>Select end room</Text>
