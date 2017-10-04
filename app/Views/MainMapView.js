@@ -343,10 +343,10 @@ export default class MainMapView extends Component {
             <View style={styles.container}>
 
                 <View style={styles.searchBar}>
-                  <Text style={[styles.baseText, {margin: 15, fontSize: 20, left:10,textAlign:'left', color:'#ffffff'}]}>UCLA Map</Text>
+                  <Text style={[styles.baseText, styles.titleText]}>UCLA Map</Text>
                   <TouchableOpacity onPress={this.openSearchMenu}
                     style={[styles.mapViewSearchBtn, styles.searchBtn]}>
-                      <MaterialsIcon color='#ffffff' size={30} name={'search'}/>
+                      <MaterialsIcon color='#cccccc' size={30} name={'search'}/>
                   </TouchableOpacity>
                 </View>
 

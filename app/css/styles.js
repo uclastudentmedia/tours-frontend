@@ -21,10 +21,27 @@ export default StyleSheet.create({
         })
     },
     titleText:{
-        fontFamily: Platform.select({
-          android: 'sans-serif',
-          ios: 'Helvetica-Light',
-        })
+        // fontWeight: Platform.select({
+        //   ios: 'bold',
+        // }),
+        color: Platform.select({
+          android: '#ffffff',
+          ios: '#246dd5',
+        }),
+        textAlign: Platform.select({
+          android: 'left',
+          ios: 'center',
+        }),
+        left: Platform.select({
+          android: 10,
+          ios: 0,
+        }),
+        top: Platform.select({
+          android: 0,
+          ios: 10,
+        }),
+        margin: 15, 
+        fontSize: 20, 
     },
     container: {
         flex: 1,
@@ -245,24 +262,35 @@ export default StyleSheet.create({
         // borderWidth: 1,
         backgroundColor: '#246dd5', 
         // borderColor: '#ffffff',
-        shadowOffset: { width: 0, height: 5 },
-        shadowColor: '#999999',
-        shadowOpacity: 1,
-        elevation: 3
+        shadowOffset: { width: 0, height: 3 },
+        shadowColor: '#eeeeee',
+        shadowOpacity: 0.5,
+        elevation: 3,
+        overflow: 'hidden',
     },
     mapViewSearchBtn: {
+        backgroundColor: Platform.select({
+          android: '#246dd5',
+          ios: '#ffffff',
+        }),
         position: 'absolute',
         height: 30,
         width: 30,
         borderRadius: 15,
-        backgroundColor: '#246dd5', 
+        marginTop: Platform.select({
+          android: 0,
+          ios: 10,
+        }),
     },
     searchBar: {
+        backgroundColor: Platform.select({
+          android: '#246dd5',
+          ios: '#ffffff',
+        }),
         position: 'absolute',
         top: 0,
         height: 60,
         width: width,
-        backgroundColor: '#246dd5', 
         shadowOffset: { width: 0, height: 5 },
         shadowColor: '#999999',
         shadowOpacity: 1,

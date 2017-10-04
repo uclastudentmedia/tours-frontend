@@ -18,6 +18,6 @@ export default StyleSheet.create({
 
   },
   tabbar: {
-    backgroundColor: '#246dd5',
+    backgroundColor: '#ffffff',
   }
 });

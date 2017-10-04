@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import {
   Platform,
+  Image,
 } from 'react-native';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { TabNavigator, StackNavigator } from 'react-navigation';
@@ -42,7 +43,7 @@ function makeIcon(name) {
 class MainMapScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Maps',
-    tabBarIcon: makeIcon('map')
+    tabBarIcon: <Image source={require('../assets/app_assets/tab_navigator_icons/mapsclickedArtboard1.png')} />
   };
 
   render() {
@@ -106,8 +107,8 @@ const MainScreenNavigator = TabNavigator(
   {
     tabBarPosition: 'bottom',
     tabBarOptions: {
-      activeTintColor: '#fff',
-      inactiveTintColor: '#b3b3b3',
+      activeTintColor: '#246dd5',
+      inactiveTintColor: '#cccccc',
       showIcon: true,
       showLabel: true,
       tabStyle: AppStyle.tab,
