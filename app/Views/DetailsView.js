@@ -98,7 +98,7 @@ export default class DetailsView extends Component
           />
 
           <Text style={DetailStyle.dist}>
-              {Math.round(this.location.FeetAway(position)/264 * 100) / 100} walking minutes away
+              {Math.ceil(this.location.FeetAway(position)/264)} walking minutes away
           </Text>
 
           <Button title='Show on map' onPress={this.showLocationOnMap} />

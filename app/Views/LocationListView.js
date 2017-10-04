@@ -17,7 +17,7 @@ import PubSub from 'pubsub-js';
 import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import GPSManager from 'app/GPSManager';
 import { GetLocationList } from 'app/DataManager';
-import {popPrioritize} from 'app/Utils'
+import { popPrioritize, DistanceAwayText } from 'app/Utils'
 
 import { GetIcon } from 'app/Assets';
 import { styles } from 'app/css';
@@ -152,7 +152,7 @@ export default class LocationListView extends Component
                                       {loc.name}{'\n'}
                                   </Text>
                                   <Text style={styles.distText}>
-                                      {loc.FeetAway(position)} feet away
+                                      {DistanceAwayText(loc.FeetAway(position))}
                                   </Text>
                               </Text>
                           </View>

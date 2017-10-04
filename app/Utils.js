@@ -12,6 +12,11 @@ import { GetLocationList, GetCategoryByName } from 'app/DataManager';
 import { GetIcon } from 'app/Assets';
 import { styles } from 'app/css';
 
+// conversions
+function km2ft(km) { return km * 3280.84; }
+function mi2ft(mi) { return mi * 5280; }
+function ft2mi(ft) { return ft / 5280; }
+
 export function feetCalc(lat,long,curLat,curLong){
     // haversine :: (Num, Num) -> (Num, Num) -> Num
     let haversine = ([lat1, lon1], [lat2, lon2]) => {
@@ -40,9 +45,8 @@ export function feetCalc(lat,long,curLat,curLong){
             ) / 100;
     };
 
-    // Return in feet (converts km to ft)
-    function FeetConverter(km){return km * 3280.84;}
-    return FeetConverter(haversine([lat,long],[curLat,curLong]));
+    // Return in feet
+    return km2ft(haversine([lat,long],[curLat,curLong]));
 }
 
 export function inRegion(region, latitude, longitude) {
@@ -158,4 +162,17 @@ export function DecodePolyline(str, precision) {
     }
 
     return coordinates;
+}
+
+export function DistanceAwayText(feetAway) {
+  if (feetAway <= mi2ft(0.4)) { // ~2000 ft
+    feetAway = Math.round(feetAway/10) * 10; // round to 10's
+    return `${feetAway} feet away`;
+  }
+  else {
+    // convert to miles
+    let milesAway = ft2mi(feetAway);
+    milesAway = milesAway.toFixed(1); // round to 0.1's
+    return `${milesAway} miles away`;
+  }
 }
