@@ -40,6 +40,9 @@ export default class IndoorNavigationView extends Component
       error: null,
       imageDataSource: this.ds.cloneWithRows([]),
       loading: false,
+      building: null,
+      startRoom: null,
+      endRoom: null,
       //building: this.buildings[0],
       //startRoom: 'B105',
       //endRoom: '2410',
@@ -54,7 +57,9 @@ export default class IndoorNavigationView extends Component
       title: 'Select building',
       data: this.buildingNames,
       onResultSelect: name => this.setState({
-        building: GetIndoorBuildingByName(name)
+        building: GetIndoorBuildingByName(name),
+        startRoom: null,
+        endRoom: null,
       })
     });
   }
