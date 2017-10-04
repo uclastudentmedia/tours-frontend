@@ -245,8 +245,8 @@ export default StyleSheet.create({
         // borderWidth: 1,
         backgroundColor: '#246dd5', 
         // borderColor: '#ffffff',
-        shadowOffset: { width: 10, height: 10 },
-        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 5 },
+        shadowColor: '#999999',
         shadowOpacity: 1,
         elevation: 3
     },
@@ -263,10 +263,16 @@ export default StyleSheet.create({
         height: 60,
         width: width,
         backgroundColor: '#246dd5', 
-        shadowOffset: { width: 10, height: 10 },
-        shadowColor: 'black',
+        shadowOffset: { width: 0, height: 5 },
+        shadowColor: '#999999',
         shadowOpacity: 1,
-        elevation: 3
+        elevation: 5
+    },
+    ScrollViewBottom: {
+        marginBottom: Platform.select({
+          android: 0,
+          ios: 220,
+        })
     },
     myLocationBtn: {
         bottom: 30,

@@ -122,7 +122,7 @@ export default class SearchView extends Component {
             autoCorrect={false}
           />
 
-          <ScrollView>
+          <ScrollView style={styles.ScrollViewBottom}>
             <View style={{marginTop: 50, marginBottom: 15}}/>
             {
               this.dataWithIcons.map((item, i) => (
