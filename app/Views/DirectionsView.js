@@ -109,17 +109,24 @@ export default class DirectionsView extends Component
       title: 'Select end location',
       data: this.locationNames,
       onResultSelect: name => this.setState({
-        endLocation: GetLocationByName(name)
+        endLocation: GetLocationByName(name),
+        endRoom: null,
       }),
     });
   }
 
   selectEndRoom = () => {
-    if (!this.state.endLocation) return;
-      let building = GetIndoorBuildingById(this.state.endLocation.id);
+    const {
+      endLocation
+    } = this.state;
+    if (!endLocation) {
+      return;
+    }
+
+    let building = GetIndoorBuildingById(endLocation.id);
     if (!building) {
       this.setState({
-        error: 'Select a end location first.'
+        error: 'Indoor navigation not supported for this building.'
       });
       return;
     }
@@ -136,10 +143,11 @@ export default class DirectionsView extends Component
   showRouteOnMap = () => {
     const {
       startLocation,
-      endLocation
+      endLocation,
+      polyline,
     } = this.state;
 
-    let polyline = DecodePolyline(this.trip.legs[0].shape).map(coord => ({
+    let polylineCoords = DecodePolyline(polyline).map(coord => ({
       latitude: coord[0],
       longitude: coord[1]
     }));
@@ -154,10 +162,10 @@ export default class DirectionsView extends Component
     };
 
     // connect to the map icons
-    polyline = [].concat(startCoords, polyline, endCoords);
+    polylineCoords = [].concat(startCoords, polyline, endCoords);
 
     PubSub.publish('DirectionsView.showRouteOnMap', {
-      polyline: polyline,
+      polyline: polylineCoords,
       startLocation: startLocation,
       endLocation: endLocation,
     });
@@ -170,8 +178,8 @@ export default class DirectionsView extends Component
       startLocation: null,
       endLocation: null,
       dataSource: this.ds.cloneWithRows([]),
+      polyline: null,
     });
-    this.trip = null;
     PubSub.publish('DirectionsView.clearRoute');
   }
 
@@ -212,7 +220,7 @@ export default class DirectionsView extends Component
                 <TouchableOpacity style={styles.wrapper}>
                     <View style={styles.wrapper}>
                         <Text style={[styles.baseText, styles.locText]}>
-                          {rowData.verbal_pre_transition_instruction}
+                          {rowData.instruction}
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -235,13 +243,13 @@ export default class DirectionsView extends Component
             <Text style={styles.directionsText}>Search destination</Text>
           </TouchableHighlight>
 
-          { (endLocation) && (GetIndoorBuildingById(this.state.endLocation.id).pois) ?
-          <TouchableHighlight
-            style={styles.directionsBtnBot}
-            onPress={this.selectEndRoom}
-          >
-            <Text style={styles.directionsText}>Select end room</Text>
-          </TouchableHighlight>
+          { endLocation && endLocation.indoor_nav ?
+            <TouchableHighlight
+              style={styles.directionsBtnBot}
+              onPress={this.selectEndRoom}
+            >
+              <Text style={styles.directionsText}>Select end room</Text>
+            </TouchableHighlight>
           : null }
           <View style={{marginBottom: 10}}>
             <Text>From: {startLocation ? startLocation.name : ''}</Text>
@@ -277,6 +285,20 @@ export default class DirectionsView extends Component
       return;
     }
 
+    // same start and end location
+    if (startLocation.id === endLocation.id) {
+      const directions = [{
+        instruction: 'You have arrived at your destination.'
+      }];
+      this.setState({
+        error: null,
+        dataSource: this.ds.cloneWithRows(directions),
+        loading: false,
+        polyline: "",
+      });
+      return;
+    }
+
     // begin directions request
     this.setState({ loading: true });
 
@@ -286,17 +308,19 @@ export default class DirectionsView extends Component
       .then(data => {
         let error = data.error;
         let directions = [];
+        let polyline = "";
         if (data && !data.error) {
           error = null;
-            directions = data.trip.legs[0].maneuvers;
+          directions = data.trip.legs[0].maneuvers;
+          polyline = data.trip.legs[0].shape;
         }
 
-        this.trip = data.trip;
         this.showRouteOnMap();
 
         this.setState({
           error: error,
           dataSource: this.ds.cloneWithRows(directions),
+          polyline: polyline,
           loading: false,
         });
       })
