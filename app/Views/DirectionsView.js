@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
@@ -37,6 +38,9 @@ import {
   DirectionsStyle
 } from 'app/css';
 
+const HIDDEN_PX = -300;
+const VISIBLE_PX = 0;
+
 export default class DirectionsView extends Component
 {
 
@@ -59,6 +63,7 @@ export default class DirectionsView extends Component
       dataSource: this.ds.cloneWithRows([]),
       loading: false,
       endLocation: null,
+      translateYValue: new Animated.Value(HIDDEN_PX),
     };
 
     this.locationNames = GetLocationList()
@@ -197,6 +202,17 @@ export default class DirectionsView extends Component
     return null;
   }
 
+  SetVisible = (isVisible) => {
+    const toValue = isVisible ? VISIBLE_PX : HIDDEN_PX;
+
+    Animated.spring(this.state.translateYValue, {
+      toValue: toValue,
+      velocity: 3,
+      tension: 2,
+      friction: 8
+    }).start();
+  }
+
   render() {
     const {
       startLocation,
@@ -204,10 +220,12 @@ export default class DirectionsView extends Component
       error,
       loading,
       endRoom,
+      translateYValue,
     } = this.state;
 
     return (
-      <View style={DirectionsStyle.container}>
+        /*
+      <View>
 
         <Text style={styles.errorText}>{error}</Text>
 
@@ -226,8 +244,9 @@ export default class DirectionsView extends Component
                 </TouchableOpacity>
             }
         />
+        */
 
-        <View style={styles.directionsBar}>
+        <Animated.View style={[styles.directionsBar, {top: translateYValue}]}>
 
           <TouchableHighlight
             style={styles.directionsBtnTop}
@@ -266,9 +285,9 @@ export default class DirectionsView extends Component
             title={"Clear"}
             onPress={this.clear}
           />
-        </View>
+        </Animated.View>
 
-      </View>
+      //</View>
     );
   }
 

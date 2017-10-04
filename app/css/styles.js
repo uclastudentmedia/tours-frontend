@@ -250,13 +250,16 @@ export default StyleSheet.create({
         bottom: 80,
         right: 30,
     },
+    toggleDirectionsBtn: {
+        bottom: 130,
+        right: 30,
+    },
     flexRow: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },
     directionsBar:{
-        top: 0,
         position: 'absolute',
         backgroundColor: "#246dd5",
         width: width,

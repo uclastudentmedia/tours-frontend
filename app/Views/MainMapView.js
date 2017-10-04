@@ -27,6 +27,8 @@ import {
   GetLocationByName,
 } from 'app/DataManager';
 
+import { DirectionsView } from 'app/Views';
+
 import { Location } from 'app/DataTypes';
 
 import GPSManager from 'app/GPSManager';
@@ -74,8 +76,12 @@ export default class MainMapView extends Component {
             markerLocations: [],
             region: this.initialRegion,
             results: [],
-            route: {}
+            route: {},
+            directionsBarVisible: false,
         };
+
+
+
         this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
 
         this.markerRefs = {};
@@ -157,6 +163,15 @@ export default class MainMapView extends Component {
 
     zoomToCampus = () => {
         this.mapView.animateToRegion(this.initialRegion, 500);
+    }
+
+    toggleDirections = () => {
+      let visible = !this.state.directionsBarVisible;
+
+      this.setState({
+        directionsBarVisible: visible
+      });
+      this.directionsView.SetVisible(visible);
     }
 
     openSearchMenu = () => {
@@ -336,6 +351,7 @@ export default class MainMapView extends Component {
           position,
           region,
           markerLocations,
+          directionsBarVisible,
         } = this.state;
 
         return (
@@ -355,6 +371,15 @@ export default class MainMapView extends Component {
                   style={[styles.mapViewBtn, styles.zoomToCampusBtn]}>
                     <MaterialsIcon color='#ffffff' size={24} name={'zoom-out-map'}/>
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={this.toggleDirections}
+                  style={[styles.mapViewBtn, styles.toggleDirectionsBtn]}>
+                    <MaterialsIcon color='#ffffff' size={24} name={'directions'}/>
+                </TouchableOpacity>
+
+                <DirectionsView {...this.props}
+                    ref={ref => this.directionsView = ref}
+                />
 
                 <MapView style={styles.map}
                     ref={(ref) => this.mapView = ref}
