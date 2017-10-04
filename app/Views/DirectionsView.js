@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import PubSub from 'pubsub-js';
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   TBTItem,
@@ -247,17 +248,20 @@ export default class DirectionsView extends Component
             <Text>From: {startLocation ? startLocation.name : ''}</Text>
             <Text>To: {endLocation ? endLocation.name : ''} {endRoom}</Text>
             <View style={{marginTop: 10}}>
-              <Button
-                title='Get Directions'
-                onPress={this.getDirections.bind(this)}
-              />
+                <TouchableOpacity
+                  onPress={this.getDirections.bind(this)}
+                  style={styles.dirStartBtn}>
+                    <MaterialsIcon color='#ffffff' size={40} name={'directions'}/>
+                </TouchableOpacity>
             </View>
           </View>
 
+          {/*
           <Button
             title={"Clear"}
             onPress={this.clear}
           />
+          */}
         </View>
 
       </View>

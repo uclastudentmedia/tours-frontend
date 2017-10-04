@@ -230,10 +230,12 @@ export default StyleSheet.create({
         fontSize: 22,
     },
     mapViewBtn: {
+        paddingTop: 5,
+        alignItems: 'center',
         position: 'absolute',
-        height: 30,
-        width: 30,
-        borderRadius: 15,
+        height: 40,
+        width: 40,
+        borderRadius: 20,
         borderWidth: 1,
         backgroundColor: '#246dd5', 
         borderColor: '#ffffff',
@@ -250,11 +252,26 @@ export default StyleSheet.create({
         bottom: 80,
         right: 30,
     },
+    dirStartBtn: {
+        paddingTop: 5,
+        alignItems: 'center',
+        bottom: 80,
+        right: 30,
+        position: 'absolute',
+        height: 50,
+        width: 50,
+        borderRadius: 25,
+        borderWidth: 1,
+        backgroundColor: '#246dd5', 
+        borderColor: '#ffffff'
+    },
     flexRow: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },
+//Below: Edits the directions searchbar on MainMapView
+//Container
     directionsBar:{
         top: 0,
         position: 'absolute',
@@ -262,6 +279,7 @@ export default StyleSheet.create({
         width: width,
         alignItems: 'center'
     },
+//Searchbar Attributes
     directionsBtnTop:{
         backgroundColor: '#ffffff',
         borderRadius: 5,
