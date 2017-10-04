@@ -265,6 +265,19 @@ export default StyleSheet.create({
         backgroundColor: '#246dd5', 
         borderColor: '#ffffff'
     },
+    inStartBtn: {
+        paddingTop: 5,
+        alignItems: 'center',
+        bottom: 80,
+        right: 30,
+        position: 'absolute',
+        height: 50,
+        width: 50,
+        borderRadius: 25,
+        borderWidth: 1,
+        backgroundColor: '#f89406', 
+        borderColor: '#ffffff'
+    },
     toggleDirectionsBtn: {
         bottom: 130,
         right: 30,
@@ -282,9 +295,20 @@ export default StyleSheet.create({
         width: width,
         alignItems: 'center'
     },
+    indoorsBar:{
+        position: 'absolute',
+        backgroundColor: "#f89406",
+        width: width,
+        alignItems: 'center'
+    },
 //Searchbar Attributes
+    directionsBtnColor:{
+        backgroundColor: '#ffffff'
+    },
+    indoorsBtnColor:{
+        backgroundColor: '#f8bc06'  
+    },
     directionsBtnTop:{
-        backgroundColor: '#ffffff',
         borderRadius: 5,
         height: 30,
         width: width - 10,
@@ -292,14 +316,25 @@ export default StyleSheet.create({
         marginBottom: 5
     },
     directionsBtnBot:{
-        backgroundColor: '#ffffff',
         borderRadius: 5,
         height: 30,
         width: width - 10,
         marginTop: 5,
         marginBottom: 10
-    },    
+    },
+    indoorsBtnBot:{
+        borderRadius: 5,
+        height: 30,
+        width: width - 10,
+        marginBottom: 10
+    }, 
     directionsText:{
+        marginTop: 5,
+        marginLeft: 10,
+        fontSize: 17
+    },
+    indoorsText:{
+        color: 'white',
         marginTop: 5,
         marginLeft: 10,
         fontSize: 17

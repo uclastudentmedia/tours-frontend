@@ -7,9 +7,12 @@ import {
   ListView,
   Button,
   TouchableOpacity,
+  TouchableHighlight,
   ActivityIndicator,
   Image,
 } from 'react-native';
+
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   GetIndoorBuildingList,
@@ -161,30 +164,47 @@ export default class IndoorNavigationView extends Component
 
         {this.renderSpinner()}
 
-        <Button
-          title={"Select building"}
-          onPress={this.selectBuilding}
-        />
+        <View style={styles.indoorsBar}>
 
-        <Button
-          title={"Select start room"}
-          onPress={this.selectStartRoom}
-        />
+          <TouchableHighlight
+              style={[styles.directionsBtnTop, styles.indoorsBtnColor]}
+              onPress={this.selectBuilding}
+          >
+            <Text style={styles.indoorsText}>
+              Select Building
+            </Text>
+          </TouchableHighlight>
 
-        <Button
-          title={"Select end room"}
-          onPress={this.selectEndRoom}
-        />
+          <TouchableHighlight
+              style={[styles.directionsBtnBot, styles.indoorsBtnColor]}
+              onPress={this.selectStartRoom}
+          >
+            <Text style={styles.indoorsText}>
+              Select Start Room
+            </Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight
+              style={[styles.indoorsBtnBot, styles.indoorsBtnColor]}
+              onPress={this.selectEndRoom}
+          >
+            <Text style={styles.indoorsText}>
+              Select End Room
+            </Text>
+          </TouchableHighlight>
+
+        </View>
 
         <View style={{marginBottom: 10}}>
           <Text>Building: {building ? building.name : ''}</Text>
           <Text>From: {startRoom}</Text>
           <Text>To: {endRoom}</Text>
           <View style={{marginTop: 10}}>
-            <Button
-              title='Get Directions'
+            <TouchableOpacity
               onPress={this.getDirections.bind(this)}
-            />
+              style={styles.inStartBtn}>
+                <MaterialsIcon color='#ffffff' size={40} name={'directions'}/>
+            </TouchableOpacity>
           </View>
         </View>
 
