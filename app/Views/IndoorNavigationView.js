@@ -175,14 +175,22 @@ export default class IndoorNavigationView extends Component
             </Text>
           </TouchableHighlight>
 
-          <TouchableHighlight
-              style={[styles.directionsBtnBot, styles.indoorsBtnColor]}
-              onPress={this.selectStartRoom}
-          >
-            <Text style={styles.indoorsText}>
-              Select Start Room
-            </Text>
-          </TouchableHighlight>
+          <View style={styles.indoorHelp}>
+
+            <TouchableHighlight
+                style={[styles.indoorsMidBot, styles.indoorsBtnColor]}
+                onPress={this.selectStartRoom}
+            >
+              <Text style={styles.indoorsText}>
+                Select Start Room
+              </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight>
+              <MaterialsIcon style={styles.helpBtn} color='#ffffff' size={24} name={'help'}/>
+            </TouchableHighlight>
+
+          </View>
 
           <TouchableHighlight
               style={[styles.indoorsBtnBot, styles.indoorsBtnColor]}

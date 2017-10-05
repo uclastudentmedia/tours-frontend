@@ -218,8 +218,7 @@ export default StyleSheet.create({
         paddingRight: 359
     },
     buttonContainer: {
-        flex: 1,
-        marginTop: 20,
+        flex: 1
     },
     errorText: {
         color: '#d61414',
@@ -275,8 +274,11 @@ export default StyleSheet.create({
         width: 50,
         borderRadius: 25,
         borderWidth: 1,
-        backgroundColor: '#f89406', 
+        backgroundColor: '#43A047', 
         borderColor: '#ffffff'
+    },
+    helpBtn:{
+        marginTop: 5
     },
     toggleDirectionsBtn: {
         bottom: 130,
@@ -322,6 +324,14 @@ export default StyleSheet.create({
         marginTop: 5,
         marginBottom: 10
     },
+    indoorsMidBot:{
+        borderRadius: 5,
+        height: 30,
+        width: width - 40,
+        marginTop: 5,
+        marginBottom: 10,
+        marginRight: 5
+    }, 
     indoorsBtnBot:{
         borderRadius: 5,
         height: 30,
@@ -338,5 +348,9 @@ export default StyleSheet.create({
         marginTop: 5,
         marginLeft: 10,
         fontSize: 17
+    },
+    indoorHelp:{
+        flex: 1,
+        flexDirection: 'row'
     }
 });

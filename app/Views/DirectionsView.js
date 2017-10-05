@@ -275,6 +275,8 @@ export default class DirectionsView extends Component
               <Text style={styles.directionsText}>Select end room</Text>
             </TouchableHighlight>
           : null }
+
+          {/*
           <View style={{marginBottom: 10}}>
             <View style={{marginTop: 10}}>
                 <TouchableOpacity
@@ -285,7 +287,6 @@ export default class DirectionsView extends Component
             </View>
           </View>
 
-          {/*
           <Button
             title={"Clear"}
             onPress={this.clear}
