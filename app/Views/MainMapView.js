@@ -117,7 +117,10 @@ export default class MainMapView extends Component {
         this.setState({ polyline: polyline });
 
         this.mapView.fitToCoordinates(polyline, {
-          edgePadding: { top: 400, left: 200, right: 200, bottom: 200 }
+          edgePadding: Platform.select({
+            android: { top:400, left:200, right:200, bottom:200 },
+            ios: { top:100, left:100, right:100, bottom:100 },
+          })
         });
       });
 
