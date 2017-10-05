@@ -9,7 +9,9 @@ import {
     ListView,
     TouchableWithoutFeedback,
     TouchableOpacity,
-    Text
+    Text,
+    Image,
+    Platform
 } from 'react-native';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -339,13 +341,19 @@ export default class MainMapView extends Component {
           markerLocations,
         } = this.state;
 
+        const file = Platform.select({
+          ios: require('../../assets/app_assets/tab_navigator_icons/mapsclickedArtboard1.png'),
+          android: require('../../assets/app_assets/tab_navigator_icons/mapsunclickedArtboard1.png'),
+        });
+
         return (
             <View style={styles.container}>
 
                 <View style={styles.searchBar}>
+                  <Image source={file}/>
                   <Text style={[styles.baseText, styles.titleText]}>UCLA Map</Text>
                   <TouchableOpacity onPress={this.openSearchMenu}
-                    style={[styles.mapViewSearchBtn, styles.searchBtn]}>
+                    style={styles.mapViewSearchBtn}>
                       <MaterialsIcon color='#cccccc' size={30} name={'search'}/>
                   </TouchableOpacity>
                 </View>

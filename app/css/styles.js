@@ -21,9 +21,6 @@ export default StyleSheet.create({
         })
     },
     titleText:{
-        // fontWeight: Platform.select({
-        //   ios: 'bold',
-        // }),
         color: Platform.select({
           android: '#ffffff',
           ios: '#246dd5',
@@ -32,16 +29,17 @@ export default StyleSheet.create({
           android: 'left',
           ios: 'center',
         }),
-        left: Platform.select({
-          android: 10,
-          ios: 0,
-        }),
         top: Platform.select({
           android: 0,
-          ios: 10,
+          ios: 0,
+        }), 
+        fontSize: 20,
+        backgroundColor:'transparent',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: Platform.select({
+          ios: 'center',
         }),
-        margin: 15, 
-        fontSize: 20, 
     },
     container: {
         flex: 1,
@@ -273,14 +271,6 @@ export default StyleSheet.create({
           android: '#246dd5',
           ios: '#ffffff',
         }),
-        position: 'absolute',
-        height: 30,
-        width: 30,
-        borderRadius: 15,
-        marginTop: Platform.select({
-          android: 0,
-          ios: 10,
-        }),
     },
     searchBar: {
         backgroundColor: Platform.select({
@@ -289,12 +279,20 @@ export default StyleSheet.create({
         }),
         position: 'absolute',
         top: 0,
+        paddingTop: Platform.select({
+          android: 0,
+          ios: 10,
+        }),
+        paddingRight:20,
+        paddingLeft:5,
         height: 60,
         width: width,
         shadowOffset: { width: 0, height: 5 },
         shadowColor: '#999999',
         shadowOpacity: 1,
-        elevation: 5
+        elevation: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     ScrollViewBottom: {
         marginBottom: Platform.select({
@@ -305,10 +303,6 @@ export default StyleSheet.create({
     myLocationBtn: {
         bottom: 30,
         right: 30,
-    },
-    searchBtn: {
-        top: 15,
-        right: 25,
     },
     zoomToCampusBtn: {
         bottom: 80,

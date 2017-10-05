@@ -43,7 +43,12 @@ function makeIcon(name) {
 class MainMapScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Maps',
-    tabBarIcon: <Image source={require('../assets/app_assets/tab_navigator_icons/mapsclickedArtboard1.png')} />
+    tabBarIcon: ({tintColor, focused}) => {
+      if(focused)
+        return <Image source={require('../assets/app_assets/tab_navigator_icons/mapsclickedArtboard1.png')} />
+      else
+        return <Image source={require('../assets/app_assets/tab_navigator_icons/mapsunclickedArtboard1.png')} />
+    }
   };
 
   render() {
