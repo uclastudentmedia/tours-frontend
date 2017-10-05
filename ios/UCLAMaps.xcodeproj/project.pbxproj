@@ -34,6 +34,8 @@
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* UCLAMapsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* UCLAMapsTests.m */; };
 		31F5A5871F7DD3140055E40F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31F5A5861F7DD3140055E40F /* LaunchScreen.storyboard */; };
+		31FF24CE1F85C28F002BDED6 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31FF24CD1F85C270002BDED6 /* libCodePush.a */; };
+		31FF24D11F85C2AA002BDED6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 31FF24D01F85C2AA002BDED6 /* libz.tbd */; };
 		3DF2C89BDE8C4ECD93AEE0E5 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C28201170149456A8EC118A4 /* Ionicons.ttf */; };
 		5B90F0441A104E0BAA70CA73 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05799BCE1064466EA29BB877 /* libRNVectorIcons.a */; };
 		5B9231F3EDE9498A8F505F6D /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EF74673443D4FAEA8714926 /* Zocial.ttf */; };
@@ -112,6 +114,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "UCLAMaps-tvOS";
+		};
+		31FF24CC1F85C270002BDED6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 31FF24C81F85C270002BDED6 /* CodePush.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = CodePush;
 		};
 		3DAD3E831DF850E9000B6D8A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -274,6 +283,8 @@
 		2D02E47B1E0B4A5D006451C7 /* UCLAMaps-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UCLAMaps-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* UCLAMaps-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UCLAMaps-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		31F5A5861F7DD3140055E40F /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		31FF24C81F85C270002BDED6 /* CodePush.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
+		31FF24D01F85C2AA002BDED6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		37E7822866A94393AA675FD1 /* libAirMaps.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAirMaps.a; sourceTree = "<group>"; };
 		4EF74673443D4FAEA8714926 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
@@ -301,6 +312,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31FF24D11F85C2AA002BDED6 /* libz.tbd in Frameworks */,
+				31FF24CE1F85C28F002BDED6 /* libCodePush.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -456,6 +469,22 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		31FF24C91F85C270002BDED6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				31FF24CD1F85C270002BDED6 /* libCodePush.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		31FF24CF1F85C2A9002BDED6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				31FF24D01F85C2AA002BDED6 /* libz.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -477,6 +506,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				31FF24C81F85C270002BDED6 /* CodePush.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -510,6 +540,7 @@
 				00E356EF1AD99517003FC87E /* UCLAMapsTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				128CCDAA13C34F2187E982C2 /* Resources */,
+				31FF24CF1F85C2A9002BDED6 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -631,7 +662,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 34C363XG6E;
+						DevelopmentTeam = V4Z45C29H6;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -660,6 +691,10 @@
 				{
 					ProductGroup = AB3B3D8C1E60F3A400C47ACD /* Products */;
 					ProjectRef = D4469F7C5E5A46DA9A909989 /* AirMaps.xcodeproj */;
+				},
+				{
+					ProductGroup = 31FF24C91F85C270002BDED6 /* Products */;
+					ProjectRef = 31FF24C81F85C270002BDED6 /* CodePush.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
@@ -764,6 +799,13 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		31FF24CD1F85C270002BDED6 /* libCodePush.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libCodePush.a;
+			remoteRef = 31FF24CC1F85C270002BDED6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */ = {
@@ -1080,7 +1122,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 34C363XG6E;
+				DEVELOPMENT_TEAM = V4Z45C29H6;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = UCLAMaps/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1102,7 +1144,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 34C363XG6E;
+				DEVELOPMENT_TEAM = V4Z45C29H6;
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = UCLAMaps/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

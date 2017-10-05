@@ -67,6 +67,7 @@ import com.android.build.OutputFile
 
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -120,6 +121,7 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
+            buildConfigField "String", "CODEPUSH_KEY", '"29Fev2l_H6gFBfhF8iD6TfBqpKEO2f862d4e-98d1-42e8-926c-08cce31ed3d6"'
         }
     }
     // applicationVariants are e.g. debug, release
@@ -140,6 +142,7 @@ android {
 dependencies {
     compile project(':react-native-vector-icons')
     compile project(':react-native-maps')
+    compile project(':react-native-code-push')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules

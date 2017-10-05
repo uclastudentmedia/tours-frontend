@@ -43,6 +43,8 @@ import { styles, CustomMapStyle } from 'app/css';
 // how the locations are prioritized
 var mapSettinger='popular';
 
+var firstOnRegionChange = true;
+
 export default class MainMapView extends Component {
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -71,11 +73,11 @@ export default class MainMapView extends Component {
           latitudeDelta: 0.03,
           longitudeDelta: 0.02,
         };
+        this.region = this.initialRegion;
 
         this.state = {
             //position: this.initialPosition,
-            markerLocations: [],
-            region: this.initialRegion,
+            markerLocations: popPrioritize(this.initialRegion).slice(0, 10),
             results: [],
             route: {}
         };
@@ -182,7 +184,6 @@ export default class MainMapView extends Component {
 
     updateMapIcons() {
         const {
-          region,
           selectedLocation,
           route,
         } = this.state;
@@ -203,7 +204,7 @@ export default class MainMapView extends Component {
           default:
             //if map setting is campus map. prioritize top 10 locations by popularity/category
             //this is default
-            markerLocations = popPrioritize(region, 'All');
+            markerLocations = popPrioritize(this.region);
                                             //'Food & Beverage');
             break;
         }
@@ -229,7 +230,7 @@ export default class MainMapView extends Component {
 
         // remove locations not in the view
         markerLocations = markerLocations.filter(loc => {
-          return inRegion(region, loc.lat, loc.long);
+          return inRegion(this.region, loc.lat, loc.long);
         });
 
         this.setState({
@@ -238,7 +239,11 @@ export default class MainMapView extends Component {
     }
 
     onRegionChange(region) {
-      this.setState({ region:region });
+      if (firstOnRegionChange) {
+        firstOnRegionChange = false;
+        return;
+      }
+      this.region = region;
       PubSub.publish('MainMapView.onRegionChange', region);
       this.updateMapIcons();
     }
@@ -337,7 +342,6 @@ export default class MainMapView extends Component {
     render() {
         const {
           position,
-          region,
           markerLocations,
         } = this.state;
 
@@ -373,15 +377,14 @@ export default class MainMapView extends Component {
                     customMapStyle={CustomMapStyle}
                     initialRegion={this.initialRegion}
                     zoomEnabled={true}
-                    toolBarEnabled={false}
+                    toolbarEnabled={false}
                     showsTraffic={false}
                     showsPointsOfInterest={false}
                     showsIndoors={false}
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
-                    onMapReady={this.updateMapIcons}
                 >
-                    {position && inRegion(region, position.latitude, position.longitude) ?
+                    {position && inRegion(this.region, position.latitude, position.longitude) ?
                       <MapView.Marker
                           image={dot1}
                           coordinate={this.state.position}

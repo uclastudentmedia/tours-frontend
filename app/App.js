@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import { TabNavigator, StackNavigator } from 'react-navigation';
+import codePush from "react-native-code-push";
 
 import {
   LoadingView,
@@ -180,5 +181,7 @@ class App extends Component {
     }
   }
 }
+
+App = codePush(App);
 
 export default App;

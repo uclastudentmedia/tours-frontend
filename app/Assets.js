@@ -10,10 +10,8 @@ const icons = {
   2: require('../assets/icons/2.png'),
   3: require('../assets/icons/3.png'),
   4: require('../assets/icons/4.png'),
-  //5: require('../assets/icons/5.png'),
-  5: require('../assets/icons/7.png'),
+  5: require('../assets/icons/5.png'),
   6: require('../assets/icons/6.png'),
-  7: require('../assets/icons/7.png'),
   8: require('../assets/icons/8.png'),
   9: require('../assets/icons/9.png'),
   10: require('../assets/icons/10.png'),
@@ -22,19 +20,17 @@ const icons = {
   13: require('../assets/icons/13.png'),
   14: require('../assets/icons/14.png'),
   15: require('../assets/icons/15.png'),
-  //16: require('../assets/icons/16.png'),
-  16: require('../assets/icons/12.png'),
-  //17: require('../assets/icons/17.png'),
-  17: require('../assets/icons/9.png'),
+  16: require('../assets/icons/16.png'),
+  17: require('../assets/icons/17.png'),
   18: require('../assets/icons/18.png'),
   20: require('../assets/icons/20.png'),
-  61: require('../assets/icons/61.png'),
   321: require('../assets/icons/321.png'),
   961: require('../assets/icons/961.png'),
   1285: require('../assets/icons/1285.png'),
+  general: require('../assets/icons/general.png'),
 }
 export function GetIcon(category_id) {
-  var defaultIcon = undefined; //icon_ph;
+  var defaultIcon = icons.general;
   return icons[category_id] || defaultIcon;
 }
 
