@@ -122,15 +122,6 @@ export default class MainMapView extends Component {
         });
       });
 
-      PubSub.subscribe('DirectionsView.clearRoute', () => {
-        this.setState({
-          polyline: null
-        });
-        this.specialMarkerLocations = [];
-        this.updateMapIcons();
-      });
-
-
       PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
         this.specialMarkerLocations = [location];
         this.updateMapIcons();
@@ -172,6 +163,14 @@ export default class MainMapView extends Component {
         directionsBarVisible: visible
       });
       this.directionsView.SetVisible(visible);
+
+      if (!visible) {
+        this.specialMarkerLocations = [];
+        this.setState({ polyline: null });
+        this.updateMapIcons();
+
+        this.directionsView.Clear()
+      }
     }
 
     openSearchMenu = () => {

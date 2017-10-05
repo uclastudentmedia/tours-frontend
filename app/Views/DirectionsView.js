@@ -63,9 +63,13 @@ export default class DirectionsView extends Component
       error: null,
       dataSource: this.ds.cloneWithRows([]),
       loading: false,
+      startLocation: null,
       endLocation: null,
       translateYValue: new Animated.Value(HIDDEN_PX),
     };
+
+    this.startLocation = null;
+    this.endLocation = null;
 
     this.locationNames = GetLocationList()
                             .sort((a,b) => a.priority - b.priority)
@@ -75,7 +79,7 @@ export default class DirectionsView extends Component
   searchStartLocation = () => {
     const currentLocationText = 'Current Location';
 
-    let onResultSelect = name => {
+    const onResultSelect = name => {
       let startLocation;
       if (name === currentLocationText) {
         const position = this.GPSManager.getPosition();
@@ -100,6 +104,8 @@ export default class DirectionsView extends Component
       this.setState({
         startLocation: startLocation
       });
+      this.startLocation = startLocation;
+      this.getDirections();
     };
 
     this.props.navigation.navigate('Search', {
@@ -111,13 +117,20 @@ export default class DirectionsView extends Component
   }
 
   searchEndLocation = () => {
+    const onResultSelect = name => {
+      const endLocation = GetLocationByName(name);
+      this.setState({
+        endLocation: endLocation,
+        endRoom: null,
+      }),
+      this.endLocation = endLocation;
+      this.getDirections();
+    };
+
     this.props.navigation.navigate('Search', {
       title: 'Select end location',
       data: this.locationNames,
-      onResultSelect: name => this.setState({
-        endLocation: GetLocationByName(name),
-        endRoom: null,
-      }),
+      onResultSelect: onResultSelect
     });
   }
 
@@ -146,12 +159,7 @@ export default class DirectionsView extends Component
     }
 
 
-  showRouteOnMap = () => {
-    const {
-      startLocation,
-      endLocation,
-      polyline,
-    } = this.state;
+  showRouteOnMap = (startLocation, endLocation, polyline) => {
 
     let polylineCoords = DecodePolyline(polyline).map(coord => ({
       latitude: coord[0],
@@ -168,7 +176,7 @@ export default class DirectionsView extends Component
     };
 
     // connect to the map icons
-    polylineCoords = [].concat(startCoords, polyline, endCoords);
+    polylineCoords = [].concat(startCoords, polylineCoords, endCoords);
 
     PubSub.publish('DirectionsView.showRouteOnMap', {
       polyline: polylineCoords,
@@ -178,15 +186,15 @@ export default class DirectionsView extends Component
     this.props.navigation.navigate('MainMap');
   }
 
-  clear = () => {
+  Clear = () => {
     this.setState({
       error: null,
       startLocation: null,
       endLocation: null,
       dataSource: this.ds.cloneWithRows([]),
-      polyline: null,
     });
-    PubSub.publish('DirectionsView.clearRoute');
+    this.startLocation = null;
+    this.endLocation = null;
   }
 
   renderSpinner = () => {
@@ -288,7 +296,7 @@ export default class DirectionsView extends Component
           {/*
           <Button
             title={"Clear"}
-            onPress={this.clear}
+            onPress={this.Clear}
           />
           */}
         </Animated.View>
@@ -298,15 +306,11 @@ export default class DirectionsView extends Component
   }
 
   async getDirections() {
-    const {
-      startLocation,
-      endLocation,
-    } = this.state;
+    const startLocation = this.startLocation;
+    const endLocation = this.endLocation;
 
     if (!startLocation || !endLocation) {
-      this.setState({
-        error: 'Select a start and end location.'
-      });
+      // don't get directions until we have all valid input
       return;
     }
 
@@ -319,8 +323,8 @@ export default class DirectionsView extends Component
         error: null,
         dataSource: this.ds.cloneWithRows(directions),
         loading: false,
-        polyline: "",
       });
+      this.showRouteOnMap(startLocation, endLocation, "");
       return;
     }
 
@@ -339,13 +343,11 @@ export default class DirectionsView extends Component
           directions = data.trip.legs[0].maneuvers;
           polyline = data.trip.legs[0].shape;
         }
-
-        this.showRouteOnMap();
+        this.showRouteOnMap(startLocation, endLocation, polyline);
 
         this.setState({
           error: error,
           dataSource: this.ds.cloneWithRows(directions),
-          polyline: polyline,
           loading: false,
         });
       })
