@@ -52,7 +52,6 @@ export default class SearchView extends Component {
   });
 
   constructor(props) {
-    console.log(props);
     super(props);
 
     const params = props.navigation.state.params;

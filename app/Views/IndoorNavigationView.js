@@ -171,10 +171,9 @@ export default class IndoorNavigationView extends Component
               onPress={this.selectBuilding}
           >
             <Text style={styles.indoorsText}>
-              Select Building
+              {building ? building.name : 'Select Building'}
             </Text>
           </TouchableHighlight>
-
           <View style={styles.indoorHelp}>
 
             <TouchableHighlight
@@ -182,7 +181,7 @@ export default class IndoorNavigationView extends Component
                 onPress={this.selectStartRoom}
             >
               <Text style={styles.indoorsText}>
-                Select Start Room
+                {startRoom ? startRoom : 'Select Start Room'}
               </Text>
             </TouchableHighlight>
 
@@ -191,22 +190,18 @@ export default class IndoorNavigationView extends Component
             </TouchableHighlight>
 
           </View>
-
           <TouchableHighlight
               style={[styles.indoorsBtnBot, styles.indoorsBtnColor]}
               onPress={this.selectEndRoom}
           >
             <Text style={styles.indoorsText}>
-              Select End Room
+              {endRoom ? endRoom : 'Select End Room'}
             </Text>
           </TouchableHighlight>
 
         </View>
 
         <View style={{marginBottom: 10}}>
-          <Text>Building: {building ? building.name : ''}</Text>
-          <Text>From: {startRoom}</Text>
-          <Text>To: {endRoom}</Text>
           <View style={{marginTop: 10}}>
             <TouchableOpacity
               onPress={this.getDirections.bind(this)}
