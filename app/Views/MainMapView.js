@@ -9,6 +9,9 @@ import {
     ListView,
     TouchableWithoutFeedback,
     TouchableOpacity,
+    Text,
+    Image,
+    Platform
 } from 'react-native';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -42,6 +45,8 @@ import { styles, CustomMapStyle } from 'app/css';
 // how the locations are prioritized
 var mapSettinger='popular';
 
+var firstOnRegionChange = true;
+
 export default class MainMapView extends Component {
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -70,11 +75,11 @@ export default class MainMapView extends Component {
           latitudeDelta: 0.03,
           longitudeDelta: 0.02,
         };
+        this.region = this.initialRegion;
 
         this.state = {
             //position: this.initialPosition,
-            markerLocations: [],
-            region: this.initialRegion,
+            markerLocations: popPrioritize(this.initialRegion).slice(0, 10),
             results: [],
             route: {},
             directionsBarVisible: false,
@@ -118,7 +123,10 @@ export default class MainMapView extends Component {
         this.setState({ polyline: polyline });
 
         this.mapView.fitToCoordinates(polyline, {
-          edgePadding: { top: 400, left: 200, right: 200, bottom: 200 }
+          edgePadding: Platform.select({
+            android: { top:400, left:200, right:200, bottom:200 },
+            ios: { top:100, left:100, right:100, bottom:100 },
+          })
         });
       });
 
@@ -193,7 +201,6 @@ export default class MainMapView extends Component {
 
     updateMapIcons() {
         const {
-          region,
           selectedLocation,
           route,
         } = this.state;
@@ -214,7 +221,7 @@ export default class MainMapView extends Component {
           default:
             //if map setting is campus map. prioritize top 10 locations by popularity/category
             //this is default
-            markerLocations = popPrioritize(region, 'All');
+            markerLocations = popPrioritize(this.region);
                                             //'Food & Beverage');
             break;
         }
@@ -240,7 +247,7 @@ export default class MainMapView extends Component {
 
         // remove locations not in the view
         markerLocations = markerLocations.filter(loc => {
-          return inRegion(region, loc.lat, loc.long);
+          return inRegion(this.region, loc.lat, loc.long);
         });
 
         this.setState({
@@ -249,7 +256,11 @@ export default class MainMapView extends Component {
     }
 
     onRegionChange(region) {
-      this.setState({ region:region });
+      if (firstOnRegionChange) {
+        firstOnRegionChange = false;
+        return;
+      }
+      this.region = region;
       PubSub.publish('MainMapView.onRegionChange', region);
       this.updateMapIcons();
     }
@@ -348,18 +359,26 @@ export default class MainMapView extends Component {
     render() {
         const {
           position,
-          region,
           markerLocations,
           directionsBarVisible,
         } = this.state;
 
+        const file = Platform.select({
+          ios: require('../../assets/app_assets/tab_navigator_icons/mapsclickedArtboard1.png'),
+          android: require('../../assets/app_assets/tab_navigator_icons/mapsunclickedArtboard1.png'),
+        });
+
         return (
             <View style={styles.container}>
 
-                <TouchableOpacity onPress={this.openSearchMenu}
-                  style={[styles.mapViewBtn, styles.searchBtn]}>
-                    <MaterialsIcon color='#ffffff' size={24} name={'search'}/>
-                </TouchableOpacity>
+                <View style={styles.searchBar}>
+                  <Image source={file}/>
+                  <Text style={[styles.baseText, styles.titleText]}>UCLA Map</Text>
+                  <TouchableOpacity onPress={this.openSearchMenu}
+                    style={styles.mapViewSearchBtn}>
+                      <MaterialsIcon color='#cccccc' size={30} name={'search'}/>
+                  </TouchableOpacity>
+                </View>
 
                 <TouchableOpacity onPress={this.zoomToCurrentLocation}
                   style={[styles.mapViewBtn, styles.myLocationBtn]}>
@@ -385,15 +404,14 @@ export default class MainMapView extends Component {
                     customMapStyle={CustomMapStyle}
                     initialRegion={this.initialRegion}
                     zoomEnabled={true}
-                    toolBarEnabled={false}
+                    toolbarEnabled={false}
                     showsTraffic={false}
                     showsPointsOfInterest={false}
                     showsIndoors={false}
                     onRegionChange={this.onRegionChange}
                     onPress={this.onPressMap}
-                    onMapReady={this.updateMapIcons}
                 >
-                    {position && inRegion(region, position.latitude, position.longitude) ?
+                    {position && inRegion(this.region, position.latitude, position.longitude) ?
                       <MapView.Marker
                           image={dot1}
                           coordinate={this.state.position}

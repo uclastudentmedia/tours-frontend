@@ -16,9 +16,30 @@ const windowWidth = Dimensions.get('window').width;
 export default StyleSheet.create({
     baseText:{
         fontFamily: Platform.select({
-          android: 'sans-serif-thin',
+          android: 'sans-serif',
           ios: 'Helvetica-Light',
         })
+    },
+    titleText:{
+        color: Platform.select({
+          android: '#ffffff',
+          ios: '#246dd5',
+        }),
+        textAlign: Platform.select({
+          android: 'left',
+          ios: 'center',
+        }),
+        top: Platform.select({
+          android: 0,
+          ios: 0,
+        }), 
+        fontSize: 20,
+        backgroundColor:'transparent',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: Platform.select({
+          ios: 'center',
+        }),
     },
     container: {
         flex: 1,
@@ -232,19 +253,56 @@ export default StyleSheet.create({
         paddingTop: 5,
         alignItems: 'center',
         position: 'absolute',
-        height: 40,
-        width: 40,
-        borderRadius: 20,
-        borderWidth: 1,
+        height: 30,
+        width: 30,
+        borderRadius: 15,
+        paddingTop: 2.5,
+        paddingLeft:2.5,
+        // borderWidth: 1,
         backgroundColor: '#246dd5', 
-        borderColor: '#ffffff',
+        // borderColor: '#ffffff',
+        shadowOffset: { width: 0, height: 3 },
+        shadowColor: '#eeeeee',
+        shadowOpacity: 0.5,
+        elevation: 3,
+        overflow: 'hidden',
+    },
+    mapViewSearchBtn: {
+        backgroundColor: Platform.select({
+          android: '#246dd5',
+          ios: '#ffffff',
+        }),
+    },
+    searchBar: {
+        backgroundColor: Platform.select({
+          android: '#246dd5',
+          ios: '#ffffff',
+        }),
+        position: 'absolute',
+        top: 0,
+        paddingTop: Platform.select({
+          android: 0,
+          ios: 10,
+        }),
+        paddingRight:20,
+        paddingLeft:5,
+        height: 60,
+        width: width,
+        shadowOffset: { width: 0, height: 5 },
+        shadowColor: '#999999',
+        shadowOpacity: 1,
+        elevation: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    ScrollViewBottom: {
+        marginBottom: Platform.select({
+          android: 0,
+          ios: 220,
+        })
     },
     myLocationBtn: {
         bottom: 30,
-        right: 30,
-    },
-    searchBtn: {
-        top: 30,
         right: 30,
     },
     zoomToCampusBtn: {
