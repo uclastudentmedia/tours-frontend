@@ -121,11 +121,8 @@ export default class SearchView extends Component {
             autoCorrect={false}
           />
 
-          <ScrollView
-            style={styles.ScrollViewBottom}
-            keyboardShouldPersistTaps={'always'}
-          >
-            <View style={{marginTop: 50, marginBottom: 15}}/>
+          <ScrollView keyboardShouldPersistTaps={'always'}>
+            <View style={styles.searchViewDataWithIcons}/>
             {
               this.dataWithIcons.map((item, i) => (
                 <View key={i}>
@@ -145,7 +142,7 @@ export default class SearchView extends Component {
                 </View>
               ))
             }
-            <View style={{marginTop: 15}}/>
+            <View style={styles.searchViewData}/>
             {
               this.state.results.map((item, i) => (
                 <View key={i}>
@@ -159,6 +156,7 @@ export default class SearchView extends Component {
                 </View>
               ))
             }
+            <View style={styles.ScrollViewBottom}/>
           </ScrollView>
 
         </View>

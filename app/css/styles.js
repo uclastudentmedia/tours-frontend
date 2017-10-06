@@ -256,7 +256,6 @@ export default StyleSheet.create({
         height: 30,
         width: 30,
         borderRadius: 15,
-        paddingTop: 2.5,
         paddingLeft:2.5,
         // borderWidth: 1,
         backgroundColor: '#246dd5', 
@@ -296,10 +295,17 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     ScrollViewBottom: {
-        marginBottom: Platform.select({
+        paddingBottom: Platform.select({
           android: 0,
           ios: 220,
         })
+    },
+    searchViewDataWithIcons: {
+        marginTop: 50,
+        marginBottom: 15,
+    },
+    searchViewData: {
+        marginTop: 15,
     },
     myLocationBtn: {
         bottom: 30,
