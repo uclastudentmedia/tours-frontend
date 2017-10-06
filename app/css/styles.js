@@ -255,7 +255,6 @@ export default StyleSheet.create({
         height: 30,
         width: 30,
         borderRadius: 15,
-        paddingTop: 2.5,
         paddingLeft:2.5,
         // borderWidth: 1,
         backgroundColor: '#246dd5', 
