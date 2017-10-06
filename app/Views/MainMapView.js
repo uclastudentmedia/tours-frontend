@@ -358,7 +358,7 @@ export default class MainMapView extends Component {
 
                 <View style={styles.searchBar}>
                   <Image source={file}/>
-                  <Text style={[styles.baseText, styles.titleText]}>UCLA Map</Text>
+                  <Text style={[styles.baseText, styles.titleText]}>UCLA Maps</Text>
                   <TouchableOpacity onPress={this.openSearchMenu}
                     style={styles.mapViewSearchBtn}>
                       <MaterialsIcon color='#cccccc' size={30} name={'search'}/>
