@@ -295,10 +295,17 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     ScrollViewBottom: {
-        marginBottom: Platform.select({
+        paddingBottom: Platform.select({
           android: 0,
           ios: 220,
         })
+    },
+    searchViewDataWithIcons: {
+        marginTop: 50,
+        marginBottom: 15,
+    },
+    searchViewData: {
+        marginTop: 15,
     },
     myLocationBtn: {
         bottom: 30,
