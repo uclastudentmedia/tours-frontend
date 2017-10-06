@@ -13,7 +13,7 @@ import {
   TouchableHighlight,
   ActivityIndicator,
   Animated,
-  Alert
+  Alert,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
@@ -61,7 +61,6 @@ export default class DirectionsView extends Component
     this.GPSManager = props.screenProps.GPSManager;
 
     this.state = {
-      error: null,
       dataSource: this.ds.cloneWithRows([]),
       loading: false,
       startLocation: null,
@@ -86,10 +85,7 @@ export default class DirectionsView extends Component
         const position = this.GPSManager.getPosition();
         //const position = { latitude: 34.070286, longitude: -118.443413 };
         if (!position) {
-          this.setState({
-            error: 'Unable to find your location.'
-          });
-          Alert.alert(this.state.error);
+          Alert.alert('Unable to find your location.');
           return;
         }
 
@@ -146,10 +142,7 @@ export default class DirectionsView extends Component
 
     let building = GetIndoorBuildingById(endLocation.id);
     if (!building) {
-      this.setState({
-        error: 'Indoor navigation not supported for this building.'
-      });
-      Alert.alert(this.state.error);
+      Alert.alert('Indoor navigation not supported for this building.');
       return;
     }
     this.props.navigation.navigate('Search', {
@@ -191,7 +184,6 @@ export default class DirectionsView extends Component
 
   Clear = () => {
     this.setState({
-      error: null,
       startLocation: null,
       endLocation: null,
       dataSource: this.ds.cloneWithRows([]),
@@ -229,7 +221,6 @@ export default class DirectionsView extends Component
     const {
       startLocation,
       endLocation,
-      error,
       loading,
       endRoom,
       translateYValue,
@@ -239,8 +230,6 @@ export default class DirectionsView extends Component
         
         /*
       <View>
-
-        <Text style={styles.errorText}>{error}</Text>
 
         {this.renderSpinner()}
 
@@ -325,7 +314,6 @@ export default class DirectionsView extends Component
         instruction: 'You have arrived at your destination.'
       }];
       this.setState({
-        error: null,
         dataSource: this.ds.cloneWithRows(directions),
         loading: false,
       });
@@ -340,26 +328,25 @@ export default class DirectionsView extends Component
 
     RouteTBT(startLocation, endLocation, extraOptions)
       .then(data => {
-        let error = data.error;
+        if (!data) {
+          return;
+        }
         let directions = [];
         let polyline = "";
-        if (data && !data.error) {
-          error = null;
+        if (!data.error) {
           directions = data.trip.legs[0].maneuvers;
           polyline = data.trip.legs[0].shape;
           this.showRouteOnMap(startLocation, endLocation, polyline);
+        } else {
+            Alert.alert(data.error);
         }
         this.setState({
-          error: error,
           dataSource: this.ds.cloneWithRows(directions),
           loading: false,
         });
-        if(error)
-            Alert.alert(error);
       })
       .catch(error => {
         this.setState({
-          error: error.message,
           loading: false,
         });
         Alert.alert(error.message);
