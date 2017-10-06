@@ -32,7 +32,7 @@ export default StyleSheet.create({
         top: Platform.select({
           android: 0,
           ios: 0,
-        }), 
+        }),
         fontSize: 20,
         backgroundColor:'transparent',
         flex: 1,
@@ -258,7 +258,7 @@ export default StyleSheet.create({
         borderRadius: 15,
         paddingLeft:2.5,
         // borderWidth: 1,
-        backgroundColor: '#246dd5', 
+        backgroundColor: '#246dd5',
         // borderColor: '#ffffff',
         shadowOffset: { width: 0, height: 3 },
         shadowColor: '#eeeeee',
@@ -325,7 +325,7 @@ export default StyleSheet.create({
         width: 50,
         borderRadius: 25,
         borderWidth: 1,
-        backgroundColor: '#246dd5', 
+        backgroundColor: '#246dd5',
         borderColor: '#ffffff'
     },
     inStartBtn: {
@@ -338,7 +338,7 @@ export default StyleSheet.create({
         width: 50,
         borderRadius: 25,
         borderWidth: 1,
-        backgroundColor: '#43A047', 
+        backgroundColor: '#43A047',
         borderColor: '#ffffff'
     },
     helpBtn:{
@@ -359,7 +359,8 @@ export default StyleSheet.create({
         position: 'absolute',
         backgroundColor: "#246dd5",
         width: width,
-        alignItems: 'center'
+        alignItems: 'center',
+        zIndex: 1
     },
     indoorsBar:{
         top: 0,
@@ -373,7 +374,7 @@ export default StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     indoorsBtnColor:{
-        backgroundColor: '#f8bc06'  
+        backgroundColor: '#f8bc06'
     },
     directionsBtnTop:{
         borderRadius: 5,
@@ -396,13 +397,13 @@ export default StyleSheet.create({
         marginTop: 5,
         marginBottom: 10,
         marginRight: 5
-    }, 
+    },
     indoorsBtnBot:{
         borderRadius: 5,
         height: 30,
         width: width - 10,
         marginBottom: 10
-    }, 
+    },
     directionsText:{
         marginTop: 5,
         marginLeft: 10,

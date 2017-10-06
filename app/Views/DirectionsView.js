@@ -13,6 +13,7 @@ import {
   TouchableHighlight,
   ActivityIndicator,
   Animated,
+  Alert
 } from 'react-native';
 import PubSub from 'pubsub-js';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
@@ -88,6 +89,7 @@ export default class DirectionsView extends Component
           this.setState({
             error: 'Unable to find your location.'
           });
+          Alert.alert(this.state.error);
           return;
         }
 
@@ -147,6 +149,7 @@ export default class DirectionsView extends Component
       this.setState({
         error: 'Indoor navigation not supported for this building.'
       });
+      Alert.alert(this.state.error);
       return;
     }
     this.props.navigation.navigate('Search', {
@@ -233,6 +236,7 @@ export default class DirectionsView extends Component
     } = this.state;
 
     return (
+        
         /*
       <View>
 
@@ -343,20 +347,22 @@ export default class DirectionsView extends Component
           error = null;
           directions = data.trip.legs[0].maneuvers;
           polyline = data.trip.legs[0].shape;
+          this.showRouteOnMap(startLocation, endLocation, polyline);
         }
-        this.showRouteOnMap(startLocation, endLocation, polyline);
-
         this.setState({
           error: error,
           dataSource: this.ds.cloneWithRows(directions),
           loading: false,
         });
+        if(error)
+            Alert.alert(error);
       })
       .catch(error => {
         this.setState({
           error: error.message,
           loading: false,
         });
+        Alert.alert(error.message);
       });
   }
 }

@@ -379,7 +379,6 @@ export default class MainMapView extends Component {
                       <MaterialsIcon color='#cccccc' size={30} name={'search'}/>
                   </TouchableOpacity>
                 </View>
-
                 <TouchableOpacity onPress={this.zoomToCurrentLocation}
                   style={[styles.mapViewBtn, styles.myLocationBtn]}>
                     <MaterialsIcon color='#ffffff' size={24} name={'near-me'}/>
@@ -449,4 +448,3 @@ export default class MainMapView extends Component {
         );
     }
 }
-
