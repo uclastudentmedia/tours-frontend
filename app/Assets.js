@@ -28,7 +28,7 @@ const icons = {
   961: require('../assets/icons/961.png'),
   1285: require('../assets/icons/1285.png'),
   general: require('../assets/icons/general.png'),
-}
+};
 export function GetIcon(category_id) {
   var defaultIcon = icons.general;
   return icons[category_id] || defaultIcon;
@@ -37,3 +37,22 @@ export function GetIcon(category_id) {
 //export const ic_near_me = require('../assets/images/ic_near_me_black_24dp.png');
 //export const ic_school = require('../assets/images/ic_school_black_24dp.png');
 //export const ic_directions_walk = require('../assets/images/ic_directions_walk_black_24dp.png');
+
+
+const tabIcons = {
+  maps: {
+    true:  require('../assets/tab_icons/mapsclicked.png'),
+    false: require('../assets/tab_icons/mapsunclicked.png'),
+  },
+  //schedule: {
+  //  true:  require('../assets/tab_icons/scheduleclicked.png'),
+  //  false: require('../assets/tab_icons/scheduleunclicked.png'),
+  //},
+  tours: {
+    true:  require('../assets/tab_icons/toursclicked.png'),
+    //false: require('../assets/tab_icons/toursunclicked.png'),
+  }
+};
+export function GetTabIcon(name, focused) {
+  return tabIcons[name][focused];
+}

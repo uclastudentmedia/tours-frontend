@@ -38,7 +38,7 @@ import GPSManager from 'app/GPSManager';
 
 import {popLocation} from 'app/LocationPopManager'
 
-import { GetIcon, dot1 } from 'app/Assets';
+import { GetIcon, GetTabIcon, dot1 } from 'app/Assets';
 
 import { styles, CustomMapStyle } from 'app/css';
 
@@ -364,8 +364,8 @@ export default class MainMapView extends Component {
         } = this.state;
 
         const file = Platform.select({
-          ios: require('../../assets/app_assets/tab_navigator_icons/mapsclickedArtboard1.png'),
-          android: require('../../assets/app_assets/tab_navigator_icons/mapsunclickedArtboard1.png'),
+          ios: GetTabIcon('maps', true),
+          android: GetTabIcon('maps', false)
         });
 
         return (
