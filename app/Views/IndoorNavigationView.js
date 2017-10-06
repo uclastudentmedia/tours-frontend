@@ -165,7 +165,7 @@ export default class IndoorNavigationView extends Component
               onPress={this.selectEndRoom}
           >
             <Text style={styles.indoorsText}>
-              {endRoom ? endRoom : 'Select End Room'}
+              {endRoom ? endRoom : 'Select End Room (optional)'}
             </Text>
           </TouchableHighlight>
 
@@ -195,17 +195,22 @@ export default class IndoorNavigationView extends Component
   }
 
   async getDirections() {
-    const {
+    let {
       building,
       startRoom,
       endRoom,
     } = this.state;
 
-    if (!startRoom || !endRoom) {
+    if (!startRoom) {
       this.setState({
-        error: 'Select a start and end room.'
+        error: 'Select a start room.'
       });
       return;
+    }
+
+    // if only one room provided, it's a single room lookup
+    if (!endRoom) {
+      endRoom = startRoom;
     }
 
     // begin directions request
