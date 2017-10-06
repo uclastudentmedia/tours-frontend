@@ -22,6 +22,7 @@ import {
 
 import GPSManager from 'app/GPSManager';
 import { AppStyle } from 'app/css';
+import { GetTabIcon } from 'app/Assets';
 
 
 function makeIcon(name) {
@@ -44,12 +45,9 @@ function makeIcon(name) {
 class MainMapScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Maps',
-    tabBarIcon: ({tintColor, focused}) => {
-      if(focused)
-        return <Image source={require('../assets/app_assets/tab_navigator_icons/mapsclickedArtboard1.png')} />
-      else
-        return <Image source={require('../assets/app_assets/tab_navigator_icons/mapsunclickedArtboard1.png')} />
-    }
+    tabBarIcon: ({tintColor, focused}) => (
+      <Image source={GetTabIcon('maps', focused)} />
+    )
   };
 
   render() {
