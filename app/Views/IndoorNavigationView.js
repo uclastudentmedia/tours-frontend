@@ -4,12 +4,10 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  ListView,
   Button,
   TouchableOpacity,
   TouchableHighlight,
   ActivityIndicator,
-  Image,
 } from 'react-native';
 
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
@@ -22,7 +20,6 @@ import {
 
 import {
   styles,
-  DirectionsStyle,
 } from 'app/css';
 
 export default class IndoorNavigationView extends Component
@@ -34,14 +31,11 @@ export default class IndoorNavigationView extends Component
   constructor(props){
     super(props);
 
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
     this.buildings = GetIndoorBuildingList();
     this.buildingNames = this.buildings.map(building => building.name);
 
     this.state = {
       error: null,
-      imageDataSource: this.ds.cloneWithRows([]),
       loading: false,
       //building: this.buildings[0],
       //startRoom: 'B105',
@@ -104,14 +98,13 @@ export default class IndoorNavigationView extends Component
       building: null,
       startRoom: null,
       endRoom: null,
-      imageDataSource: this.ds.cloneWithRows([]),
     });
   }
 
-  openImage = (image) => {
+  openImagePage = (images) => {
     this.props.navigation.navigate('Image', {
-      title: image.floor,
-      imageUrl: image.url,
+      images: images,
+      title: 'Indoor Navigation',
     });
   }
 
@@ -139,30 +132,7 @@ export default class IndoorNavigationView extends Component
     } = this.state;
 
     return (
-      <View style={DirectionsStyle.container}>
-
-        <Text style={styles.errorText}>{error}</Text>
-
-        <ListView
-          enableEmptySections={true}
-          dataSource={this.state.imageDataSource}
-          renderRow={(image) =>
-            <TouchableOpacity style={styles.wrapper}
-              onPress={() => this.openImage(image)}
-            >
-              <View style={styles.flexRow}>
-                <Text style={[styles.baseText, styles.locText]}>
-                  {image.floor}
-                </Text>
-                <Image source={{uri: image.url}}
-                  style={{width: 40, height: 40}}
-                />
-              </View>
-            </TouchableOpacity>
-          }
-        />
-
-        {this.renderSpinner()}
+      <View style={styles.container}>
 
         <View style={styles.indoorsBar}>
 
@@ -216,6 +186,10 @@ export default class IndoorNavigationView extends Component
           onPress={this.clear}
         />
 
+        <Text style={styles.errorText}>{error}</Text>
+
+        {this.renderSpinner()}
+
       </View>
     );
   }
@@ -241,9 +215,9 @@ export default class IndoorNavigationView extends Component
       .then(data => {
         this.setState({
           error: null,
-          imageDataSource: this.ds.cloneWithRows(data.images),
           loading: false,
         });
+        this.openImagePage(data.images);
       })
       .catch(error => {
         this.setState({

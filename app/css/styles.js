@@ -298,6 +298,7 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
     indoorsBar:{
+        top: 0,
         position: 'absolute',
         backgroundColor: "#f89406",
         width: width,
