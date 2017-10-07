@@ -4,12 +4,14 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  ListView,
   Button,
   TouchableOpacity,
+  TouchableHighlight,
   ActivityIndicator,
-  Image,
+  StyleSheet,
 } from 'react-native';
+
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   GetIndoorBuildingList,
@@ -19,7 +21,6 @@ import {
 
 import {
   styles,
-  DirectionsStyle,
 } from 'app/css';
 
 export default class IndoorNavigationView extends Component
@@ -31,14 +32,11 @@ export default class IndoorNavigationView extends Component
   constructor(props){
     super(props);
 
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
     this.buildings = GetIndoorBuildingList();
     this.buildingNames = this.buildings.map(building => building.name);
 
     this.state = {
       error: null,
-      imageDataSource: this.ds.cloneWithRows([]),
       loading: false,
       building: null,
       startRoom: null,
@@ -106,14 +104,13 @@ export default class IndoorNavigationView extends Component
       building: null,
       startRoom: null,
       endRoom: null,
-      imageDataSource: this.ds.cloneWithRows([]),
     });
   }
 
-  openImage = (image) => {
+  openImagePage = (images) => {
     this.props.navigation.navigate('Image', {
-      title: image.floor,
-      imageUrl: image.url,
+      images: images,
+      title: 'Indoor Navigation',
     });
   }
 
@@ -140,56 +137,58 @@ export default class IndoorNavigationView extends Component
       endRoom,
     } = this.state;
 
+    const underlayColor = StyleSheet.flatten(styles.indoorsBtnPressedColor).backgroundColor;
+
     return (
-      <View style={DirectionsStyle.container}>
+      <View style={styles.container}>
 
-        <Text style={styles.errorText}>{error}</Text>
+        <View style={styles.indoorsBar}>
 
-        <ListView
-          enableEmptySections={true}
-          dataSource={this.state.imageDataSource}
-          renderRow={(image) =>
-            <TouchableOpacity style={styles.wrapper}
-              onPress={() => this.openImage(image)}
-            >
-              <View style={styles.flexRow}>
-                <Text style={[styles.baseText, styles.locText]}>
-                  {image.floor}
-                </Text>
-                <Image source={{uri: image.url}}
-                  style={{width: 40, height: 40}}
-                />
-              </View>
-            </TouchableOpacity>
-          }
-        />
+          <TouchableHighlight
+              style={[styles.directionsBtnTop, styles.indoorsBtnColor]}
+              underlayColor={underlayColor}
+              onPress={this.selectBuilding}
+          >
+            <Text style={styles.indoorsText}>
+              {building ? building.name : 'Select Building'}
+            </Text>
+          </TouchableHighlight>
+          <View style={styles.indoorHelp}>
 
-        {this.renderSpinner()}
+          <TouchableHighlight
+              style={[styles.indoorsMidBot, styles.indoorsBtnColor]}
+              underlayColor={underlayColor}
+              onPress={this.selectStartRoom}
+          >
+            <Text style={styles.indoorsText}>
+              {startRoom ? startRoom : 'Select Start Room (optional)'}
+            </Text>
+          </TouchableHighlight>
 
-        <Button
-          title={"Select building"}
-          onPress={this.selectBuilding}
-        />
+          <TouchableHighlight>
+            <MaterialsIcon style={styles.helpBtn} color='#ffffff' size={24} name={'help'}/>
+          </TouchableHighlight>
 
-        <Button
-          title={"Select start room"}
-          onPress={this.selectStartRoom}
-        />
+          </View>
+          <TouchableHighlight
+              style={[styles.indoorsBtnBot, styles.indoorsBtnColor]}
+              underlayColor={underlayColor}
+              onPress={this.selectEndRoom}
+          >
+            <Text style={styles.indoorsText}>
+              {endRoom ? endRoom : 'Select End Room'}
+            </Text>
+          </TouchableHighlight>
 
-        <Button
-          title={"Select end room"}
-          onPress={this.selectEndRoom}
-        />
+        </View>
 
         <View style={{marginBottom: 10}}>
-          <Text>Building: {building ? building.name : ''}</Text>
-          <Text>From: {startRoom}</Text>
-          <Text>To: {endRoom}</Text>
           <View style={{marginTop: 10}}>
-            <Button
-              title='Get Directions'
+            <TouchableOpacity
               onPress={this.getDirections.bind(this)}
-            />
+              style={styles.inStartBtn}>
+                <MaterialsIcon color='#ffffff' size={40} name={'directions'}/>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -198,22 +197,31 @@ export default class IndoorNavigationView extends Component
           onPress={this.clear}
         />
 
+        <Text style={styles.errorText}>{error}</Text>
+
+        {this.renderSpinner()}
+
       </View>
     );
   }
 
   async getDirections() {
-    const {
+    let {
       building,
       startRoom,
       endRoom,
     } = this.state;
 
-    if (!startRoom || !endRoom) {
+    if (!endRoom) {
       this.setState({
-        error: 'Select a start and end room.'
+        error: 'Select an end room.'
       });
       return;
+    }
+
+    // if only one room provided, it's a single room lookup
+    if (!startRoom) {
+      startRoom = endRoom;
     }
 
     // begin directions request
@@ -223,9 +231,9 @@ export default class IndoorNavigationView extends Component
       .then(data => {
         this.setState({
           error: null,
-          imageDataSource: this.ds.cloneWithRows(data.images),
           loading: false,
         });
+        this.openImagePage(data.images);
       })
       .catch(error => {
         this.setState({

@@ -7,12 +7,15 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  ListView,
-  Button,
-  TouchableOpacity,
+  TouchableHighlight,
   ActivityIndicator,
+  Animated,
+  Alert,
+  Platform,
+  StyleSheet,
 } from 'react-native';
 import PubSub from 'pubsub-js';
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   TBTItem,
@@ -36,6 +39,12 @@ import {
   DirectionsStyle
 } from 'app/css';
 
+const HIDDEN_PX = -300;
+const VISIBLE_PX = Platform.select({
+  android: 0,
+  ios: 10,
+});
+
 export default class DirectionsView extends Component
 {
 
@@ -49,34 +58,33 @@ export default class DirectionsView extends Component
   constructor(props){
     super(props);
 
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
     this.GPSManager = props.screenProps.GPSManager;
 
     this.state = {
-      error: null,
-      dataSource: this.ds.cloneWithRows([]),
-      loading: false,
+      startLocation: null,
       endLocation: null,
+      translateYValue: new Animated.Value(HIDDEN_PX),
     };
+
+    this.startLocation = null;
+    this.endLocation = null;
 
     this.locationNames = GetLocationList()
                             .sort((a,b) => a.priority - b.priority)
                             .map(loc => loc.name);
+    this.directions = null;
   }
 
   searchStartLocation = () => {
     const currentLocationText = 'Current Location';
 
-    let onResultSelect = name => {
+    const onResultSelect = name => {
       let startLocation;
       if (name === currentLocationText) {
         const position = this.GPSManager.getPosition();
         //const position = { latitude: 34.070286, longitude: -118.443413 };
         if (!position) {
-          this.setState({
-            error: 'Unable to find your location.'
-          });
+          Alert.alert('Unable to find your location.');
           return;
         }
 
@@ -93,6 +101,8 @@ export default class DirectionsView extends Component
       this.setState({
         startLocation: startLocation
       });
+      this.startLocation = startLocation;
+      this.getDirections();
     };
 
     this.props.navigation.navigate('Search', {
@@ -104,21 +114,34 @@ export default class DirectionsView extends Component
   }
 
   searchEndLocation = () => {
+    const onResultSelect = name => {
+      const endLocation = GetLocationByName(name);
+      this.setState({
+        endLocation: endLocation,
+        endRoom: null,
+      }),
+      this.endLocation = endLocation;
+      this.getDirections();
+    };
+
     this.props.navigation.navigate('Search', {
       title: 'Select end location',
       data: this.locationNames,
-      onResultSelect: name => this.setState({
-        endLocation: GetLocationByName(name)
-      }),
+      onResultSelect: onResultSelect
     });
   }
 
   selectEndRoom = () => {
-      let building = GetIndoorBuildingById(this.state.endLocation.id);
+    const {
+      endLocation
+    } = this.state;
+    if (!endLocation) {
+      return;
+    }
+
+    let building = GetIndoorBuildingById(endLocation.id);
     if (!building) {
-      this.setState({
-        error: 'Select a end location first.'
-      });
+      Alert.alert('Indoor navigation not supported for this building.');
       return;
     }
     this.props.navigation.navigate('Search', {
@@ -131,13 +154,9 @@ export default class DirectionsView extends Component
     }
 
 
-  showRouteOnMap = () => {
-    const {
-      startLocation,
-      endLocation
-    } = this.state;
+  showRouteOnMap = (startLocation, endLocation, polyline) => {
 
-    let polyline = DecodePolyline(this.trip.legs[0].shape).map(coord => ({
+    let polylineCoords = DecodePolyline(polyline).map(coord => ({
       latitude: coord[0],
       longitude: coord[1]
     }));
@@ -152,148 +171,125 @@ export default class DirectionsView extends Component
     };
 
     // connect to the map icons
-    polyline = [].concat(startCoords, polyline, endCoords);
+    polylineCoords = [].concat(startCoords, polylineCoords, endCoords);
 
     PubSub.publish('DirectionsView.showRouteOnMap', {
-      polyline: polyline,
+      polyline: polylineCoords,
       startLocation: startLocation,
       endLocation: endLocation,
     });
     this.props.navigation.navigate('MainMap');
   }
 
-  clear = () => {
+  Clear = () => {
     this.setState({
-      error: null,
       startLocation: null,
       endLocation: null,
-      dataSource: this.ds.cloneWithRows([]),
     });
-    this.trip = null;
-    PubSub.publish('DirectionsView.clearRoute');
+    this.startLocation = null;
+    this.endLocation = null;
+    this.directions = null;
   }
 
-  renderSpinner = () => {
-    if (this.state.loading) {
-      return (
-        <View style={styles.loading}>
-          <ActivityIndicator
-            color={'#246dd5'}
-            size={'large'}
-          />
-        </View>
-      );
+  SetVisible = (isVisible) => {
+    const toValue = isVisible ? VISIBLE_PX : HIDDEN_PX;
+
+    Animated.spring(this.state.translateYValue, {
+      toValue: toValue,
+      //velocity: 3,
+      //tension: 2,
+      //friction: 8
+    }).start();
+  }
+
+  async getDirections() {
+    const startLocation = this.startLocation;
+    const endLocation = this.endLocation;
+
+    if (!startLocation || !endLocation) {
+      // don't get directions until we have all valid input
+      return;
     }
-    return null;
+
+    // same start and end location
+    if (startLocation.id === endLocation.id) {
+      this.directions = [{
+        instruction: 'You have arrived at your destination.',
+        type: 4,
+      }];
+      this.showRouteOnMap(startLocation, endLocation, "");
+      return;
+    }
+
+    // begin directions request
+
+    const extraOptions = {};
+
+    RouteTBT(startLocation, endLocation, extraOptions)
+      .then(data => {
+        if (!data) {
+          return;
+        }
+        let directions = [];
+        let polyline = "";
+        if (!data.error) {
+          directions = data.trip.legs[0].maneuvers;
+          polyline = data.trip.legs[0].shape;
+          this.showRouteOnMap(startLocation, endLocation, polyline);
+        } else {
+            Alert.alert(data.error);
+        }
+        this.directions = directions;
+      })
+      .catch(error => {
+        Alert.alert(error.message);
+      });
   }
 
   render() {
     const {
       startLocation,
       endLocation,
-      error,
-      loading,
       endRoom,
+      translateYValue,
     } = this.state;
+
+    const underlayColor = StyleSheet.flatten(styles.directionsBtnPressedColor).backgroundColor;
 
     return (
-      <View style={DirectionsStyle.container}>
+      <Animated.View style={[styles.directionsBar, {top: translateYValue}]}>
 
-        <Text style={styles.errorText}>{error}</Text>
-
-        {this.renderSpinner()}
-
-        <ListView
-            enableEmptySections={true}
-            dataSource={this.state.dataSource}
-            renderRow={(rowData) =>
-                <TouchableOpacity style={styles.wrapper}>
-                    <View style={styles.wrapper}>
-                        <Text style={[styles.baseText, styles.locText]}>
-                          {rowData.verbal_pre_transition_instruction}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            }
-        />
-
-        <Button
-          title={"Select start location"}
+        <TouchableHighlight
+          style={[styles.directionsBtnTop, styles.directionsBtnColor]}
+          underlayColor={underlayColor}
           onPress={this.searchStartLocation}
-        />
+        >
+          <Text style={styles.directionsText}>
+            {startLocation ? startLocation.name : 'Search from'}
+          </Text>
+        </TouchableHighlight>
 
-        <Button
-          title={"Select end location"}
+        <TouchableHighlight
+          style={[styles.directionsBtnBot, styles.directionsBtnColor]}
+          underlayColor={underlayColor}
           onPress={this.searchEndLocation}
-        />
+        >
+          <Text style={styles.directionsText}>
+            {endLocation ? endLocation.name : 'Search destination'} {endRoom}
+          </Text>
+        </TouchableHighlight>
 
-        { (endLocation) && (GetIndoorBuildingById(this.state.endLocation.id).pois) ?
-        <Button
-          title={"Select end room"}
-          onPress={this.selectEndRoom}
-        />
+        { endLocation && endLocation.indoor_nav ?
+          <TouchableHighlight
+            style={[styles.directionsBtnBot, styles.directionsBtnColor]}
+            underlayColor={underlayColor}
+            onPress={this.selectEndRoom}
+          >
+            <Text style={styles.directionsText}>Select end room</Text>
+          </TouchableHighlight>
         : null }
-        <View style={{marginBottom: 10}}>
-          <Text>From: {startLocation ? startLocation.name : ''}</Text>
-          <Text>To: {endLocation ? endLocation.name : ''} {endRoom}</Text>
-          <View style={{marginTop: 10}}>
-            <Button
-              title='Get Directions'
-              onPress={this.getDirections.bind(this)}
-            />
-          </View>
-        </View>
 
-        <Button
-          title={"Clear"}
-          onPress={this.clear}
-        />
-
-      </View>
+      </Animated.View>
     );
-  }
-
-  async getDirections() {
-    const {
-      startLocation,
-      endLocation,
-    } = this.state;
-
-    if (!startLocation || !endLocation) {
-      this.setState({
-        error: 'Select a start and end location.'
-      });
-      return;
-    }
-
-    // begin directions request
-    this.setState({ loading: true });
-
-    const extraOptions = {};
-
-    RouteTBT(startLocation, endLocation, extraOptions)
-      .then(data => {
-        let error = data.error;
-        let directions = [];
-        if (data && !data.error) {
-          error = null;
-            directions = data.trip.legs[0].maneuvers;
-        }
-
-        this.trip = data.trip;
-        this.showRouteOnMap();
-
-        this.setState({
-          error: error,
-          dataSource: this.ds.cloneWithRows(directions),
-          loading: false,
-        });
-      })
-      .catch(error => {
-        this.setState({
-          error: error.message,
-          loading: false,
-        });
-      });
   }
 }

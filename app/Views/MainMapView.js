@@ -30,6 +30,8 @@ import {
   GetLocationByName,
 } from 'app/DataManager';
 
+import { DirectionsView } from 'app/Views';
+
 import { Location } from 'app/DataTypes';
 
 import GPSManager from 'app/GPSManager';
@@ -79,8 +81,12 @@ export default class MainMapView extends Component {
             //position: this.initialPosition,
             markerLocations: popPrioritize(this.initialRegion).slice(0, 10),
             results: [],
-            route: {}
+            route: {},
+            directionsBarVisible: false,
         };
+
+
+
         this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
 
         this.markerRefs = {};
@@ -124,15 +130,6 @@ export default class MainMapView extends Component {
         });
       });
 
-      PubSub.subscribe('DirectionsView.clearRoute', () => {
-        this.setState({
-          polyline: null
-        });
-        this.specialMarkerLocations = [];
-        this.updateMapIcons();
-      });
-
-
       PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
         this.specialMarkerLocations = [location];
         this.updateMapIcons();
@@ -165,6 +162,23 @@ export default class MainMapView extends Component {
 
     zoomToCampus = () => {
         this.mapView.animateToRegion(this.initialRegion, 500);
+    }
+
+    toggleDirections = () => {
+      let visible = !this.state.directionsBarVisible;
+
+      this.setState({
+        directionsBarVisible: visible
+      });
+      this.directionsView.SetVisible(visible);
+
+      if (!visible) {
+        this.specialMarkerLocations = [];
+        this.setState({ polyline: null });
+        this.updateMapIcons();
+
+        this.directionsView.Clear()
+      }
     }
 
     openSearchMenu = () => {
@@ -346,6 +360,7 @@ export default class MainMapView extends Component {
         const {
           position,
           markerLocations,
+          directionsBarVisible,
         } = this.state;
 
         const file = Platform.select({
@@ -364,7 +379,6 @@ export default class MainMapView extends Component {
                       <MaterialsIcon color='#cccccc' size={30} name={'search'}/>
                   </TouchableOpacity>
                 </View>
-
                 <TouchableOpacity onPress={this.zoomToCurrentLocation}
                   style={[styles.mapViewBtn, styles.myLocationBtn]}>
                     <MaterialsIcon color='#ffffff' size={24} name={'near-me'}/>
@@ -374,6 +388,15 @@ export default class MainMapView extends Component {
                   style={[styles.mapViewBtn, styles.zoomToCampusBtn]}>
                     <MaterialsIcon color='#ffffff' size={24} name={'zoom-out-map'}/>
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={this.toggleDirections}
+                  style={[styles.mapViewBtn, styles.toggleDirectionsBtn]}>
+                    <MaterialsIcon color='#ffffff' size={24} name={'directions'}/>
+                </TouchableOpacity>
+
+                <DirectionsView {...this.props}
+                    ref={ref => this.directionsView = ref}
+                />
 
                 <MapView style={styles.map}
                     ref={(ref) => this.mapView = ref}
@@ -425,4 +448,3 @@ export default class MainMapView extends Component {
         );
     }
 }
-

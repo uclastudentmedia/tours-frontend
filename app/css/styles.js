@@ -32,7 +32,7 @@ export default StyleSheet.create({
         top: Platform.select({
           android: 0,
           ios: 0,
-        }), 
+        }),
         fontSize: 20,
         backgroundColor:'transparent',
         flex: 1,
@@ -239,8 +239,7 @@ export default StyleSheet.create({
         paddingRight: 359
     },
     buttonContainer: {
-        flex: 1,
-        marginTop: 20,
+        flex: 1
     },
     errorText: {
         color: '#d61414',
@@ -251,13 +250,15 @@ export default StyleSheet.create({
         fontSize: 22,
     },
     mapViewBtn: {
+        paddingTop: 5,
+        alignItems: 'center',
         position: 'absolute',
         height: 30,
         width: 30,
         borderRadius: 15,
         paddingLeft:2.5,
         // borderWidth: 1,
-        backgroundColor: '#246dd5', 
+        backgroundColor: '#246dd5',
         // borderColor: '#ffffff',
         shadowOffset: { width: 0, height: 3 },
         shadowColor: '#eeeeee',
@@ -314,9 +315,115 @@ export default StyleSheet.create({
         bottom: 80,
         right: 30,
     },
+    dirStartBtn: {
+        paddingTop: 5,
+        alignItems: 'center',
+        bottom: 80,
+        right: 30,
+        position: 'absolute',
+        height: 50,
+        width: 50,
+        borderRadius: 25,
+        borderWidth: 1,
+        backgroundColor: '#246dd5',
+        borderColor: '#ffffff'
+    },
+    inStartBtn: {
+        paddingTop: 5,
+        alignItems: 'center',
+        bottom: 80,
+        right: 30,
+        position: 'absolute',
+        height: 50,
+        width: 50,
+        borderRadius: 25,
+        borderWidth: 1,
+        backgroundColor: '#43A047',
+        borderColor: '#ffffff'
+    },
+    helpBtn:{
+        marginTop: 5
+    },
+    toggleDirectionsBtn: {
+        bottom: 130,
+        right: 30,
+    },
     flexRow: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },
+//Below: Edits the directions searchbar on MainMapView
+//Container
+    directionsBar:{
+        position: 'absolute',
+        backgroundColor: "#246dd5",
+        width: width,
+        alignItems: 'center',
+        elevation: 10,
+        zIndex: 10,
+    },
+    indoorsBar:{
+        top: 0,
+        position: 'absolute',
+        backgroundColor: "#f89406",
+        width: width,
+        alignItems: 'center'
+    },
+//Searchbar Attributes
+    directionsBtnColor:{
+        backgroundColor: '#ffffff'
+    },
+    directionsBtnPressedColor: {
+        backgroundColor: '#ccc'
+    },
+    indoorsBtnColor:{
+        backgroundColor: '#f8bc06'
+    },
+    indoorsBtnPressedColor: {
+        backgroundColor: '#ab8204'
+    },
+    directionsBtnTop:{
+        borderRadius: 5,
+        height: 30,
+        width: width - 10,
+        marginTop: 10,
+        marginBottom: 5
+    },
+    directionsBtnBot:{
+        borderRadius: 5,
+        height: 30,
+        width: width - 10,
+        marginTop: 5,
+        marginBottom: 10
+    },
+    indoorsMidBot:{
+        borderRadius: 5,
+        height: 30,
+        width: width - 40,
+        marginTop: 5,
+        marginBottom: 10,
+        marginRight: 5
+    },
+    indoorsBtnBot:{
+        borderRadius: 5,
+        height: 30,
+        width: width - 10,
+        marginBottom: 10
+    },
+    directionsText:{
+        marginTop: 5,
+        marginLeft: 10,
+        fontSize: 17
+    },
+    indoorsText:{
+        color: 'white',
+        marginTop: 5,
+        marginLeft: 10,
+        fontSize: 17
+    },
+    indoorHelp:{
+        flex: 1,
+        flexDirection: 'row'
+    }
 });
