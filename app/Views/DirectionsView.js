@@ -7,13 +7,12 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  ListView,
-  Button,
-  TouchableOpacity,
   TouchableHighlight,
   ActivityIndicator,
   Animated,
   Alert,
+  Platform,
+  StyleSheet,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
@@ -41,7 +40,10 @@ import {
 } from 'app/css';
 
 const HIDDEN_PX = -300;
-const VISIBLE_PX = 0;
+const VISIBLE_PX = Platform.select({
+  android: 0,
+  ios: 10,
+});
 
 export default class DirectionsView extends Component
 {
@@ -56,13 +58,9 @@ export default class DirectionsView extends Component
   constructor(props){
     super(props);
 
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
     this.GPSManager = props.screenProps.GPSManager;
 
     this.state = {
-      dataSource: this.ds.cloneWithRows([]),
-      loading: false,
       startLocation: null,
       endLocation: null,
       translateYValue: new Animated.Value(HIDDEN_PX),
@@ -74,6 +72,7 @@ export default class DirectionsView extends Component
     this.locationNames = GetLocationList()
                             .sort((a,b) => a.priority - b.priority)
                             .map(loc => loc.name);
+    this.directions = null;
   }
 
   searchStartLocation = () => {
@@ -186,24 +185,10 @@ export default class DirectionsView extends Component
     this.setState({
       startLocation: null,
       endLocation: null,
-      dataSource: this.ds.cloneWithRows([]),
     });
     this.startLocation = null;
     this.endLocation = null;
-  }
-
-  renderSpinner = () => {
-    if (this.state.loading) {
-      return (
-        <View style={styles.loading}>
-          <ActivityIndicator
-            color={'#246dd5'}
-            size={'large'}
-          />
-        </View>
-      );
-    }
-    return null;
+    this.directions = null;
   }
 
   SetVisible = (isVisible) => {
@@ -217,88 +202,6 @@ export default class DirectionsView extends Component
     }).start();
   }
 
-  render() {
-    const {
-      startLocation,
-      endLocation,
-      loading,
-      endRoom,
-      translateYValue,
-    } = this.state;
-
-    return (
-        
-        /*
-      <View>
-
-        {this.renderSpinner()}
-
-        <ListView
-            enableEmptySections={true}
-            dataSource={this.state.dataSource}
-            renderRow={(rowData) =>
-                <TouchableOpacity style={styles.wrapper}>
-                    <View style={styles.wrapper}>
-                        <Text style={[styles.baseText, styles.locText]}>
-                          {rowData.instruction}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            }
-        />
-        */
-
-        <Animated.View style={[styles.directionsBar, {top: translateYValue}]}>
-
-          <TouchableHighlight
-            style={[styles.directionsBtnTop, styles.directionsBtnColor]}
-            onPress={this.searchStartLocation}
-          >
-            <Text style={styles.directionsText}>
-              {startLocation ? startLocation.name : 'Search from'}
-            </Text>
-          </TouchableHighlight>
-
-          <TouchableHighlight
-            style={[styles.directionsBtnBot, styles.directionsBtnColor]}
-            onPress={this.searchEndLocation}
-          >
-            <Text style={styles.directionsText}>
-              {endLocation ? endLocation.name : 'Search destination'} {endRoom}
-            </Text>
-          </TouchableHighlight>
-
-          { endLocation && endLocation.indoor_nav ?
-            <TouchableHighlight
-              style={[styles.directionsBtnBot, styles.directionsBtnColor]}
-              onPress={this.selectEndRoom}
-            >
-              <Text style={styles.directionsText}>Select end room</Text>
-            </TouchableHighlight>
-          : null }
-
-          {/*
-          <View style={{marginBottom: 10}}>
-            <View style={{marginTop: 10}}>
-                <TouchableOpacity
-                  onPress={this.getDirections.bind(this)}
-                  style={styles.dirStartBtn}>
-                    <MaterialsIcon color='#ffffff' size={40} name={'directions'}/>
-                </TouchableOpacity>
-            </View>
-          </View>
-
-          <Button
-            title={"Clear"}
-            onPress={this.Clear}
-          />
-          */}
-        </Animated.View>
-
-      //</View>
-    );
-  }
-
   async getDirections() {
     const startLocation = this.startLocation;
     const endLocation = this.endLocation;
@@ -310,19 +213,15 @@ export default class DirectionsView extends Component
 
     // same start and end location
     if (startLocation.id === endLocation.id) {
-      const directions = [{
-        instruction: 'You have arrived at your destination.'
+      this.directions = [{
+        instruction: 'You have arrived at your destination.',
+        type: 4,
       }];
-      this.setState({
-        dataSource: this.ds.cloneWithRows(directions),
-        loading: false,
-      });
       this.showRouteOnMap(startLocation, endLocation, "");
       return;
     }
 
     // begin directions request
-    this.setState({ loading: true });
 
     const extraOptions = {};
 
@@ -340,16 +239,57 @@ export default class DirectionsView extends Component
         } else {
             Alert.alert(data.error);
         }
-        this.setState({
-          dataSource: this.ds.cloneWithRows(directions),
-          loading: false,
-        });
+        this.directions = directions;
       })
       .catch(error => {
-        this.setState({
-          loading: false,
-        });
         Alert.alert(error.message);
       });
+  }
+
+  render() {
+    const {
+      startLocation,
+      endLocation,
+      endRoom,
+      translateYValue,
+    } = this.state;
+
+    const underlayColor = StyleSheet.flatten(styles.directionsBtnPressedColor).backgroundColor;
+
+    return (
+      <Animated.View style={[styles.directionsBar, {top: translateYValue}]}>
+
+        <TouchableHighlight
+          style={[styles.directionsBtnTop, styles.directionsBtnColor]}
+          underlayColor={underlayColor}
+          onPress={this.searchStartLocation}
+        >
+          <Text style={styles.directionsText}>
+            {startLocation ? startLocation.name : 'Search from'}
+          </Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight
+          style={[styles.directionsBtnBot, styles.directionsBtnColor]}
+          underlayColor={underlayColor}
+          onPress={this.searchEndLocation}
+        >
+          <Text style={styles.directionsText}>
+            {endLocation ? endLocation.name : 'Search destination'} {endRoom}
+          </Text>
+        </TouchableHighlight>
+
+        { endLocation && endLocation.indoor_nav ?
+          <TouchableHighlight
+            style={[styles.directionsBtnBot, styles.directionsBtnColor]}
+            underlayColor={underlayColor}
+            onPress={this.selectEndRoom}
+          >
+            <Text style={styles.directionsText}>Select end room</Text>
+          </TouchableHighlight>
+        : null }
+
+      </Animated.View>
+    );
   }
 }

@@ -360,7 +360,8 @@ export default StyleSheet.create({
         backgroundColor: "#246dd5",
         width: width,
         alignItems: 'center',
-        zIndex: 1
+        elevation: 10,
+        zIndex: 10,
     },
     indoorsBar:{
         top: 0,
@@ -373,8 +374,14 @@ export default StyleSheet.create({
     directionsBtnColor:{
         backgroundColor: '#ffffff'
     },
+    directionsBtnPressedColor: {
+        backgroundColor: '#ccc'
+    },
     indoorsBtnColor:{
         backgroundColor: '#f8bc06'
+    },
+    indoorsBtnPressedColor: {
+        backgroundColor: '#ab8204'
     },
     directionsBtnTop:{
         borderRadius: 5,

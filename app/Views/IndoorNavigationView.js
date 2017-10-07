@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
@@ -136,6 +137,8 @@ export default class IndoorNavigationView extends Component
       endRoom,
     } = this.state;
 
+    const underlayColor = StyleSheet.flatten(styles.indoorsBtnPressedColor).backgroundColor;
+
     return (
       <View style={styles.container}>
 
@@ -143,6 +146,7 @@ export default class IndoorNavigationView extends Component
 
           <TouchableHighlight
               style={[styles.directionsBtnTop, styles.indoorsBtnColor]}
+              underlayColor={underlayColor}
               onPress={this.selectBuilding}
           >
             <Text style={styles.indoorsText}>
@@ -151,22 +155,24 @@ export default class IndoorNavigationView extends Component
           </TouchableHighlight>
           <View style={styles.indoorHelp}>
 
-            <TouchableHighlight
-                style={[styles.indoorsMidBot, styles.indoorsBtnColor]}
-                onPress={this.selectStartRoom}
-            >
-              <Text style={styles.indoorsText}>
-                {startRoom ? startRoom : 'Select Start Room'}
-              </Text>
-            </TouchableHighlight>
+          <TouchableHighlight
+              style={[styles.indoorsMidBot, styles.indoorsBtnColor]}
+              underlayColor={underlayColor}
+              onPress={this.selectStartRoom}
+          >
+            <Text style={styles.indoorsText}>
+              {startRoom ? startRoom : 'Select Start Room'}
+            </Text>
+          </TouchableHighlight>
 
-            <TouchableHighlight>
-              <MaterialsIcon style={styles.helpBtn} color='#ffffff' size={24} name={'help'}/>
-            </TouchableHighlight>
+          <TouchableHighlight>
+            <MaterialsIcon style={styles.helpBtn} color='#ffffff' size={24} name={'help'}/>
+          </TouchableHighlight>
 
           </View>
           <TouchableHighlight
               style={[styles.indoorsBtnBot, styles.indoorsBtnColor]}
+              underlayColor={underlayColor}
               onPress={this.selectEndRoom}
           >
             <Text style={styles.indoorsText}>
