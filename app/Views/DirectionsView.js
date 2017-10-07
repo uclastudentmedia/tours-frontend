@@ -154,7 +154,7 @@ export default class DirectionsView extends Component
     }
 
 
-  showRouteOnMap = (startLocation, endLocation, polyline) => {
+  showRouteOnMap = (startLocation, endLocation, polyline, minutes, miles) => {
 
     let polylineCoords = DecodePolyline(polyline).map(coord => ({
       latitude: coord[0],
@@ -177,6 +177,8 @@ export default class DirectionsView extends Component
       polyline: polylineCoords,
       startLocation: startLocation,
       endLocation: endLocation,
+      minutes: minutes,
+      miles: miles,
     });
     this.props.navigation.navigate('MainMap');
   }
@@ -217,7 +219,7 @@ export default class DirectionsView extends Component
         instruction: 'You have arrived at your destination.',
         type: 4,
       }];
-      this.showRouteOnMap(startLocation, endLocation, "");
+      this.showRouteOnMap(startLocation, endLocation, "", 0, 0);
       return;
     }
 
@@ -230,16 +232,19 @@ export default class DirectionsView extends Component
         if (!data) {
           return;
         }
-        let directions = [];
-        let polyline = "";
         if (!data.error) {
-          directions = data.trip.legs[0].maneuvers;
-          polyline = data.trip.legs[0].shape;
-          this.showRouteOnMap(startLocation, endLocation, polyline);
+          let leg = data.trip.legs[0];
+          let directions = leg.maneuvers;
+          let polyline = leg.shape;
+          let minutes = leg.summary.time / 60;
+          let miles = leg.summary.length;
+
+          this.showRouteOnMap(startLocation, endLocation, polyline,
+                              minutes, miles);
+          this.directions = directions;
         } else {
             Alert.alert(data.error);
         }
-        this.directions = directions;
       })
       .catch(error => {
         Alert.alert(error.message);

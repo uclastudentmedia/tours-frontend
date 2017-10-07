@@ -13,9 +13,9 @@ import { GetIcon } from 'app/Assets';
 import { styles } from 'app/css';
 
 // conversions
-function km2ft(km) { return km * 3280.84; }
-function mi2ft(mi) { return mi * 5280; }
-function ft2mi(ft) { return ft / 5280; }
+export function km2ft(km) { return km * 3280.84; }
+export function mi2ft(mi) { return mi * 5280; }
+export function ft2mi(ft) { return ft / 5280; }
 
 export function feetCalc(lat,long,curLat,curLong){
     // haversine :: (Num, Num) -> (Num, Num) -> Num

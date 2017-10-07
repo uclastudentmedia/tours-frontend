@@ -372,10 +372,10 @@ export default StyleSheet.create({
     },
 //Searchbar Attributes
     directionsBtnColor:{
-        backgroundColor: '#ffffff'
+        backgroundColor: '#6197e4'
     },
     directionsBtnPressedColor: {
-        backgroundColor: '#ccc'
+        backgroundColor: '#357add'
     },
     indoorsBtnColor:{
         backgroundColor: '#f8bc06'
@@ -412,6 +412,7 @@ export default StyleSheet.create({
         marginBottom: 10
     },
     directionsText:{
+        color: 'white',
         marginTop: 5,
         marginLeft: 10,
         fontSize: 17

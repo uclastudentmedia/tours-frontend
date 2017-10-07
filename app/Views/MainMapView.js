@@ -23,6 +23,8 @@ import MapView from 'react-native-maps';
 import {
   popPrioritize,
   inRegion,
+  DistanceAwayText,
+  mi2ft,
 } from 'app/Utils';
 
 import {
@@ -41,9 +43,6 @@ import {popLocation} from 'app/LocationPopManager'
 import { GetIcon, GetTabIcon, dot1 } from 'app/Assets';
 
 import { styles, CustomMapStyle } from 'app/css';
-
-// how the locations are prioritized
-var mapSettinger='popular';
 
 var firstOnRegionChange = true;
 
@@ -115,19 +114,30 @@ export default class MainMapView extends Component {
           startLocation,
           endLocation,
           polyline,
+          minutes,
+          miles,
         } = route;
 
-        this.specialMarkerLocations = [startLocation, endLocation];
+        // add distance/time away text to end location callout
+        const directionsDistanceText = `${Math.ceil(minutes)} minutes ` +
+                                       `(${DistanceAwayText(mi2ft(miles))})`;
+        const endLocation1 = new Location({...endLocation,
+          markerDescription: directionsDistanceText
+        });
+
+        this.specialMarkerLocations = [startLocation, endLocation1];
+
         this.updateMapIcons();
 
         this.setState({ polyline: polyline });
 
         this.mapView.fitToCoordinates(polyline, {
           edgePadding: Platform.select({
-            android: { top:400, left:200, right:200, bottom:200 },
+            android: { top:600, left:200, right:200, bottom:200 },
             ios: { top:100, left:100, right:100, bottom:100 },
           })
         });
+        this.markerRefs[endLocation.id].showCallout();
       });
 
       PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
@@ -205,45 +215,27 @@ export default class MainMapView extends Component {
           route,
         } = this.state;
 
-        var markerLocations = [];
-
-        switch (mapSettinger) {
-          case 'tour':
-            //if map setting is tours, display locations on the tour
-            break;
-
-          case 'distance':
-            //if map setting is nearby, prioritize top 10 location by distance
-
-            break;
-
-          case 'popular':
-          default:
-            //if map setting is campus map. prioritize top 10 locations by popularity/category
-            //this is default
-            markerLocations = popPrioritize(this.region);
-                                            //'Food & Beverage');
-            break;
-        }
-
-        // limit the number of markers
-        markerLocations = markerLocations.slice(0, 10);
-
+        var markerLocations = this.specialMarkerLocations;
 
         // is this location not in the marker array?
         const notAddedYet = (loc) => !markerLocations.find(l => l.id == loc.id);
 
-        // add the selected location if needed
-        if (selectedLocation && notAddedYet(selectedLocation)) {
-            markerLocations.push(selectedLocation);
-        }
-
-        // add special marker locations
-        this.specialMarkerLocations.forEach(loc => {
-          if (notAddedYet(loc)) {
-            markerLocations.push(loc);
+        // if no special locations, add popular marker locations
+        if (this.specialMarkerLocations.length === 0) {
+          // add the selected location if needed
+          if (selectedLocation && notAddedYet(selectedLocation)) {
+              markerLocations.push(selectedLocation);
           }
-        });
+
+          // add popular locations
+          var popularLocations = popPrioritize(this.region).slice(0, 10);
+
+          popularLocations.forEach(loc => {
+            if (notAddedYet(loc)) {
+              markerLocations.push(loc);
+            }
+          });
+        }
 
         // remove locations not in the view
         markerLocations = markerLocations.filter(loc => {
@@ -348,8 +340,6 @@ export default class MainMapView extends Component {
 
     onCalloutPress = (location) => {
       return (event) => {
-        console.log(location);
-
         this.props.navigation.navigate('Details', {
             location: location,
         });
@@ -430,7 +420,7 @@ export default class MainMapView extends Component {
                           coordinate={{latitude: loc.lat, longitude: loc.long}}
                           anchor={{x: 0.5, y: 0.5}}
                           title={loc.name}
-                          //description={loc.text_description}
+                          description={loc.markerDescription}
                           image={GetIcon(loc.category_id)}
                           onCalloutPress={this.onCalloutPress(loc)}
                           calloutVisible={false}
