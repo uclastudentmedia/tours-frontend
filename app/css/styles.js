@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 
 const {height, width} = Dimensions.get('window');
-const windowWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
     baseText:{
@@ -198,7 +197,7 @@ export default StyleSheet.create({
     },
     button:{
         justifyContent: 'center',
-        width: windowWidth,
+        width: width,
         backgroundColor:'#dddddd',
         padding:0,
         paddingTop: 0,
@@ -426,5 +425,22 @@ export default StyleSheet.create({
     indoorHelp:{
         flex: 1,
         flexDirection: 'row'
-    }
+    },
+    imageBar: {
+        flex: 0,
+        flexDirection:'row',
+        height: 40,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: 'white',
+    },
+    imageBarArrow: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems:'center',
+    },
+    imageBarText: {
+        textAlign: 'center',
+        fontSize: 20,
+    },
 });

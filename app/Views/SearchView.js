@@ -65,7 +65,7 @@ export default class SearchView extends Component {
       console.warn('SearchView created with no data.');
     }
 
-    this.maxResults = 30;
+    this.maxResults = 100;
 
     this.state = {
       results: this.defaultResults.slice(0, this.maxResults)

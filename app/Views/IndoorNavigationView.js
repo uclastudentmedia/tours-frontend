@@ -107,10 +107,10 @@ export default class IndoorNavigationView extends Component
     });
   }
 
-  openImagePage = (images) => {
+  openImagePage = (buildingName, images) => {
     this.props.navigation.navigate('Image', {
       images: images,
-      title: 'Indoor Navigation',
+      title: buildingName,
     });
   }
 
@@ -233,7 +233,7 @@ export default class IndoorNavigationView extends Component
           error: null,
           loading: false,
         });
-        this.openImagePage(data.images);
+        this.openImagePage(building.name, data.images);
       })
       .catch(error => {
         this.setState({

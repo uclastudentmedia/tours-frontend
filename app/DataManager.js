@@ -423,7 +423,7 @@ export async function RouteIndoor(landmarkId, start, end) {
     .then(data => {
       data.images = data.images.map(img => ({
         url: prependDomain(img.url),
-        floor: `${data.building}, Floor ${img.floor}`
+        title: `Floor ${img.floor}`
       }));
       return data;
     });
