@@ -146,7 +146,8 @@ export default class MainMapView extends Component {
       });
 
       PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
-        this.specialMarkerLocations = [location];
+        //this.specialMarkerLocations = [location];
+        this.setState({selectedLocation: location});
         this.updateMapIcons();
 
         this.mapView.animateToRegion({
@@ -217,10 +218,9 @@ export default class MainMapView extends Component {
     updateMapIcons() {
         const {
           selectedLocation,
-          route,
         } = this.state;
 
-        var markerLocations = this.specialMarkerLocations;
+        var markerLocations = [].concat(this.specialMarkerLocations);
 
         // is this location not in the marker array?
         const notAddedYet = (loc) => !markerLocations.find(l => l.id == loc.id);
