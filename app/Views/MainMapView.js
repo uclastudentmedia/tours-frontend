@@ -40,7 +40,12 @@ import GPSManager from 'app/GPSManager';
 
 import {popLocation} from 'app/LocationPopManager'
 
-import { GetIcon, GetTabIcon, dot1 } from 'app/Assets';
+import {
+  GetIcon,
+  paw_blue,
+  paw_white,
+  dot1,
+} from 'app/Assets';
 
 import { styles, CustomMapStyle } from 'app/css';
 
@@ -354,8 +359,8 @@ export default class MainMapView extends Component {
         } = this.state;
 
         const file = Platform.select({
-          ios: GetTabIcon('maps', true),
-          android: GetTabIcon('maps', false)
+          ios: paw_blue,
+          android: paw_white,
         });
 
         return (

@@ -4,6 +4,8 @@
 export const dot1 = require('../assets/images/dot1.png');
 export const logo = require('../assets/images/logo_1x.png');
 export const logoArtboard = require('../assets/images/logoArtboard.png');
+export const paw_blue = require('../assets/images/paw_blue.png');
+export const paw_white = require('../assets/images/paw_white.png');
 
 const icons = {
   1: require('../assets/icons/1.png'),
@@ -41,13 +43,13 @@ export function GetIcon(category_id) {
 
 const tabIcons = {
   maps: {
-    true:  require('../assets/tab_icons/mapsclicked.png'),
-    false: require('../assets/tab_icons/mapsunclicked.png'),
+    //true:  require('../assets/tab_icons/mapsclicked.png'),
+    //false: require('../assets/tab_icons/mapsunclicked.png'),
   },
-  //schedule: {
-  //  true:  require('../assets/tab_icons/scheduleclicked.png'),
-  //  false: require('../assets/tab_icons/scheduleunclicked.png'),
-  //},
+  schedule: {
+    //true:  require('../assets/tab_icons/scheduleclicked.png'),
+    //false: require('../assets/tab_icons/scheduleunclicked.png'),
+  },
   tours: {
     true:  require('../assets/tab_icons/toursclicked.png'),
     //false: require('../assets/tab_icons/toursunclicked.png'),

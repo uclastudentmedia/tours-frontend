@@ -25,9 +25,9 @@ import { AppStyle } from 'app/css';
 import { GetTabIcon } from 'app/Assets';
 
 
-function makeIcon(name) {
+function makeMaterialIcon(name) {
   /**
-   * Helper function to generate tab icons
+   * Helper function to generate Material tab icons
    * @param name string the name of the icon
    */
   const iconSize = 24;
@@ -37,6 +37,15 @@ function makeIcon(name) {
   );
 }
 
+function makeImageIcon(name) {
+  /**
+   * Helper function to generate image asset tab icons
+   * @param name string the name of the icon
+   */
+  return ({tintColor, focused}) => (
+    <Image source={GetTabIcon(name, focused)} />
+  );
+}
 
 /**
  * Screens
@@ -45,9 +54,7 @@ function makeIcon(name) {
 class MainMapScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Maps',
-    tabBarIcon: ({tintColor, focused}) => (
-      <Image source={GetTabIcon('maps', focused)} />
-    )
+    tabBarIcon: makeMaterialIcon('map')
   };
 
   render() {
@@ -60,7 +67,7 @@ class MainMapScreen extends Component {
 class DirectionsScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Directions',
-    tabBarIcon: makeIcon('navigation')
+    tabBarIcon: makeMaterialIcon('navigation')
   };
 
   render() {
@@ -73,7 +80,7 @@ class DirectionsScreen extends Component {
 class LocationListScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Explore',
-    tabBarIcon: makeIcon('near-me')
+    tabBarIcon: makeMaterialIcon('near-me')
   };
 
   render() {
@@ -86,7 +93,7 @@ class LocationListScreen extends Component {
 class IndoorNavigationScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Indoor',
-    tabBarIcon: makeIcon('home')
+    tabBarIcon: makeMaterialIcon('home')
   };
 
   render() {
