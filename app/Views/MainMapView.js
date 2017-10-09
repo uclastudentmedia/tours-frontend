@@ -142,7 +142,11 @@ export default class MainMapView extends Component {
             ios: { top:100, left:100, right:100, bottom:100 },
           })
         });
-        this.markerRefs[endLocation.id].showCallout();
+
+        const markerRef = this.markerRefs[endLocation.id];
+        if (markerRef) {
+          markerRef.showCallout();
+        }
       });
 
       PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {

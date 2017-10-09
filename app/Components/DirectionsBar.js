@@ -41,8 +41,8 @@ import {
 
 const HIDDEN_PX = -300;
 const VISIBLE_PX = Platform.select({
-  android: 0,
-  ios: 10,
+  android: -20,
+  ios: -10,
 });
 
 export default class DirectionsBar extends Component
@@ -72,7 +72,6 @@ export default class DirectionsBar extends Component
     this.locationNames = GetLocationList()
                             .sort((a,b) => a.priority - b.priority)
                             .map(loc => loc.name);
-    this.directions = null;
   }
 
   searchStartLocation = () => {
@@ -154,7 +153,7 @@ export default class DirectionsBar extends Component
     }
 
 
-  showRouteOnMap = (startLocation, endLocation, polyline, minutes, miles) => {
+  showRouteOnMap = (startLocation, endLocation, polyline, minutes, miles, maneuvers) => {
 
     let polylineCoords = DecodePolyline(polyline).map(coord => ({
       latitude: coord[0],
@@ -179,8 +178,8 @@ export default class DirectionsBar extends Component
       endLocation: endLocation,
       minutes: minutes,
       miles: miles,
+      maneuvers: maneuvers,
     });
-    this.props.navigation.navigate('MainMap');
   }
 
   Clear = () => {
@@ -190,7 +189,6 @@ export default class DirectionsBar extends Component
     });
     this.startLocation = null;
     this.endLocation = null;
-    this.directions = null;
   }
 
   SetVisible = (isVisible) => {
@@ -215,11 +213,11 @@ export default class DirectionsBar extends Component
 
     // same start and end location
     if (startLocation.id === endLocation.id) {
-      this.directions = [{
+      const directions = [{
         instruction: 'You have arrived at your destination.',
         type: 4,
       }];
-      this.showRouteOnMap(startLocation, endLocation, "", 0, 0);
+      this.showRouteOnMap(startLocation, endLocation, "", 0, 0, directions);
       return;
     }
 
@@ -234,14 +232,13 @@ export default class DirectionsBar extends Component
         }
         if (!data.error) {
           let leg = data.trip.legs[0];
-          let directions = leg.maneuvers;
+          let maneuvers = leg.maneuvers;
           let polyline = leg.shape;
           let minutes = leg.summary.time / 60;
           let miles = leg.summary.length;
 
           this.showRouteOnMap(startLocation, endLocation, polyline,
-                              minutes, miles);
-          this.directions = directions;
+                              minutes, miles, maneuvers);
         } else {
             Alert.alert(data.error);
         }

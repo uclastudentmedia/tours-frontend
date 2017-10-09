@@ -13,6 +13,7 @@ import PubSub from 'pubsub-js';
 
 import GPSManager from 'app/GPSManager';
 
+import { GetTBTIcon } from 'app/Assets';
 import { styles } from 'app/css';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -34,12 +35,31 @@ export default class ToursView extends Component
       this.state = {
           dataSource: ds.cloneWithRows([]),
       };
+
+      PubSub.subscribe('DirectionsBar.showRouteOnMap', (msg, {maneuvers}) => {
+          this.setState({
+              dataSource: ds.cloneWithRows(maneuvers)
+          });
+      });
   }
 
-  gotoDescription(location) {
-      this.props.navigation.navigate('TourDetails', {
-          location: location,
-      });
+  renderRow = (maneuver) => {
+    return (
+      <TouchableHighlight
+        underlayColor='#ddd'
+        onPress={() => {}}
+        style={[styles.wrapper, styles.listItemBorder]}
+      >
+        <View style={styles.listItemContainer}>
+          <View style={styles.locListIcon}>
+            <Image source={GetTBTIcon(maneuver.type)} />
+          </View>
+          <View style={styles.listItemContainer}>
+              <Text>{maneuver.instruction}</Text>
+          </View>
+        </View>
+      </TouchableHighlight>
+    );
   }
 
   render() {
@@ -50,29 +70,7 @@ export default class ToursView extends Component
               enableEmptySections={true}
               removeClippedSubviews={false}
               dataSource={this.state.dataSource}
-              renderRow={(loc) =>
-                  <TouchableHighlight
-                    underlayColor='#ddd'
-                    onPress={this.gotoDescription.bind(this, loc)}
-                    style={[styles.wrapper, styles.listItemBorder]}
-                  >
-                      <View style={styles.listItemContainer}>
-                          <View style={styles.locListIcon}>
-                            <Image source={GetIcon(loc.category_id)} />
-                          </View>
-                          <View style={styles.listItemText}>
-                              <Text style={styles.baseText}>
-                                  <Text style={styles.locText}>
-                                      {loc.name}{'\n'}
-                                  </Text>
-                                  <Text style={styles.distText}>
-                                      {DistanceAwayText(loc.FeetAway(position))}
-                                  </Text>
-                              </Text>
-                          </View>
-                      </View>
-                  </TouchableHighlight>
-              }
+              renderRow={this.renderRow}
           />
       </View>
     );

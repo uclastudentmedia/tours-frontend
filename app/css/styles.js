@@ -361,6 +361,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         elevation: 10,
         zIndex: 10,
+        paddingTop: 20,
     },
     indoorsBar:{
         top: 0,
