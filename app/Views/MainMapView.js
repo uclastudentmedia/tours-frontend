@@ -32,7 +32,7 @@ import {
   GetLocationByName,
 } from 'app/DataManager';
 
-import { DirectionsView } from 'app/Views';
+import { DirectionsBar } from 'app/Components';
 
 import { Location } from 'app/DataTypes';
 
@@ -114,7 +114,7 @@ export default class MainMapView extends Component {
 
     subscribe() {
 
-      PubSub.subscribe('DirectionsView.showRouteOnMap', (msg, route) => {
+      PubSub.subscribe('DirectionsBar.showRouteOnMap', (msg, route) => {
         const {
           startLocation,
           endLocation,
@@ -186,14 +186,14 @@ export default class MainMapView extends Component {
       this.setState({
         directionsBarVisible: visible
       });
-      this.directionsView.SetVisible(visible);
+      this.directionsBar.SetVisible(visible);
 
       if (!visible) {
         this.specialMarkerLocations = [];
         this.setState({ polyline: null });
         this.updateMapIcons();
 
-        this.directionsView.Clear()
+        this.directionsBar.Clear();
       }
     }
 
@@ -389,8 +389,8 @@ export default class MainMapView extends Component {
                     <MaterialsIcon color='#ffffff' size={24} name={'directions'}/>
                 </TouchableOpacity>
 
-                <DirectionsView {...this.props}
-                    ref={ref => this.directionsView = ref}
+                <DirectionsBar {...this.props}
+                    ref={ref => this.directionsBar = ref}
                 />
 
                 <MapView style={styles.map}

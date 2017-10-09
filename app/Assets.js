@@ -43,17 +43,21 @@ export function GetIcon(category_id) {
 
 const tabIcons = {
   maps: {
-    //true:  require('../assets/tab_icons/mapsclicked.png'),
-    //false: require('../assets/tab_icons/mapsunclicked.png'),
+    true:  require('../assets/tab_icons/maps_blue.png'),
+    false: require('../assets/tab_icons/maps_gray.png'),
   },
-  schedule: {
-    //true:  require('../assets/tab_icons/scheduleclicked.png'),
-    //false: require('../assets/tab_icons/scheduleunclicked.png'),
+  explore: {
+    true:  require('../assets/tab_icons/explore_blue.png'),
+    false: require('../assets/tab_icons/explore_gray.png'),
+  },
+  indoors: {
+    true:  require('../assets/tab_icons/indoors_blue.png'),
+    false: require('../assets/tab_icons/indoors_gray.png'),
   },
   tours: {
-    true:  require('../assets/tab_icons/toursclicked.png'),
-    //false: require('../assets/tab_icons/toursunclicked.png'),
-  }
+    true:  require('../assets/tab_icons/tours_blue.png'),
+    false: require('../assets/tab_icons/tours_gray.png'),
+  },
 };
 export function GetTabIcon(name, focused) {
   return tabIcons[name][focused];

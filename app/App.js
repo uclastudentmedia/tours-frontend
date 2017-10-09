@@ -18,6 +18,7 @@ import {
   SearchView,
   IndoorNavigationView,
   ImageView,
+  ToursView,
 } from 'app/Views';
 
 import GPSManager from 'app/GPSManager';
@@ -54,7 +55,7 @@ function makeImageIcon(name) {
 class MainMapScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Maps',
-    tabBarIcon: makeMaterialIcon('map')
+    tabBarIcon: makeImageIcon('maps')
   };
 
   render() {
@@ -80,7 +81,7 @@ class DirectionsScreen extends Component {
 class LocationListScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Explore',
-    tabBarIcon: makeMaterialIcon('near-me')
+    tabBarIcon: makeImageIcon('explore')
   };
 
   render() {
@@ -93,12 +94,25 @@ class LocationListScreen extends Component {
 class IndoorNavigationScreen extends Component {
   static navigationOptions = {
     tabBarLabel: 'Indoor',
-    tabBarIcon: makeMaterialIcon('home')
+    tabBarIcon: makeImageIcon('indoors')
   };
 
   render() {
     return (
       <IndoorNavigationView {...this.props} />
+    );
+  }
+}
+
+class ToursScreen extends Component {
+  static navigationOptions = {
+    tabBarLabel: 'Tours',
+    tabBarIcon: makeImageIcon('tours')
+  };
+
+  render() {
+    return (
+      <ToursView {...this.props} />
     );
   }
 }
@@ -114,6 +128,7 @@ const MainScreenNavigator = TabNavigator(
     Directions: { screen: DirectionsScreen },
     LocationList: { screen: LocationListScreen },
     IndoorNavigation: { screen: IndoorNavigationScreen },
+    Tours: { screen: ToursScreen },
   },
   {
     tabBarPosition: 'bottom',

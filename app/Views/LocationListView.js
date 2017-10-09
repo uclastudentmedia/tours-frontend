@@ -14,10 +14,9 @@ import {
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
-import { initializeParameters, popLocationListView, setCategory } from 'app/LocationPopManager'
 import GPSManager from 'app/GPSManager';
 import { GetLocationList } from 'app/DataManager';
-import { popPrioritize, DistanceAwayText } from 'app/Utils'
+import { popPrioritize, DistanceAwayText } from 'app/Utils';
 
 import { GetIcon } from 'app/Assets';
 import { styles } from 'app/css';
