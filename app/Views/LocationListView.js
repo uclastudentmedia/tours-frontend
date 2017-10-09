@@ -117,14 +117,14 @@ export default class LocationListView extends Component
 
     return (
       <View style={styles.container}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={styles.categoryFilterBtns}>
             {
               this.categories.map((cat, i) => (
                 <View style={styles.buttonContainer} key={i}>
                   <Button
                     onPress={this.setCategory.bind(this, cat.name)}
                     title={cat.title}
-                    color={this.category == cat.name ? '#f8bc06' : '#f89406'}
+                    color={this.category == cat.name ? '#f8d106' : '#f89406'}
                   />
                 </View>
               ))

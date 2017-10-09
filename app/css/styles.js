@@ -103,8 +103,16 @@ export default StyleSheet.create({
     listHeader:{
         flex:4,
         width:width
-    }
-    ,
+    },
+    categoryFilterBtns: {
+        flex: 0,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingTop: Platform.select({
+          android: 0,
+          ios: 10
+        }),
+    },
     distText:{
         fontSize:16,
         color: '#B8B8B8'
@@ -249,15 +257,15 @@ export default StyleSheet.create({
         fontSize: 22,
     },
     mapViewBtn: {
-        paddingTop: 5,
+        flex: 1,
         alignItems: 'center',
+        justifyContent: 'center',
         position: 'absolute',
         height: 30,
         width: 30,
-        borderRadius: 15,
-        paddingLeft:2.5,
-        // borderWidth: 1,
         backgroundColor: '#246dd5',
+        borderRadius: 15,
+        // borderWidth: 1,
         // borderColor: '#ffffff',
         shadowOffset: { width: 0, height: 3 },
         shadowColor: '#eeeeee',
@@ -364,8 +372,12 @@ export default StyleSheet.create({
         paddingTop: 20,
     },
     indoorsBar:{
-        top: 0,
         position: 'absolute',
+        top: Platform.select({
+          android: -10,
+          ios: 0,
+        }),
+        paddingTop: 10,
         backgroundColor: "#f89406",
         width: width,
         alignItems: 'center'
