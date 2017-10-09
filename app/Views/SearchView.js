@@ -82,6 +82,8 @@ export default class SearchView extends Component {
   }
 
   handleSearch = (input) => {
+    this.scrollView.scrollTo({y: 0, animated: false});
+
     if (input == '') {
       this.setState({
         results: this.defaultResults.slice(0, this.maxResults)
@@ -121,7 +123,10 @@ export default class SearchView extends Component {
             autoCorrect={false}
           />
 
-          <ScrollView keyboardShouldPersistTaps={'always'}>
+          <ScrollView
+            keyboardShouldPersistTaps={'always'}
+            ref={ref => this.scrollView = ref}
+          >
             <View style={styles.searchViewDataWithIcons}/>
             {
               this.dataWithIcons.map((item, i) => (
