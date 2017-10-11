@@ -48,6 +48,9 @@ export default StyleSheet.create({
         width:width,
         height:height,
     },
+    loadingBackground: {
+        backgroundColor: '#006699',
+    },
     loadMapContainer: {
         flex: 1,
         alignItems: 'center',
