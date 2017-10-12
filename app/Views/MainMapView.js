@@ -380,17 +380,18 @@ export default class MainMapView extends Component {
                 </View>
                 <TouchableOpacity onPress={this.zoomToCurrentLocation}
                   style={[styles.mapViewBtn, styles.myLocationBtn]}>
-                    <MaterialsIcon color='#ffffff' size={24} name={'near-me'}/>
+                    <MaterialsIcon color='#246dd5' size={20} name={'near-me'}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.zoomToCampus}
                   style={[styles.mapViewBtn, styles.zoomToCampusBtn]}>
-                    <MaterialsIcon color='#ffffff' size={24} name={'zoom-out-map'}/>
+                    <MaterialsIcon color='#246dd5' size={20} name={'zoom-out-map'}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.toggleDirections}
                   style={[styles.mapViewBtn, styles.toggleDirectionsBtn]}>
-                    <MaterialsIcon color='#ffffff' size={24} name={'directions'}/>
+                    <MaterialsIcon color='#ffffff' size={20} name={'directions'}/>
+                    <Text style={styles.toogleText}>Go</Text>
                 </TouchableOpacity>
 
                 <DirectionsBar {...this.props}

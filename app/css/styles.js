@@ -266,15 +266,13 @@ export default StyleSheet.create({
         position: 'absolute',
         height: 30,
         width: 30,
-        backgroundColor: '#246dd5',
-        borderRadius: 15,
-        // borderWidth: 1,
-        // borderColor: '#ffffff',
-        shadowOffset: { width: 0, height: 3 },
-        shadowColor: '#eeeeee',
-        shadowOpacity: 0.5,
-        elevation: 3,
-        overflow: 'hidden',
+        borderRadius: 30,
+        shadowOffset: { width: 1, height: 1 },
+        shadowColor: '#999999',
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5,
+        // overflow: 'hidden',
     },
     mapViewSearchBtn: {
         backgroundColor: Platform.select({
@@ -318,12 +316,14 @@ export default StyleSheet.create({
         marginTop: 15,
     },
     myLocationBtn: {
-        bottom: 30,
-        right: 30,
+        bottom: 150,
+        right: 36,
+        backgroundColor: '#ffffff',
     },
     zoomToCampusBtn: {
-        bottom: 80,
-        right: 30,
+        bottom: 100,
+        right: 36,
+        backgroundColor: '#ffffff',
     },
     dirStartBtn: {
         paddingTop: 5,
@@ -355,8 +355,14 @@ export default StyleSheet.create({
         marginTop: 5
     },
     toggleDirectionsBtn: {
-        bottom: 130,
+        bottom: 30,
         right: 30,
+        width: 45,
+        height: 45,
+        backgroundColor: '#246dd5',
+    },
+    toogleText:{
+        color:"#ffffff",
     },
     flexRow: {
         flex: 1,
