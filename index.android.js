@@ -5,6 +5,11 @@ import {
 } from 'react-native';
 import App from './app/App';
 
+// disable console.log in release
+if (!__DEV__) {
+  console.log = () => {};
+}
+
 export default class UCLAMaps extends Component {
   render() {
     return (
