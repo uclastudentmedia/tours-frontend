@@ -74,6 +74,17 @@ export default class DetailsView extends Component
     }, 0);
   }
 
+  showRouteToLocation = () => {
+    PubSub.publish('DetailsView.showRouteToLocation', this.location);
+
+    this.props.navigation.goBack(this.goBackFrom || null);
+
+    // https://github.com/react-community/react-navigation/issues/1127
+    setTimeout(() => {
+      this.props.navigation.navigate('MainMap');
+    }, 0);
+  }
+
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
   //{this.state.results.results.name}
   render() {
@@ -101,7 +112,12 @@ export default class DetailsView extends Component
               {Math.ceil(this.location.FeetAway(position)/264)} walking minutes away
           </Text>
 
-          <Button title='Show on map' onPress={this.showLocationOnMap} />
+          <Button title='Show on map'
+            onPress={this.showLocationOnMap}
+          />
+          <Button title='Directions to here'
+            onPress={this.showRouteToLocation}
+          />
 
           <View style={{flex: 1}}>
               <Text style={DetailStyle.description}>

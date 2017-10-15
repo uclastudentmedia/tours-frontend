@@ -25,6 +25,7 @@ import {
   inRegion,
   DistanceAwayText,
   mi2ft,
+  GetCurrentLocationObject,
 } from 'app/Utils';
 
 import {
@@ -161,6 +162,15 @@ export default class MainMapView extends Component {
           longitudeDelta: 0.005,
         }, 1000);
         this.markerRefs[location.id].showCallout();
+      });
+
+      PubSub.subscribe('DetailsView.showRouteToLocation', (msg, location) => {
+        this.setState({ directionsBarVisible: true });
+        this.directionsBar.SetVisible(true);
+        this.directionsBar.SetInput({
+          startLocation: GetCurrentLocationObject(),
+          endLocation: location,
+        });
       });
     }
 

@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Image, Navigator } from 'react-native';
 
 import { GetLocationList, GetCategoryByName } from 'app/DataManager';
+import { Location } from 'app/DataTypes';
 
 import { GetIcon } from 'app/Assets';
 import { styles } from 'app/css';
@@ -175,4 +176,24 @@ export function DistanceAwayText(feetAway) {
     milesAway = milesAway.toFixed(1); // round to 0.1's
     return `${milesAway} miles away`;
   }
+}
+
+export function GetCurrentLocationObject() {
+  /**
+   * @return Location the current GPS location
+   */
+
+  const position = this.GPSManager.getPosition();
+  //const position = { latitude: 34.070286, longitude: -118.443413 };
+  if (!position) {
+    Alert.alert('Unable to find your location.');
+    return;
+  }
+
+  return new Location({
+    lat: position.latitude,
+    long: position.longitude,
+    name: 'Current Location',
+    id: -12345, // unique id
+  });
 }

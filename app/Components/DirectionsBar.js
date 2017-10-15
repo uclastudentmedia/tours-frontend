@@ -1,14 +1,10 @@
 'use strict';
 
-/**
- * Created by danielhuang on 9/2/17.
- */
 import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
   TouchableHighlight,
-  ActivityIndicator,
   Animated,
   Alert,
   Platform,
@@ -18,11 +14,8 @@ import PubSub from 'pubsub-js';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {
-  TBTItem,
-} from 'app/Components';
-
-import {
-  DecodePolyline
+  DecodePolyline,
+  GetCurrentLocationObject,
 } from 'app/Utils';
 
 import GPSManager from 'app/GPSManager';
@@ -32,7 +25,6 @@ import {
   GetLocationByName,
   RouteTBT,
 } from 'app/DataManager';
-import { Location } from 'app/DataTypes';
 
 import {
   styles,
@@ -80,19 +72,7 @@ export default class DirectionsBar extends Component
     const onResultSelect = name => {
       let startLocation;
       if (name === currentLocationText) {
-        const position = this.GPSManager.getPosition();
-        //const position = { latitude: 34.070286, longitude: -118.443413 };
-        if (!position) {
-          Alert.alert('Unable to find your location.');
-          return;
-        }
-
-        startLocation = new Location({
-          lat: position.latitude,
-          long: position.longitude,
-          name: currentLocationText,
-          id: -12345, // unique id
-        });
+        startLocation = GetCurrentLocationObject();
       } else {
         startLocation = GetLocationByName(name);
       }
@@ -150,7 +130,7 @@ export default class DirectionsBar extends Component
         endRoom: name,
       })
     });
-    }
+  }
 
 
   showRouteOnMap = (startLocation, endLocation, polyline, minutes, miles, maneuvers) => {
@@ -200,6 +180,32 @@ export default class DirectionsBar extends Component
       //tension: 2,
       //friction: 8
     }).start();
+  }
+
+  SetInput = ({startLocation, endLocation, endRoom}) => {
+    if (startLocation) {
+      this.startLocation = startLocation;
+    }
+    if (endLocation) {
+      this.endLocation = endLocation;
+    }
+    if (endRoom) {
+      // validate input
+      const building = GetIndoorBuildingById(endLocation.id);
+      if (building && building.pois.includes(endRoom)) {
+        this.endRoom = endRoom;
+      }
+      else {
+        console.warn('invalid room');
+      }
+    }
+
+    this.setState({
+      startLocation: this.startLocation,
+      endLocation: this.endLocation,
+      endRoom: this.endRoom,
+    });
+    this.getDirections();
   }
 
   async getDirections() {
