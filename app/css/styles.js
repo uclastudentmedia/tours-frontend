@@ -365,7 +365,6 @@ export default StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
     },
 //Below: Edits the directions searchbar on MainMapView
 //Container
@@ -373,10 +372,13 @@ export default StyleSheet.create({
         position: 'absolute',
         backgroundColor: "#246dd5",
         width: width,
-        alignItems: 'center',
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'stretch',
         elevation: 10,
         zIndex: 10,
-        paddingTop: 20,
+        padding: 10,
     },
     indoorsBar:{
         position: 'absolute',
@@ -384,58 +386,46 @@ export default StyleSheet.create({
           android: -10,
           ios: 0,
         }),
-        paddingTop: 10,
         backgroundColor: "#f89406",
         width: width,
-        alignItems: 'center'
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'stretch',
+        elevation: 10,
+        zIndex: 10,
+        padding: 10,
     },
-//Searchbar Attributes
-    directionsBtnColor:{
-        backgroundColor: '#6197e4'
+    //Searchbar Attributes
+    directionsBtn: {
+        flex: 7,
+        borderRadius: 5,
+        height: 30,
+        marginTop: 10,
+        backgroundColor: '#6197e4',
     },
     directionsBtnPressedColor: {
         backgroundColor: '#357add'
     },
-    indoorsBtnColor:{
-        backgroundColor: '#f8bc06'
+    directionsBtnIcon: {
+        flex: 1,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    indoorsBtn: {
+        flex: 7,
+        borderRadius: 5,
+        height: 30,
+        marginTop: 10,
+        backgroundColor: '#f8bc06',
     },
     indoorsBtnPressedColor: {
         backgroundColor: '#ab8204'
     },
-    directionsBtnTop:{
-        borderRadius: 5,
-        height: 30,
-        width: width - 10,
+    indoorsBtnIcon: {
+        flex: 1,
+        alignItems: 'center',
         marginTop: 10,
-        marginBottom: 5
-    },
-    directionsBtnMid:{
-        borderRadius: 5,
-        height: 30,
-        width: width - 10,
-        marginTop: 5,
-        marginBottom: 10
-    },
-    directionsBtnBot:{
-        borderRadius: 5,
-        height: 30,
-        width: width - 40,
-        marginTop: 5,
-        marginBottom: 10
-    },
-    indoorsBtnMid:{
-        borderRadius: 5,
-        height: 30,
-        width: width - 40,
-        marginTop: 5,
-        marginBottom: 10,
-        marginRight: 5
-    },
-    indoorsBtnBot:{
-        borderRadius: 5,
-        height: 30,
-        width: width - 10,
-        marginBottom: 10
     },
     directionsText:{
         color: 'white',
@@ -448,10 +438,6 @@ export default StyleSheet.create({
         marginTop: 5,
         marginLeft: 10,
         fontSize: 17
-    },
-    indoorHelp:{
-        flex: 1,
-        flexDirection: 'row'
     },
     imageBar: {
         flex: 0,

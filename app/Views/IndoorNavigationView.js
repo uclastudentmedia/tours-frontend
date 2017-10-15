@@ -145,7 +145,7 @@ export default class IndoorNavigationView extends Component
         <View style={styles.indoorsBar}>
 
           <TouchableHighlight
-              style={[styles.directionsBtnTop, styles.indoorsBtnColor]}
+              style={styles.indoorsBtn}
               underlayColor={underlayColor}
               onPress={this.selectBuilding}
           >
@@ -156,7 +156,7 @@ export default class IndoorNavigationView extends Component
           <View style={styles.flexRow}>
 
             <TouchableHighlight
-                style={[styles.indoorsBtnMid, styles.indoorsBtnColor]}
+                style={styles.indoorsBtn}
                 underlayColor={underlayColor}
                 onPress={this.selectStartRoom}
             >
@@ -165,13 +165,17 @@ export default class IndoorNavigationView extends Component
               </Text>
             </TouchableHighlight>
 
-            <TouchableHighlight>
-              <MaterialsIcon color='#ffffff' size={24} name={'help'}/>
+            <TouchableHighlight
+              style={styles.indoorsBtnIcon}
+              underlayColor={underlayColor}
+              onPress={() => {}}
+            >
+              <MaterialsIcon color='#ffffff' size={28} name={'help'}/>
             </TouchableHighlight>
 
           </View>
           <TouchableHighlight
-              style={[styles.indoorsBtnBot, styles.indoorsBtnColor]}
+              style={styles.indoorsBtn}
               underlayColor={underlayColor}
               onPress={this.selectEndRoom}
           >

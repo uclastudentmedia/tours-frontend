@@ -33,8 +33,8 @@ import {
 
 const HIDDEN_PX = -300;
 const VISIBLE_PX = Platform.select({
-  android: -20,
-  ios: -10,
+  android: -10,
+  ios: 0,
 });
 
 export default class DirectionsBar extends Component
@@ -125,7 +125,7 @@ export default class DirectionsBar extends Component
       return;
     }
     this.props.navigation.navigate('Search', {
-      title: 'Select end room',
+      title: 'Select room',
       data: building.pois,
       onResultSelect: name => {
         this.setState({
@@ -213,7 +213,7 @@ export default class DirectionsBar extends Component
     this.getDirections();
   }
 
-  async getDirections() {
+  getDirections = () => {
     const startLocation = this.startLocation;
     const endLocation = this.endLocation;
 
@@ -259,7 +259,7 @@ export default class DirectionsBar extends Component
       });
   }
 
-  async getIndoorDirections() {
+  getIndoorDirections = () => {
     const endLocation = this.endLocation;
     const endRoom = this.endRoom;
 
@@ -292,7 +292,7 @@ export default class DirectionsBar extends Component
       <Animated.View style={[styles.directionsBar, {top: translateYValue}]}>
 
         <TouchableHighlight
-          style={[styles.directionsBtnTop, styles.directionsBtnColor]}
+          style={styles.directionsBtn}
           underlayColor={underlayColor}
           onPress={this.searchStartLocation}
         >
@@ -302,7 +302,7 @@ export default class DirectionsBar extends Component
         </TouchableHighlight>
 
         <TouchableHighlight
-          style={[styles.directionsBtnMid, styles.directionsBtnColor]}
+          style={styles.directionsBtn}
           underlayColor={underlayColor}
           onPress={this.searchEndLocation}
         >
@@ -314,19 +314,20 @@ export default class DirectionsBar extends Component
         { endLocation && endLocation.indoor_nav ?
           <View style={styles.flexRow}>
             <TouchableHighlight
-              style={[styles.directionsBtnBot, styles.directionsBtnColor]}
+              style={styles.directionsBtn}
               underlayColor={underlayColor}
               onPress={this.selectEndRoom}
             >
               <Text style={styles.directionsText}>
-                {endRoom || 'Select end room'}
+                {endRoom || 'Select room'}
               </Text>
             </TouchableHighlight>
             <TouchableHighlight
-              onPress={() => this.getIndoorDirections()}
+              style={styles.directionsBtnIcon}
               underlayColor={underlayColor}
+              onPress={this.getIndoorDirections}
             >
-              <MaterialsIcon color='#ffffff' size={24} name={'directions'}/>
+              <MaterialsIcon color='#ffffff' size={28} name={'directions'}/>
             </TouchableHighlight>
           </View>
         : null }
