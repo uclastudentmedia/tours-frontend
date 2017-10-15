@@ -5,7 +5,11 @@
  */
 
 import React, { Component } from 'react';
-import { Image, Navigator } from 'react-native';
+import {
+  Image,
+  Navigator,
+  Alert,
+} from 'react-native';
 
 import { GetLocationList, GetCategoryByName } from 'app/DataManager';
 import { Location } from 'app/DataTypes';
@@ -178,13 +182,12 @@ export function DistanceAwayText(feetAway) {
   }
 }
 
-export function GetCurrentLocationObject() {
+export function GetCurrentLocationObject(position) {
   /**
    * @return Location the current GPS location
    */
 
-  const position = this.GPSManager.getPosition();
-  //const position = { latitude: 34.070286, longitude: -118.443413 };
+  position = { latitude: 34.070286, longitude: -118.443413 };
   if (!position) {
     Alert.alert('Unable to find your location.');
     return;

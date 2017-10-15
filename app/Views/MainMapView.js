@@ -168,7 +168,7 @@ export default class MainMapView extends Component {
         this.setState({ directionsBarVisible: true });
         this.directionsBar.SetVisible(true);
         this.directionsBar.SetInput({
-          startLocation: GetCurrentLocationObject(),
+          startLocation: GetCurrentLocationObject(this.position),
           endLocation: location,
         });
       });

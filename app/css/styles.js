@@ -351,9 +351,6 @@ export default StyleSheet.create({
         backgroundColor: '#43A047',
         borderColor: '#ffffff'
     },
-    helpBtn:{
-        marginTop: 5
-    },
     toggleDirectionsBtn: {
         bottom: 30,
         right: 30,
@@ -368,6 +365,7 @@ export default StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
     },
 //Below: Edits the directions searchbar on MainMapView
 //Container
@@ -411,14 +409,21 @@ export default StyleSheet.create({
         marginTop: 10,
         marginBottom: 5
     },
-    directionsBtnBot:{
+    directionsBtnMid:{
         borderRadius: 5,
         height: 30,
         width: width - 10,
         marginTop: 5,
         marginBottom: 10
     },
-    indoorsMidBot:{
+    directionsBtnBot:{
+        borderRadius: 5,
+        height: 30,
+        width: width - 40,
+        marginTop: 5,
+        marginBottom: 10
+    },
+    indoorsBtnMid:{
         borderRadius: 5,
         height: 30,
         width: width - 40,

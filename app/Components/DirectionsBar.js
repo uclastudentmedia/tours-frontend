@@ -24,11 +24,11 @@ import {
   GetIndoorBuildingById,
   GetLocationByName,
   RouteTBT,
+  RouteIndoor,
 } from 'app/DataManager';
 
 import {
   styles,
-  DirectionsStyle
 } from 'app/css';
 
 const HIDDEN_PX = -300;
@@ -72,7 +72,8 @@ export default class DirectionsBar extends Component
     const onResultSelect = name => {
       let startLocation;
       if (name === currentLocationText) {
-        startLocation = GetCurrentLocationObject();
+        const position = this.GPSManager.getPosition();
+        startLocation = GetCurrentLocationObject(position);
       } else {
         startLocation = GetLocationByName(name);
       }
@@ -126,9 +127,12 @@ export default class DirectionsBar extends Component
     this.props.navigation.navigate('Search', {
       title: 'Select end room',
       data: building.pois,
-      onResultSelect: name => this.setState({
-        endRoom: name,
-      })
+      onResultSelect: name => {
+        this.setState({
+          endRoom: name,
+        });
+        this.endRoom = name;
+      }
     });
   }
 
@@ -169,6 +173,7 @@ export default class DirectionsBar extends Component
     });
     this.startLocation = null;
     this.endLocation = null;
+    this.endRoom = null;
   }
 
   SetVisible = (isVisible) => {
@@ -254,6 +259,25 @@ export default class DirectionsBar extends Component
       });
   }
 
+  async getIndoorDirections() {
+    const endLocation = this.endLocation;
+    const endRoom = this.endRoom;
+
+    if (!endRoom) {
+      Alert.alert('Select a room first.');
+      return;
+    }
+
+    RouteIndoor(endLocation.id, endRoom, endRoom)
+      .then(data => {
+        this.props.navigation.navigate('Image', {
+          images: data.images,
+          title: endLocation.name,
+        });
+      })
+      .catch(error => Alert.alert(error.message));
+  }
+
   render() {
     const {
       startLocation,
@@ -278,23 +302,33 @@ export default class DirectionsBar extends Component
         </TouchableHighlight>
 
         <TouchableHighlight
-          style={[styles.directionsBtnBot, styles.directionsBtnColor]}
+          style={[styles.directionsBtnMid, styles.directionsBtnColor]}
           underlayColor={underlayColor}
           onPress={this.searchEndLocation}
         >
           <Text style={styles.directionsText}>
-            {endLocation ? endLocation.name : 'Search destination'} {endRoom}
+            {endLocation ? endLocation.name : 'Search destination'}
           </Text>
         </TouchableHighlight>
 
         { endLocation && endLocation.indoor_nav ?
-          <TouchableHighlight
-            style={[styles.directionsBtnBot, styles.directionsBtnColor]}
-            underlayColor={underlayColor}
-            onPress={this.selectEndRoom}
-          >
-            <Text style={styles.directionsText}>Select end room</Text>
-          </TouchableHighlight>
+          <View style={styles.flexRow}>
+            <TouchableHighlight
+              style={[styles.directionsBtnBot, styles.directionsBtnColor]}
+              underlayColor={underlayColor}
+              onPress={this.selectEndRoom}
+            >
+              <Text style={styles.directionsText}>
+                {endRoom || 'Select end room'}
+              </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={() => this.getIndoorDirections()}
+              underlayColor={underlayColor}
+            >
+              <MaterialsIcon color='#ffffff' size={24} name={'directions'}/>
+            </TouchableHighlight>
+          </View>
         : null }
 
       </Animated.View>
