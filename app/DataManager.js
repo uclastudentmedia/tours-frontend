@@ -2,9 +2,8 @@
 
 import { merge } from 'lodash';
 
-// TODO: import real AsyncStorage for running on device
-//import { AsyncStorage } from 'react-native';
-import { AsyncStorage } from 'app/__fakes__/FakeAsyncStorage';
+import { AsyncStorage } from 'react-native';
+//import { AsyncStorage } from 'app/__fakes__/FakeAsyncStorage';
 
 import {
   Location,
@@ -126,7 +125,21 @@ async function getCachedData(endpoint) {
   let key = CACHE_PREFIX + endpoint;
   const data = await AsyncStorage.getItem(key);
   if (data !== null) {
-    return JSON.parse(data);
+    const arr = JSON.parse(data);
+
+    // restore object prototypes
+    switch (endpoint) {
+      case ENDPOINTS.LOCATIONS:
+        return arr.map(x => new Location(x));
+      case ENDPOINTS.CATEGORIES:
+        return arr.map(x => new Category(x));
+      case ENDPOINTS.TOURS:
+        return arr.map(x => new Tour(x));
+      case ENDPOINTS.INDOOR_BUILDINGS:
+        return arr.map(x => new IndoorBuilding(x));
+      default:
+        return arr;
+    }
   }
   return null;
 }
@@ -159,7 +172,7 @@ async function queryAPI(endpoint, transformData) {
     .then(data => transformData(data));
 }
 
-async function getData(endpoint, transformData, useAsyncStorage = false) {
+async function getData(endpoint, transformData, useAsyncStorage = true) {
   /**
    * get cached data, and fetch data if needed
    * @param endpoint string
@@ -182,6 +195,7 @@ async function getData(endpoint, transformData, useAsyncStorage = false) {
       let cachedData = await getCachedData(endpoint);
 
       if (cachedData !== null) {
+        syncStorage.setItem(endpoint, cachedData);
         return cachedData;
       }
     }
@@ -217,10 +231,11 @@ function getDataSync(endpoint) {
   return syncStorage.getItem(endpoint);
 }
 
-async function clearCache() {
+export async function ClearCache() {
   /**
    * Remove everything from the cache
    */
+
   let keys = syncStorage.getAllKeys();
   keys.forEach(key => {
     if (key.startsWith(CACHE_PREFIX)) {

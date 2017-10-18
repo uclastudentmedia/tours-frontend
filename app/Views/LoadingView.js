@@ -8,7 +8,7 @@ import {
     Text,
 } from 'react-native';
 
-import { LoadAllData } from 'app/DataManager';
+import { LoadAllData, ClearCache } from 'app/DataManager';
 
 import { styles } from 'app/css';
 
@@ -49,6 +49,11 @@ export default class LoadingView extends Component {
      * Load the data from the server. If the requests time out, resend the
      * requests (individual API requests are cached when they succeed).
      */
+
+    // force load data in debug
+    if (__DEV__) {
+      await ClearCache();
+    }
 
     return new Promise((resolve, reject) => {
       var done = false;
