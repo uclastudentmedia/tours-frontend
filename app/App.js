@@ -125,10 +125,10 @@ class ToursScreen extends Component {
 const MainScreenNavigator = TabNavigator(
   {
     MainMap: { screen: MainMapScreen },
-    Directions: { screen: DirectionsScreen },
+    //Directions: { screen: DirectionsScreen },
     LocationList: { screen: LocationListScreen },
     IndoorNavigation: { screen: IndoorNavigationScreen },
-    Tours: { screen: ToursScreen },
+    //Tours: { screen: ToursScreen },
   },
   {
     tabBarPosition: 'bottom',

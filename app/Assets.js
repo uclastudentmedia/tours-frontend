@@ -1,5 +1,7 @@
 'use strict';
 
+import { CURRENT_LOCATION_ID } from 'app/Utils';
+
 //export const icon_ph = require('../assets/images/icon_ph.png');
 export const dot1 = require('../assets/images/dot1.png');
 export const logo = require('../assets/images/logo_1x.png');
@@ -37,6 +39,12 @@ const icons = {
 };
 export function GetIcon(category_id) {
   var defaultIcon = icons.general;
+
+  // no icon for "current location" landmark
+  if (category_id == CURRENT_LOCATION_ID) {
+    return null;
+  }
+
   return icons[category_id] || defaultIcon;
 }
 

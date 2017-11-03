@@ -182,6 +182,7 @@ export function DistanceAwayText(feetAway) {
   }
 }
 
+export const CURRENT_LOCATION_ID = -12345; // unique id
 export function GetCurrentLocationObject(position) {
   /**
    * @return Location the current GPS location
@@ -197,6 +198,7 @@ export function GetCurrentLocationObject(position) {
     lat: position.latitude,
     long: position.longitude,
     name: 'Current Location',
-    id: -12345, // unique id
+    id: CURRENT_LOCATION_ID,
+    category_id: CURRENT_LOCATION_ID,
   });
 }
