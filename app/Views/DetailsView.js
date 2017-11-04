@@ -17,7 +17,6 @@ import GPSManager from 'app/GPSManager';
 import { GetIcon, logo } from 'app/Assets';
 import { DetailStyle } from 'app/css';
 
-var {height, width} = Dimensions.get('window');
 
 export default class DetailsView extends Component
 {
@@ -48,18 +47,16 @@ export default class DetailsView extends Component
     this.location = props.navigation.state.params.location;
     this.goBackFrom = props.navigation.state.params.goBackFrom;
 
-    if (this.location.images.length != 0) {
-        if(width >= 700)
-        {
-            this.displayImage = { uri: this.location.images[0].original }
-        }
-        else
-        {
-            this.displayImage = { uri: this.location.images[0].display };
-        }
+    const {width} = Dimensions.get('window');
+    if(width >= 700) {
+      this.imageSize = 'original';
     }
     else {
-      this.displayImage = logo;
+      this.imageSize = 'display';
+    }
+
+    if (this.location.images.length > 0) {
+      this.displayImage = { uri: this.location.images[0][this.imageSize] };
     }
   }
 
@@ -83,6 +80,16 @@ export default class DetailsView extends Component
     setTimeout(() => {
       this.props.navigation.navigate('MainMap');
     }, 0);
+  }
+
+  showImages = () => {
+    this.props.navigation.navigate('Image', {
+      images: this.location.images.map((image, index) => ({
+        url: image[this.imageSize],
+        title: `${index+1}/${this.location.images.length}`,
+      })),
+      title: this.location.name,
+    });
   }
 
   //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
@@ -125,15 +132,9 @@ export default class DetailsView extends Component
               </Text>
           </View>
 
-{/*
-          {this.location.images.map((image, idx) => (
-            <Image
-              key={idx}
-              source={{uri: image.thumbnail}}
-              style={DetailStyle.thumbnailImage}
-            />
-           ))}
-*/}
+          <Button title='Images'
+            onPress={this.showImages}
+          />
         </View>
       </ScrollView>
     );
