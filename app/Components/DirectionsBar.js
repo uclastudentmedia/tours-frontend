@@ -105,7 +105,7 @@ export default class DirectionsBar extends Component
     };
 
     this.props.navigation.navigate('Search', {
-      title: 'Select end location',
+      title: 'Select destination',
       data: this.locationNames,
       onResultSelect: onResultSelect
     });
@@ -297,7 +297,7 @@ export default class DirectionsBar extends Component
           onPress={this.searchStartLocation}
         >
           <Text style={styles.directionsText}>
-            {startLocation ? startLocation.name : 'Search from'}
+            {startLocation ? startLocation.name : 'Select start location'}
           </Text>
         </TouchableHighlight>
 
@@ -307,7 +307,7 @@ export default class DirectionsBar extends Component
           onPress={this.searchEndLocation}
         >
           <Text style={styles.directionsText}>
-            {endLocation ? endLocation.name : 'Search destination'}
+            {endLocation ? endLocation.name : 'Select destination'}
           </Text>
         </TouchableHighlight>
 

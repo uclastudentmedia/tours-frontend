@@ -161,7 +161,10 @@ export default class MainMapView extends Component {
           latitudeDelta: 0.005,
           longitudeDelta: 0.005,
         }, 1000);
-        this.markerRefs[location.id].showCallout();
+        const markerRef = this.markerRefs[location.id];
+        if (markerRef) {
+          markerRef.showCallout();
+        }
       });
 
       PubSub.subscribe('DetailsView.showRouteToLocation', (msg, location) => {
@@ -401,7 +404,7 @@ export default class MainMapView extends Component {
                 <TouchableOpacity onPress={this.toggleDirections}
                   style={[styles.mapViewBtn, styles.toggleDirectionsBtn]}>
                     <MaterialsIcon color='#ffffff' size={20} name={'directions'}/>
-                    <Text style={styles.toogleText}>Go</Text>
+                    <Text style={styles.toggleDirectionsText}>GO</Text>
                 </TouchableOpacity>
 
                 <DirectionsBar {...this.props}

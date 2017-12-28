@@ -188,7 +188,7 @@ export function GetCurrentLocationObject(position) {
    * @return Location the current GPS location
    */
 
-  position = { latitude: 34.070286, longitude: -118.443413 };
+  //position = { latitude: 34.070286, longitude: -118.443413 };
   if (!position) {
     Alert.alert('Unable to find your location.');
     return;

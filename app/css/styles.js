@@ -358,8 +358,8 @@ export default StyleSheet.create({
         height: 45,
         backgroundColor: '#246dd5',
     },
-    toogleText:{
-        color:"#ffffff",
+    toggleDirectionsText:{
+        color: '#ffffff',
     },
     flexRow: {
         flex: 1,
