@@ -139,7 +139,7 @@ export default class MainMapView extends Component {
 
         this.mapView.fitToCoordinates(polyline, {
           edgePadding: Platform.select({
-            android: { top:600, left:200, right:200, bottom:200 },
+            android: { top:800, left:200, right:200, bottom:200 },
             ios: { top:100, left:100, right:100, bottom:100 },
           })
         });
@@ -151,7 +151,9 @@ export default class MainMapView extends Component {
       });
 
       PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
-        //this.specialMarkerLocations = [location];
+        if (this.state.directionsBarVisible) {
+          this.toggleDirections();
+        }
         this.setState({selectedLocation: location});
         this.updateMapIcons();
 
@@ -375,7 +377,7 @@ export default class MainMapView extends Component {
           directionsBarVisible,
         } = this.state;
 
-        const file = Platform.select({
+        const pawIcon = Platform.select({
           ios: paw_blue,
           android: paw_white,
         });
@@ -384,7 +386,7 @@ export default class MainMapView extends Component {
             <View style={styles.container}>
 
                 <View style={styles.searchBar}>
-                  <Image source={file}/>
+                  <Image source={pawIcon}/>
                   <Text style={[styles.baseText, styles.titleText]}>UCLA Maps</Text>
                   <TouchableOpacity onPress={this.openSearchMenu}
                     style={styles.mapViewSearchBtn}>
@@ -403,8 +405,16 @@ export default class MainMapView extends Component {
 
                 <TouchableOpacity onPress={this.toggleDirections}
                   style={[styles.mapViewBtn, styles.toggleDirectionsBtn]}>
-                    <MaterialsIcon color='#ffffff' size={20} name={'directions'}/>
-                    <Text style={styles.toggleDirectionsText}>GO</Text>
+                  {directionsBarVisible ?
+                    <View>
+                      <MaterialsIcon color='#ffffff' size={30} name={'close'}/>
+                    </View>
+                  :
+                    <View>
+                      <MaterialsIcon color='#ffffff' size={20} name={'directions'}/>
+                      <Text style={styles.toggleDirectionsText}>GO</Text>
+                    </View>
+                  }
                 </TouchableOpacity>
 
                 <DirectionsBar {...this.props}
