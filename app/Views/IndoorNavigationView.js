@@ -100,7 +100,7 @@ export default class IndoorNavigationView extends Component
     }
 
     this.props.navigation.navigate('Search', {
-      title: 'Select end room',
+      title: 'Select end room (optional',
       data: building.pois,
       onResultSelect: name => this.setState({
         endRoom: name
@@ -171,10 +171,11 @@ export default class IndoorNavigationView extends Component
                 onPress={this.selectStartRoom}
             >
               <Text style={styles.indoorsText}>
-                {startRoom ? startRoom : 'Select Start Room (optional)'}
+                {startRoom ? startRoom : 'Select Start Room'}
               </Text>
             </TouchableHighlight>
 
+            {/* 
             <TouchableHighlight
               style={styles.indoorsBtnIcon}
               underlayColor={underlayColor}
@@ -182,6 +183,7 @@ export default class IndoorNavigationView extends Component
             >
               <MaterialsIcon color='#ffffff' size={28} name={'help'}/>
             </TouchableHighlight>
+            */}
 
           </View>
           <TouchableHighlight
@@ -190,11 +192,12 @@ export default class IndoorNavigationView extends Component
               onPress={this.selectEndRoom}
           >
             <Text style={styles.indoorsText}>
-              {endRoom ? endRoom : 'Select End Room'}
+              {endRoom ? endRoom : 'Select End Room (optional)'}
             </Text>
           </TouchableHighlight>
 
         </View>
+
 
         <View style={{marginBottom: 10}}>
           <View style={{marginTop: 10}}>
@@ -215,6 +218,19 @@ export default class IndoorNavigationView extends Component
 
         {this.renderSpinner()}
 
+        <Text style={styles.indoorsHelpHeader}>
+          Indoor Navigation
+        </Text>
+        <Text style={styles.indoorsHelpBody}>
+          Indoor navigation helps you find where rooms are. Just enter a
+          building and a room to get started!
+        </Text>
+        <Text style={styles.indoorsHelpBody}>
+          To find your way out of a building, find select a nearby room for
+          Start Room and "Entry" for End Room.
+        </Text>
+
+
       </View>
     );
   }
@@ -226,9 +242,9 @@ export default class IndoorNavigationView extends Component
       endRoom,
     } = this.state;
 
-    if (!endRoom) {
+    if (!startRoom && !endRoom) {
       this.setState({
-        error: 'Select an end room.'
+        error: 'Select a room.'
       });
       return;
     }
@@ -236,6 +252,9 @@ export default class IndoorNavigationView extends Component
     // if only one room provided, it's a single room lookup
     if (!startRoom) {
       startRoom = endRoom;
+    }
+    if (!endRoom) {
+      endRoom = startRoom;
     }
 
     // begin directions request

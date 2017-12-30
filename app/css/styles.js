@@ -439,6 +439,15 @@ export default StyleSheet.create({
         marginLeft: 10,
         fontSize: 17
     },
+    indoorsHelpHeader: {
+        fontWeight: 'bold',
+        fontSize: 28,
+        margin: 10
+    },
+    indoorsHelpBody: {
+        fontSize: 16,
+        padding: 10
+    },
     imageBar: {
         flex: 0,
         flexDirection:'row',
