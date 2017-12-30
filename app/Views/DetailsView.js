@@ -92,8 +92,52 @@ export default class DetailsView extends Component
     });
   }
 
-  //<Button onPress={this.findRoute.bind(this)} title="Navigate Here!"></Button>
-  //{this.state.results.results.name}
+  /**
+   * Formats a landmark's attributes json to DOM.
+   * Styles (${depth} is how deeply nested it is):
+   *   - Keys with object values: DetailStyle.attrHeader${depth}
+   *   - Keys with string values: DetailStyle.attrLabel${depth}
+   *   - Strings: DetailStyle.attrText${depth}
+   */
+  renderAttributes = () => {
+
+    const render = (json, key, depth) => {
+      if (!json) {
+        return null;
+      }
+      if (typeof json !== 'object') {
+        return (
+            <Text>
+              <Text style={[DetailStyle.attrLabel, DetailStyle[`attrLabel${depth}`]]}>
+                {key}:&nbsp;
+              </Text>
+              <Text style={[DetailStyle.attrText, DetailStyle[`attrText${depth}`]]}>
+                {json.toString()}
+              </Text>
+            </Text>
+        );
+      }
+      return (
+          <View>
+            <Text style={[DetailStyle.attrHeader, DetailStyle[`attrHeader${depth}`]]}>
+              {key}
+            </Text>
+            {Object.keys(json).map(key => (
+                <View key={`${depth}_${key}`} style={DetailStyle.attrIndent}>
+                   {render(json[key], key, depth+1)}
+                </View>
+            ))}
+          </View>
+      );
+    };
+
+    return (
+        <View style={DetailStyle.attrContainer}>
+            {render(this.location.attributes, 'More Info', 0)}
+        </View>
+    );
+  }
+
   render() {
     console.log(this.location);
     const position = this.GPSManager.getPosition();
@@ -119,18 +163,24 @@ export default class DetailsView extends Component
               {Math.ceil(this.location.FeetAway(position)/264)} walking minutes away
           </Text>
 
-          <Button title='Show on map'
-            onPress={this.showLocationOnMap}
-          />
-          <Button title='Directions to here'
-            onPress={this.showRouteToLocation}
-          />
-
-          <View style={{flex: 1}}>
-              <Text style={DetailStyle.description}>
-                  {this.location.text_description}
-              </Text>
+          <View style={DetailStyle.flexRow}>
+            <View style={DetailStyle.mapBtn}>
+              <Button title='Show on map'
+                onPress={this.showLocationOnMap}
+              />
+            </View>
+            <View style={DetailStyle.mapBtn}>
+              <Button title='Directions to here'
+                onPress={this.showRouteToLocation}
+              />
+            </View>
           </View>
+
+          <Text style={DetailStyle.description}>
+              {this.location.text_description || 'No description available.'}
+          </Text>
+
+          {this.renderAttributes()}
 
           <Button title='Images'
             onPress={this.showImages}

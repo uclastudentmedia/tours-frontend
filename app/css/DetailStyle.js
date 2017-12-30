@@ -12,6 +12,12 @@ import {
 const {height, width} = Dimensions.get('window');
 
 export default StyleSheet.create({
+    flexRow: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+    },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -35,6 +41,7 @@ export default StyleSheet.create({
       width: 40,
     },
     dist:{
+      marginTop: 10
     },
     description:{
       padding:15,
@@ -47,5 +54,54 @@ export default StyleSheet.create({
     thumbnailImage: {
       width: 100,
       height: 75,
-    }
+    },
+    mapBtn: {
+      flex: 1,
+      margin: 10,
+    },
+    /* Attributes */
+    attrContainer: {
+      padding: 15
+    },
+    attrIndent: {
+      marginLeft: 10
+    },
+    // base styles
+    attrLabel: {
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
+    attrText: {
+      fontSize: 16,
+    },
+    attrHeader: {
+      fontWeight: 'bold',
+    },
+    // per-depth styles
+    attrHeader0: {
+      fontSize: 28,
+      marginBottom: 10,
+    },
+    attrLabel1: {
+      fontSize: 18,
+    },
+    attrText1: {
+      fontSize: 18
+    },
+    attrHeader1: {
+      fontSize: 26,
+    },
+    attrLabel2: {
+    },
+    attrText2: {
+    },
+    attrHeader2: {
+      fontSize: 24,
+    },
+    attrLabel3: {
+    },
+    attrText3: {
+    },
+    attrHeader3: {
+    },
 });
