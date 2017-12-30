@@ -23,6 +23,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent:'flex-end',
         backgroundColor: 'white',
+        paddingBottom: 15
     },
     titleSec:{
         flex:1,

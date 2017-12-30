@@ -16,6 +16,7 @@ import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 import {
   GetIndoorBuildingList,
   GetIndoorBuildingByName,
+  GetIndoorBuildingById,
   RouteIndoor,
 } from 'app/DataManager';
 
@@ -46,6 +47,15 @@ export default class IndoorNavigationView extends Component
       //endRoom: '2410',
     };
 
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    const location = nextProps.navigation.state.params.location;
+
+    this.clear();
+    this.setState({
+      building: GetIndoorBuildingById(location.id)
+    });
   }
 
   selectBuilding = () => {

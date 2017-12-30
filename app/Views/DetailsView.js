@@ -8,6 +8,7 @@ import {
   ScrollView,
   Button,
   Dimensions,
+  TouchableHighlight,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
@@ -79,6 +80,16 @@ export default class DetailsView extends Component
     // https://github.com/react-community/react-navigation/issues/1127
     setTimeout(() => {
       this.props.navigation.navigate('MainMap');
+    }, 0);
+  }
+
+  showIndoorNavigation = () => {
+    this.props.navigation.goBack(this.goBackFrom || null);
+
+    setTimeout(() => {
+      this.props.navigation.navigate('IndoorNavigation', {
+        location: this.location
+      });
     }, 0);
   }
 
@@ -154,10 +165,9 @@ export default class DetailsView extends Component
             </Text>
           </View>
 
-          <Image
-            source={this.displayImage}
-            style={DetailStyle.displayImage}
-          />
+          <TouchableHighlight onPress={this.showImages}>
+            <Image source={this.displayImage} style={DetailStyle.displayImage}/>
+          </TouchableHighlight>
 
           <Text style={DetailStyle.dist}>
               {Math.ceil(this.location.FeetAway(position)/264)} walking minutes away
@@ -170,21 +180,24 @@ export default class DetailsView extends Component
               />
             </View>
             <View style={DetailStyle.mapBtn}>
-              <Button title='Directions to here'
+              <Button title='Directions'
                 onPress={this.showRouteToLocation}
               />
             </View>
           </View>
+          {this.location.indoor_nav ?
+            <View style={DetailStyle.mapBtn}>
+              <Button title='Indoor Navigation'
+                onPress={this.showIndoorNavigation}
+              />
+            </View>
+          : null}
 
           <Text style={DetailStyle.description}>
               {this.location.text_description || 'No description available.'}
           </Text>
 
           {this.renderAttributes()}
-
-          <Button title='Images'
-            onPress={this.showImages}
-          />
         </View>
       </ScrollView>
     );

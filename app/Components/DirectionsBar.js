@@ -311,7 +311,9 @@ export default class DirectionsBar extends Component
           </Text>
         </TouchableHighlight>
 
-        { endLocation && endLocation.indoor_nav ?
+        { // TODO: add indoor nav shortcut when ready
+          /*
+          endLocation && endLocation.indoor_nav ?
           <View style={styles.flexRow}>
             <TouchableHighlight
               style={styles.directionsBtn}
@@ -330,7 +332,8 @@ export default class DirectionsBar extends Component
               <MaterialsIcon color='#ffffff' size={28} name={'directions'}/>
             </TouchableHighlight>
           </View>
-        : null }
+        : null */
+        }
 
       </Animated.View>
     );
