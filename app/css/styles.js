@@ -338,21 +338,6 @@ export default StyleSheet.create({
         backgroundColor: '#246dd5',
         borderColor: '#ffffff'
     },
-    indoorsGoBtn: {
-        backgroundColor: '#43A047',
-        borderColor: '#ffffff',
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    indoorsGoBtnUnderlayColor: {
-        backgroundColor: '#2c6a2f',
-    },
-    indoorsGoText: {
-        fontSize: 28,
-        color: 'white',
-        marginLeft: 10,
-    },
     toggleDirectionsBtn: {
         bottom: 30,
         right: 30,
@@ -382,22 +367,6 @@ export default StyleSheet.create({
         zIndex: 10,
         padding: 10,
     },
-    indoorsBar:{
-        position: 'absolute',
-        top: Platform.select({
-          android: -10,
-          ios: 0,
-        }),
-        backgroundColor: "#f89406",
-        width: width,
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'stretch',
-        elevation: 10,
-        zIndex: 10,
-        padding: 10,
-    },
     //Searchbar Attributes
     directionsBtn: {
         flex: 7,
@@ -414,44 +383,11 @@ export default StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
     },
-    indoorsBtn: {
-        flex: 7,
-        borderRadius: 5,
-        height: 30,
-        marginTop: 10,
-        backgroundColor: '#f8bc06',
-    },
-    indoorsBtnUnderlayColor: {
-        backgroundColor: '#ab8204'
-    },
-    indoorsBtnIcon: {
-        flex: 1,
-        alignItems: 'center',
-        marginTop: 10,
-    },
     directionsText:{
         color: 'white',
         marginTop: 5,
         marginLeft: 10,
         fontSize: 17
-    },
-    indoorsText:{
-        color: 'white',
-        marginTop: 5,
-        marginLeft: 10,
-        fontSize: 17
-    },
-    indoorsHelpHeader: {
-        fontWeight: 'bold',
-        fontSize: 28,
-        margin: 10
-    },
-    indoorsHelpBody: {
-        fontSize: 16,
-        padding: 10
-    },
-    indoorsContainer: {
-        marginTop: 200
     },
     imageBar: {
         flex: 0,
