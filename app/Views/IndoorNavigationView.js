@@ -24,6 +24,8 @@ import {
   styles,
 } from 'app/css';
 
+import _ from 'lodash';
+
 export default class IndoorNavigationView extends Component
 {
   static propTypes = {
@@ -50,7 +52,10 @@ export default class IndoorNavigationView extends Component
   }
 
   componentWillReceiveProps = (nextProps) => {
-    const location = nextProps.navigation.state.params.location;
+    const location = _.get(nextProps, 'navigation.state.params.location');
+    if (!location) {
+      return;
+    }
 
     this.clear();
     this.setState({
@@ -124,118 +129,7 @@ export default class IndoorNavigationView extends Component
     });
   }
 
-  renderSpinner = () => {
-    if (this.state.loading) {
-      return (
-        <View style={styles.loading}>
-          <ActivityIndicator
-            color={'#246dd5'}
-            size={'large'}
-          />
-        </View>
-      );
-    }
-    return null;
-  }
-
-  render() {
-    const {
-      error,
-      loading,
-      building,
-      startRoom,
-      endRoom,
-    } = this.state;
-
-    const underlayColor = StyleSheet.flatten(styles.indoorsBtnPressedColor).backgroundColor;
-
-    return (
-      <View style={styles.container}>
-
-        <View style={styles.indoorsBar}>
-
-          <TouchableHighlight
-              style={styles.indoorsBtn}
-              underlayColor={underlayColor}
-              onPress={this.selectBuilding}
-          >
-            <Text style={styles.indoorsText}>
-              {building ? building.name : 'Select Building'}
-            </Text>
-          </TouchableHighlight>
-          <View style={styles.flexRow}>
-
-            <TouchableHighlight
-                style={styles.indoorsBtn}
-                underlayColor={underlayColor}
-                onPress={this.selectStartRoom}
-            >
-              <Text style={styles.indoorsText}>
-                {startRoom ? startRoom : 'Select Start Room'}
-              </Text>
-            </TouchableHighlight>
-
-            {/* 
-            <TouchableHighlight
-              style={styles.indoorsBtnIcon}
-              underlayColor={underlayColor}
-              onPress={() => {}}
-            >
-              <MaterialsIcon color='#ffffff' size={28} name={'help'}/>
-            </TouchableHighlight>
-            */}
-
-          </View>
-          <TouchableHighlight
-              style={styles.indoorsBtn}
-              underlayColor={underlayColor}
-              onPress={this.selectEndRoom}
-          >
-            <Text style={styles.indoorsText}>
-              {endRoom ? endRoom : 'Select End Room (optional)'}
-            </Text>
-          </TouchableHighlight>
-
-        </View>
-
-
-        <View style={{marginBottom: 10}}>
-          <View style={{marginTop: 10}}>
-            <TouchableOpacity
-              onPress={this.getDirections.bind(this)}
-              style={styles.inStartBtn}>
-                <MaterialsIcon color='#ffffff' size={40} name={'directions'}/>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <Button
-          title={"Clear"}
-          onPress={this.clear}
-        />
-
-        <Text style={styles.errorText}>{error}</Text>
-
-        {this.renderSpinner()}
-
-        <Text style={styles.indoorsHelpHeader}>
-          Indoor Navigation
-        </Text>
-        <Text style={styles.indoorsHelpBody}>
-          Indoor navigation helps you find where rooms are. Just enter a
-          building and a room to get started!
-        </Text>
-        <Text style={styles.indoorsHelpBody}>
-          To find your way out of a building, find select a nearby room for
-          Start Room and "Entry" for End Room.
-        </Text>
-
-
-      </View>
-    );
-  }
-
-  async getDirections() {
+  getDirections = () => {
     let {
       building,
       startRoom,
@@ -274,5 +168,105 @@ export default class IndoorNavigationView extends Component
           loading: false,
         });
       });
+  }
+
+  render() {
+    const {
+      error,
+      loading,
+      building,
+      startRoom,
+      endRoom,
+    } = this.state;
+
+    const disabled = '#888';
+    const underlayActive = StyleSheet.flatten(styles.indoorsBtnUnderlayColor).backgroundColor;
+    const goUnderlayActive = StyleSheet.flatten(styles.indoorsGoBtnUnderlayColor).backgroundColor;
+
+    var underlayColor = disabled;
+    var roomColor = {backgroundColor: disabled};
+    if (building) {
+      // don't override
+      underlayColor = underlayActive;
+      roomColor = null;
+    }
+
+    var goUnderlay = disabled;
+    var goColor = {backgroundColor: disabled};
+    // can get directions if at least 1 room is selected
+    if (building && (startRoom || endRoom)) {
+      goUnderlay = goUnderlayActive;
+      goColor = null;
+    }
+
+
+    return (
+        <View>
+          <View style={styles.indoorsBar}>
+
+            <View style={styles.flexRow}>
+              <TouchableHighlight style={styles.indoorsBtn} underlayColor={underlayActive} onPress={this.selectBuilding}>
+                <Text style={styles.indoorsText}>
+                  {building ? building.name : 'Select Building'}
+                </Text>
+              </TouchableHighlight>
+              {building &&
+                <TouchableHighlight style={styles.indoorsBtnIcon} underlayColor={underlayColor} onPress={this.clear}>
+                  <MaterialsIcon color='#ffffff' size={28} name={'close'}/>
+                </TouchableHighlight>
+              }
+            </View>
+
+            <TouchableHighlight style={[styles.indoorsBtn, roomColor]} underlayColor={underlayColor} onPress={this.selectStartRoom}>
+              <Text style={styles.indoorsText}>
+                {startRoom ? startRoom : 'Select Start Room'}
+              </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight style={[styles.indoorsBtn, roomColor]} underlayColor={underlayColor} onPress={this.selectEndRoom}>
+              <Text style={styles.indoorsText}>
+                {endRoom ? endRoom : 'Select End Room (optional)'}
+              </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight style={[styles.indoorsBtn, styles.indoorsGoBtn, goColor]} underlayColor={goUnderlay} onPress={this.getDirections}>
+              <View style={styles.flexRow}>
+                <MaterialsIcon color='#ffffff' size={28} name={'directions'}/>
+                <Text style={styles.indoorsGoText}>GO</Text>
+              </View>
+            </TouchableHighlight>
+
+          </View>
+
+
+          <View style={styles.indoorsContainer}>
+
+            <Text style={styles.errorText}>{error}</Text>
+
+            <Text style={styles.indoorsHelpHeader}>
+              Indoor Navigation
+            </Text>
+            <Text style={styles.indoorsHelpBody}>
+              Indoor navigation helps you find where rooms are. Just select a
+              building and a room to get started!
+            </Text>
+            <Text style={styles.indoorsHelpBody}>
+              To find your way out of a building, find select a nearby room for
+              Start Room and "Entry" for End Room.
+            </Text>
+
+            <View collapsable={false}>
+              {loading &&
+                <ActivityIndicator
+                  color={'#246dd5'}
+                  size={'large'}
+                />
+              }
+            </View>
+
+          </View>
+
+        </View>
+    );
   }
 }

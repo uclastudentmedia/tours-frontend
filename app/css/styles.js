@@ -338,18 +338,20 @@ export default StyleSheet.create({
         backgroundColor: '#246dd5',
         borderColor: '#ffffff'
     },
-    inStartBtn: {
-        paddingTop: 5,
-        alignItems: 'center',
-        bottom: 80,
-        right: 30,
-        position: 'absolute',
-        height: 50,
-        width: 50,
-        borderRadius: 25,
-        borderWidth: 1,
+    indoorsGoBtn: {
         backgroundColor: '#43A047',
-        borderColor: '#ffffff'
+        borderColor: '#ffffff',
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    indoorsGoBtnUnderlayColor: {
+        backgroundColor: '#2c6a2f',
+    },
+    indoorsGoText: {
+        fontSize: 28,
+        color: 'white',
+        marginLeft: 10,
     },
     toggleDirectionsBtn: {
         bottom: 30,
@@ -419,7 +421,7 @@ export default StyleSheet.create({
         marginTop: 10,
         backgroundColor: '#f8bc06',
     },
-    indoorsBtnPressedColor: {
+    indoorsBtnUnderlayColor: {
         backgroundColor: '#ab8204'
     },
     indoorsBtnIcon: {
@@ -447,6 +449,9 @@ export default StyleSheet.create({
     indoorsHelpBody: {
         fontSize: 16,
         padding: 10
+    },
+    indoorsContainer: {
+        marginTop: 200
     },
     imageBar: {
         flex: 0,
