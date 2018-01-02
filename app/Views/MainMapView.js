@@ -39,8 +39,6 @@ import { Location } from 'app/DataTypes';
 
 import GPSManager from 'app/GPSManager';
 
-import {popLocation} from 'app/LocationPopManager'
-
 import {
   GetIcon,
   paw_blue,
