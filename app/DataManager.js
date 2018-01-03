@@ -423,12 +423,17 @@ export async function RouteTBT(start, end, extraOptions) {
     .then(response => response.json());
 }
 
-export async function RouteIndoor(landmarkId, start, end) {
+export async function RouteIndoor(landmarkId, start, end, isRoutingToExit) {
   /**
    * @param landmarkId int building's landmark id
    * @param start string starting room
    * @param end string ending room
+   * @param isRoutingToExit boolean whether end is the exit
    */
+
+  if (isRoutingToExit) {
+    end = 'exit';
+  }
 
   const endpoint = `${ENDPOINTS.ROUTE_INDOOR}/${landmarkId}/${start}/${end}`;
   const url = prependDomain(endpoint);

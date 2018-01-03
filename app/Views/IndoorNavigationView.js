@@ -4,8 +4,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  Button,
-  TouchableOpacity,
   TouchableHighlight,
   ActivityIndicator,
   StyleSheet,
@@ -49,6 +47,7 @@ export default class IndoorNavigationView extends Component
       //endRoom: '2410',
     };
 
+    this.exit = 'Exit';
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -107,6 +106,7 @@ export default class IndoorNavigationView extends Component
     this.props.navigation.navigate('Search', {
       title: 'Select end room (optional',
       data: building.pois,
+      dataWithIcons: [{text: this.exit, icon: 'exit-to-app'}],
       onResultSelect: name => this.setState({
         endRoom: name
       })
@@ -129,6 +129,25 @@ export default class IndoorNavigationView extends Component
     });
   }
 
+  canRoute = () => {
+    const {
+      building,
+      startRoom,
+      endRoom,
+    } = this.state;
+
+    if (!building) {
+      return false;
+    }
+    if (!startRoom && !endRoom) {
+      return false;
+    }
+    if (endRoom == this.exit && !startRoom) {
+      return false;
+    }
+    return true;
+  }
+
   getDirections = () => {
     let {
       building,
@@ -136,9 +155,18 @@ export default class IndoorNavigationView extends Component
       endRoom,
     } = this.state;
 
+    const isRoutingToExit = endRoom == this.exit;
+
     if (!startRoom && !endRoom) {
       this.setState({
         error: 'Select a room.'
+      });
+      return;
+    }
+
+    if (isRoutingToExit && !startRoom) {
+      this.setState({
+        error: 'Select a start room.'
       });
       return;
     }
@@ -154,7 +182,7 @@ export default class IndoorNavigationView extends Component
     // begin directions request
     this.setState({ loading: true });
 
-    RouteIndoor(building.landmark_id, startRoom, endRoom)
+    RouteIndoor(building.landmark_id, startRoom, endRoom, isRoutingToExit)
       .then(data => {
         this.setState({
           error: null,
@@ -183,21 +211,13 @@ export default class IndoorNavigationView extends Component
     const underlayActive = StyleSheet.flatten(styles.btnUnderlayColor).backgroundColor;
     const goUnderlayActive = StyleSheet.flatten(styles.goBtnUnderlayColor).backgroundColor;
 
-    var underlayColor = disabled;
-    var roomColor = styles.disabled;
-    if (building) {
-      // don't override
-      underlayColor = underlayActive;
-      roomColor = null;
-    }
 
-    var goUnderlay = disabled;
-    var goColor = styles.disabled;
-    // can get directions if at least 1 room is selected
-    if (building && (startRoom || endRoom)) {
-      goUnderlay = goUnderlayActive;
-      goColor = null;
-    }
+    const underlayColor = building ? underlayActive : disabled;
+    const roomColor = building ? null : styles.disabled;
+
+    const canRoute = this.canRoute();
+    const goUnderlay = canRoute ? goUnderlayActive : disabled;
+    const goColor = canRoute ? null : styles.disabled;
 
 
     return (
@@ -252,7 +272,7 @@ export default class IndoorNavigationView extends Component
             </Text>
             <Text style={styles.helpBody}>
               To find your way out of a building, find select a nearby room for
-              Start Room and "Entry" for End Room.
+              Start Room and "Exit" for End Room.
             </Text>
 
             <View collapsable={false}>
