@@ -41,8 +41,14 @@ export default StyleSheet.create({
       height: 40,
       width: 40,
     },
-    dist:{
-      marginTop: 10
+    distContainer: {
+      marginTop: 10,
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    distText: {
+      fontSize: 20
     },
     description:{
       padding:15,

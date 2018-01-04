@@ -14,10 +14,11 @@ import PubSub from 'pubsub-js';
 
 import { Location } from 'app/DataTypes';
 import GPSManager from 'app/GPSManager';
-
+import { DistanceAwayText } from 'app/Utils';
 import { GetIcon, logo } from 'app/Assets';
 import { DetailStyle } from 'app/css';
 
+import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
 
 export default class DetailsView extends Component
 {
@@ -58,6 +59,31 @@ export default class DetailsView extends Component
 
     if (this.location.images.length > 0) {
       this.displayImage = { uri: this.location.images[0][this.imageSize] };
+    }
+  }
+
+  componentDidMount() {
+    this.watchID = this.GPSManager.watchPosition(() => {
+      this.setState({
+        position: this.GPSManager.getPosition()
+      });
+    });
+  }
+
+  componentWillUnmount(){
+    this.GPSManager.clearWatch(this.watchID);
+  }
+
+  distText = () => {
+    const feet = this.location.FeetAway(this.state.position);
+    const minutes = Math.ceil(feet/264);
+    const distance = DistanceAwayText(feet);
+
+    if (minutes < 100) {
+      return `${minutes} minutes (${distance})`;
+    }
+    else {
+      return `${distance}`;
     }
   }
 
@@ -150,8 +176,6 @@ export default class DetailsView extends Component
   }
 
   render() {
-    console.log(this.location);
-    const position = this.GPSManager.getPosition();
 
     return (
       <ScrollView contentContainerStyle={{flex:0}}>
@@ -169,9 +193,12 @@ export default class DetailsView extends Component
             <Image source={this.displayImage} style={DetailStyle.displayImage}/>
           </TouchableHighlight>
 
-          <Text style={DetailStyle.dist}>
-              {Math.ceil(this.location.FeetAway(position)/264)} walking minutes away
-          </Text>
+          {this.state.position &&
+            <View style={DetailStyle.distContainer}>
+                <MaterialsIcon size={20} name={'directions-walk'}/>
+                <Text>{this.distText()}</Text>
+            </View>
+          }
 
           <View style={DetailStyle.flexRow}>
             <View style={DetailStyle.mapBtn}>
