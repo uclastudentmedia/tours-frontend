@@ -1,12 +1,8 @@
 'use strict';
 
-/**
- * Created by Daniel on 2/9/2017.
- */
 import React, { Component, PropTypes } from 'react';
 import {
     View,
-    ListView,
     TouchableWithoutFeedback,
     TouchableOpacity,
     Text,
@@ -48,8 +44,6 @@ import {
 
 import { styles, CustomMapStyle } from 'app/css';
 
-var firstOnRegionChange = true;
-
 export default class MainMapView extends Component {
     static propTypes = {
         navigation: PropTypes.object.isRequired,
@@ -88,7 +82,7 @@ export default class MainMapView extends Component {
             directionsBarVisible: false,
         };
 
-
+        this.firstOnRegionChange = true;
 
         this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
 
@@ -99,15 +93,19 @@ export default class MainMapView extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
         // get position
         this.watchID = this.GPSManager.watchPosition(() => {
-          this.setState({
-            position: this.GPSManager.getPosition()
-          });
+          if (this._isMounted) {
+            this.setState({
+              position: this.GPSManager.getPosition()
+            });
+          }
         });
     }
 
     componentWillUnmount(){
+        this._isMounted = false;
         this.GPSManager.clearWatch(this.watchID);
     }
 
@@ -270,8 +268,8 @@ export default class MainMapView extends Component {
     }
 
     onRegionChange(region) {
-      if (firstOnRegionChange) {
-        firstOnRegionChange = false;
+      if (this.firstOnRegionChange) {
+        this.firstOnRegionChange = false;
         return;
       }
       this.region = region;

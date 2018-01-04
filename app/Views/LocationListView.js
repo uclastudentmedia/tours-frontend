@@ -66,6 +66,7 @@ export default class LocationListView extends Component
       };
   }
   componentDidMount() {
+      this._isMounted = true;
       this.getPosition();
       this.updateLocations();
 
@@ -77,13 +78,16 @@ export default class LocationListView extends Component
 
   getPosition() {
       this.watchID = this.GPSManager.watchPosition(() => {
-          this.setState({
-            position: this.GPSManager.getPosition()
-          });
+          if (this._isMounted) {
+              this.setState({
+                  position: this.GPSManager.getPosition()
+              });
+          }
       });
   }
 
   componentWillUnmount(){
+      this._isMounted = false;
       this.GPSManager.clearWatch(this.watchID);
   }
 
