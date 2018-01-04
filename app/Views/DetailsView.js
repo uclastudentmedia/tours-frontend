@@ -18,7 +18,7 @@ import { DistanceAwayText } from 'app/Utils';
 import { GetIcon, logo } from 'app/Assets';
 import { DetailStyle } from 'app/css';
 
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 export default class DetailsView extends Component
 {
@@ -199,7 +199,7 @@ export default class DetailsView extends Component
 
           {this.state.position &&
             <View style={DetailStyle.distContainer}>
-                <MaterialsIcon size={20} name={'directions-walk'}/>
+                <MaterialIcon size={20} name='directions-walk'/>
                 <Text>{this.distText()}</Text>
             </View>
           }

@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import TransformableImage from 'react-native-transformable-image';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import { styles } from 'app/css';
 
@@ -98,13 +98,13 @@ export default class ImageView extends Component
 
         <View style={styles.imageBar}>
           <TouchableOpacity style={styles.imageBarArrow} onPress={this.prev}>
-            <MaterialsIcon color={this.arrowColor(this.hasPrev())} size={30} name={'arrow-back'}/>
+            <MaterialIcon color={this.arrowColor(this.hasPrev())} size={30} name='arrow-back'/>
           </TouchableOpacity>
 
           <Text style={[styles.baseText, styles.imageBarText]}>{image.title}</Text>
 
           <TouchableOpacity style={styles.imageBarArrow} onPress={this.next}>
-            <MaterialsIcon color={this.arrowColor(this.hasNext())} size={30} name={'arrow-forward'}/>
+            <MaterialIcon color={this.arrowColor(this.hasNext())} size={30} name='arrow-forward'/>
           </TouchableOpacity>
         </View>
 

@@ -11,7 +11,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import PubSub from 'pubsub-js';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 import {
@@ -296,7 +296,7 @@ export default class DirectionsBar extends Component
           <View style={{marginBottom:7}}/>
           <EntypoIcon color='#fff' size={10} name='circle'/>
           <EntypoIcon color='#aaa' size={16} name='dots-three-vertical'/>
-          <MaterialsIcon color='#fff' size={16} name='place'/>
+          <MaterialIcon color='#fff' size={16} name='place'/>
           <View/>
         </View>
 
@@ -340,7 +340,7 @@ export default class DirectionsBar extends Component
               underlayColor={underlayColor}
               onPress={this.getIndoorDirections}
             >
-              <MaterialsIcon color='#ffffff' size={28} name={'directions'}/>
+              <MaterialIcon color='#ffffff' size={28} name='directions'/>
             </TouchableHighlight>
           </View>
         : null */

@@ -9,7 +9,7 @@ import {
     Image,
     Platform
 } from 'react-native';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import PubSub from 'pubsub-js';
 import { debounce } from 'lodash';
@@ -386,28 +386,28 @@ export default class MainMapView extends Component {
                   <Text style={[styles.baseText, styles.titleText]}>UCLA Maps</Text>
                   <TouchableOpacity onPress={this.openSearchMenu}
                     style={styles.mapViewSearchBtn}>
-                      <MaterialsIcon color='#cccccc' size={30} name={'search'}/>
+                      <MaterialIcon color='#cccccc' size={30} name='search'/>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={this.zoomToCurrentLocation}
                   style={[styles.mapViewBtn, styles.myLocationBtn]}>
-                    <MaterialsIcon color='#246dd5' size={20} name={'near-me'}/>
+                    <MaterialIcon color='#246dd5' size={20} name='near-me'/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.zoomToCampus}
                   style={[styles.mapViewBtn, styles.zoomToCampusBtn]}>
-                    <MaterialsIcon color='#246dd5' size={20} name={'zoom-out-map'}/>
+                    <MaterialIcon color='#246dd5' size={20} name='zoom-out-map'/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={this.toggleDirections}
                   style={[styles.mapViewBtn, styles.toggleDirectionsBtn]}>
                   {directionsBarVisible ?
                     <View>
-                      <MaterialsIcon color='#ffffff' size={30} name={'close'}/>
+                      <MaterialIcon color='#ffffff' size={30} name='close'/>
                     </View>
                   :
                     <View>
-                      <MaterialsIcon color='#ffffff' size={20} name={'directions'}/>
+                      <MaterialIcon color='#ffffff' size={20} name='directions'/>
                       <Text style={styles.toggleDirectionsText}>GO</Text>
                     </View>
                   }

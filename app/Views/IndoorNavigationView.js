@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {
   GetIndoorBuildingList,
@@ -232,7 +232,7 @@ export default class IndoorNavigationView extends Component
               </TouchableHighlight>
               {building &&
                 <TouchableHighlight style={styles.btnIcon} underlayColor={underlayColor} onPress={this.clear}>
-                  <MaterialsIcon color='#ffffff' size={28} name={'close'}/>
+                  <MaterialIcon color='#ffffff' size={28} name='close'/>
                 </TouchableHighlight>
               }
             </View>
@@ -251,7 +251,7 @@ export default class IndoorNavigationView extends Component
 
             <TouchableHighlight style={[styles.btn, styles.goBtn, goColor]} underlayColor={goUnderlay} onPress={this.getDirections}>
               <View style={styles.flexRow}>
-                <MaterialsIcon color='#ffffff' size={28} name={'directions'}/>
+                <MaterialIcon color='#ffffff' size={28} name='directions'/>
                 <Text style={styles.goText}>GO</Text>
               </View>
             </TouchableHighlight>

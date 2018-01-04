@@ -9,7 +9,7 @@ import {
 
 import Fuse from 'fuse.js';
 import SearchBar from 'react-native-searchbar';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import GPSManager from 'app/GPSManager';
 import { Location } from 'app/DataTypes';
@@ -137,7 +137,7 @@ export default class SearchView extends Component {
                     onPress={this.handleOnResultSelect.bind(this, item.text)}
                   >
                     <View style={[styles.flexRow]}>
-                      <MaterialsIcon color='#2af' size={24} name={item.icon}/>
+                      <MaterialIcon color='#2af' size={24} name={item.icon}/>
                       <View style={{width: 20}}/>
                       <Text style={DirectionsStyle.buttonText}>
                         {item.text}

@@ -5,7 +5,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import codePush from "react-native-code-push";
 
@@ -34,7 +34,7 @@ function makeMaterialIcon(name) {
   const iconSize = 24;
 
   return ({tintColor, focused}) => (
-    <MaterialsIcon color={tintColor} size={iconSize} name={name} />
+    <MaterialIcon color={tintColor} size={iconSize} name={name} />
   );
 }
 
