@@ -21,7 +21,6 @@ import { popPrioritize, DistanceAwayText } from 'app/Utils';
 import { GetIcon } from 'app/Assets';
 import { styles } from 'app/css';
 
-var initialPosition = {coords: {latitude: 34.070286, longitude: -118.443413}};
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 export default class LocationListView extends Component
@@ -89,10 +88,10 @@ export default class LocationListView extends Component
   }
 
   updateLocations(){
-      //Get list of top 10 locations
+      //Get list of top locations
       let results = popPrioritize(this.region, this.category);
 
-      results = results.slice(0, 10);
+      results = results.slice(0, 20);
 
       this.setState({
         dataSource: ds.cloneWithRows(results),
