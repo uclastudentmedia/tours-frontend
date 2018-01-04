@@ -360,19 +360,28 @@ export default StyleSheet.create({
         backgroundColor: "#246dd5",
         width: width,
         flex: 1,
-        flexDirection: 'column',
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'stretch',
         elevation: 10,
         zIndex: 10,
         padding: 10,
     },
+    directionsIcons: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+    },
+    directionsBtnContainer: {
+        flex: 20,
+    },
     //Searchbar Attributes
     directionsBtn: {
         flex: 7,
         borderRadius: 5,
         height: 30,
-        marginTop: 10,
+        margin: 5,
         backgroundColor: '#6197e4',
     },
     directionsBtnPressedColor: {

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import PubSub from 'pubsub-js';
 import MaterialsIcon from 'react-native-vector-icons/MaterialIcons';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 import {
   DecodePolyline,
@@ -31,10 +32,10 @@ import {
   styles,
 } from 'app/css';
 
-const HIDDEN_PX = -300;
+const HIDDEN_PX = -150;
 const VISIBLE_PX = Platform.select({
-  android: -10,
-  ios: 0,
+  android: 0,
+  ios: 10,
 });
 
 export default class DirectionsBar extends Component
@@ -291,25 +292,35 @@ export default class DirectionsBar extends Component
     return (
       <Animated.View style={[styles.directionsBar, {top: translateYValue}]}>
 
-        <TouchableHighlight
-          style={styles.directionsBtn}
-          underlayColor={underlayColor}
-          onPress={this.searchStartLocation}
-        >
-          <Text style={styles.directionsText}>
-            {startLocation ? startLocation.name : 'Select start location'}
-          </Text>
-        </TouchableHighlight>
+        <View style={styles.directionsIcons}>
+          <View style={{marginBottom:7}}/>
+          <EntypoIcon color='#fff' size={10} name='circle'/>
+          <EntypoIcon color='#aaa' size={16} name='dots-three-vertical'/>
+          <MaterialsIcon color='#fff' size={16} name='place'/>
+          <View/>
+        </View>
 
-        <TouchableHighlight
-          style={styles.directionsBtn}
-          underlayColor={underlayColor}
-          onPress={this.searchEndLocation}
-        >
-          <Text style={styles.directionsText}>
-            {endLocation ? endLocation.name : 'Select destination'}
-          </Text>
-        </TouchableHighlight>
+        <View style={styles.directionsBtnContainer}>
+          <TouchableHighlight
+            style={styles.directionsBtn}
+            underlayColor={underlayColor}
+            onPress={this.searchStartLocation}
+          >
+            <Text style={styles.directionsText}>
+              {startLocation ? startLocation.name : 'Select start location'}
+            </Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight
+            style={styles.directionsBtn}
+            underlayColor={underlayColor}
+            onPress={this.searchEndLocation}
+          >
+            <Text style={styles.directionsText}>
+              {endLocation ? endLocation.name : 'Select destination'}
+            </Text>
+          </TouchableHighlight>
+        </View>
 
         { // TODO: add indoor nav shortcut when ready
           /*
