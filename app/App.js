@@ -128,7 +128,7 @@ const MainScreenNavigator = TabNavigator(
     //Directions: { screen: DirectionsScreen },
     LocationList: { screen: LocationListScreen },
     IndoorNavigation: { screen: IndoorNavigationScreen },
-    //Tours: { screen: ToursScreen },
+    Tours: { screen: ToursScreen },
   },
   {
     tabBarPosition: 'bottom',

@@ -294,6 +294,7 @@ export async function LoadAllData() {
     // Tours
     getData(ENDPOINTS.TOURS, (data) => {
       return data.map(tour => {
+        tour.image = prependDomain(tour.image);
         return new Tour(tour);
       });
     }),

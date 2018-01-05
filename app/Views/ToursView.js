@@ -4,21 +4,16 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  ListView,
   TouchableHighlight,
-  Button,
   Image,
+  StyleSheet,
 } from 'react-native';
-import PubSub from 'pubsub-js';
 
 import GPSManager from 'app/GPSManager';
+import { GetTourList } from 'app/DataManager';
+import { ToursStyle as styles } from 'app/css';
 
-import { styles } from 'app/css';
-
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
-export default class ToursView extends Component
-{
+export default class ToursView extends Component {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
     screenProps: PropTypes.shape({
@@ -27,53 +22,27 @@ export default class ToursView extends Component
   };
 
   constructor(props){
-      super(props);
-
-      this.GPSManager = props.screenProps.GPSManager;
-
-      this.state = {
-          dataSource: ds.cloneWithRows([]),
-      };
+    super(props);
+    this.tours = GetTourList();
   }
 
-  gotoDescription(location) {
-      this.props.navigation.navigate('TourDetails', {
-          location: location,
-      });
+  gotoDescription(tour) {
   }
 
   render() {
     return (
       <View style={styles.container}>
-
-          <ListView
-              enableEmptySections={true}
-              removeClippedSubviews={false}
-              dataSource={this.state.dataSource}
-              renderRow={(loc) =>
-                  <TouchableHighlight
-                    underlayColor='#ddd'
-                    onPress={this.gotoDescription.bind(this, loc)}
-                    style={[styles.wrapper, styles.listItemBorder]}
-                  >
-                      <View style={styles.listItemContainer}>
-                          <View style={styles.locListIcon}>
-                            <Image source={GetIcon(loc.category_id)} />
-                          </View>
-                          <View style={styles.listItemText}>
-                              <Text style={styles.baseText}>
-                                  <Text style={styles.locText}>
-                                      {loc.name}{'\n'}
-                                  </Text>
-                                  <Text style={styles.distText}>
-                                      {DistanceAwayText(loc.FeetAway(position))}
-                                  </Text>
-                              </Text>
-                          </View>
-                      </View>
-                  </TouchableHighlight>
-              }
-          />
+        {this.tours.map(tour => (
+          <TouchableHighlight key={tour.id} underlayColor='#ddd'
+            style={styles.listItemContainer}
+            onPress={() => this.gotoDescription(tour)}
+          >
+            <View style={StyleSheet.absoluteFill}>
+              <Image style={StyleSheet.absoluteFill} source={{uri: tour.image}}/>
+              <Text style={styles.nameText}>{tour.name}</Text>
+            </View>
+          </TouchableHighlight>
+        ))}
       </View>
     );
   }
