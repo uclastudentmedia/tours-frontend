@@ -63,18 +63,14 @@ export default class DetailsView extends Component
   }
 
   componentDidMount() {
-    this._isMounted = true;
     this.watchID = this.GPSManager.watchPosition(() => {
-      if (this._isMounted) {
-        this.setState({
-          position: this.GPSManager.getPosition()
-        });
-      }
+      this.setState({
+        position: this.GPSManager.getPosition()
+      });
     });
   }
 
   componentWillUnmount(){
-    this._isMounted = false;
     this.GPSManager.clearWatch(this.watchID);
   }
 

@@ -30,8 +30,12 @@ export default class GPSManager {
     return navigator.geolocation.watchPosition(geo_success, geo_error, options);
   }
 
-  clearWatch() {
+  clearInternalWatch() {
     navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  clearWatch(watchID) {
+    navigator.geolocation.clearWatch(watchID);
   }
 
   getPosition() {

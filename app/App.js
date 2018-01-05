@@ -181,7 +181,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    this.GPSManager.clearWatch();
+    this.GPSManager.clearInternalWatch();
   }
 
   onLoadComplete = () => {

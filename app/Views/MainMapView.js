@@ -93,19 +93,15 @@ export default class MainMapView extends Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
         // get position
         this.watchID = this.GPSManager.watchPosition(() => {
-          if (this._isMounted) {
             this.setState({
-              position: this.GPSManager.getPosition()
+                position: this.GPSManager.getPosition()
             });
-          }
         });
     }
 
     componentWillUnmount(){
-        this._isMounted = false;
         this.GPSManager.clearWatch(this.watchID);
     }
 
