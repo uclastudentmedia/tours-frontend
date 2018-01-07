@@ -270,11 +270,6 @@ export default class MainMapView extends Component {
       this.updateMapIcons();
     }
 
-    changeMapSetting(setting){
-        mapSettinger=setting;
-        this.updateMapIcons();
-    }
-
     getCompassDirection = () => {
       const {
         position
@@ -450,8 +445,14 @@ export default class MainMapView extends Component {
                           <TouchableWithoutFeedback
                             onPress={this.onPressMarker(loc)}
                           >
-                            <View style={{width:35,height:35}}></View>
+                            <View style={{width:100,height:35}}></View>
                           </TouchableWithoutFeedback>
+                            <MapView.Callout>
+                                <View style={{flexDirection:'row',padding:2}}>
+                                    <Image source={paw_blue} style={{height:30,width:30}}/>
+                                    <Text>{loc.name}</Text>
+                                </View>
+                            </MapView.Callout>
                         </MapView.Marker>
                     ))}
 
