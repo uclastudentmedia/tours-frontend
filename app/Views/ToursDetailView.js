@@ -125,21 +125,30 @@ export default class ToursDetailView extends Component
           <Image source={{uri: image}} style={styles.image}/>
           <View style={styles.contentContainer}>
             <Text style={styles.name}>{name}</Text>
-            {tourStarted ? (
-              <Button title='Stop Tour' onPress={this.stopTour}/>
-            ) : (
-              <Button title='Start Tour' onPress={this.startTour}/>
-            )}
             <Text style={styles.length}>{duration} minutes ({distance} mi)</Text>
-            <Text style={styles.description}>{text_description}</Text>
 
-            <Text style={styles.header}>Locations</Text>
-            {this.locations.map(loc => (
-                <View key={loc.id}>
-                  <Button title={loc.name} onPress={() => this.gotoDetail(loc)}/>
-                </View>
-            ))}
+            {tourStarted ?
+              <Button color='#ee6666' title='Stop Tour' onPress={this.stopTour}/>
+            :
+              <Button color='#246dd5' title='Start Tour' onPress={this.startTour}/>
+            }
+
+            <Text style={styles.description}>{text_description}</Text>
           </View>
+
+          <Text style={styles.header}>Locations</Text>
+          {this.locations.map(loc => (
+            <TouchableHighlight key={loc.id}
+              onPress={() => this.gotoDetail(loc)}
+              style={styles.locationBtn}
+              underlayColor='#ddd'
+            >
+              <View style={styles.flexRow}>
+                <Image style={styles.categoryIcon} source={GetIcon(loc.category_id)} />
+                <Text style={styles.locationText}>{loc.name}</Text>
+              </View>
+            </TouchableHighlight>
+          ))}
         </View>
       </ScrollView>
     );

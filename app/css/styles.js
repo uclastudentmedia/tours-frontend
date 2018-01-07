@@ -51,11 +51,6 @@ export default StyleSheet.create({
     loadingBackground: {
         backgroundColor: '#006699',
     },
-    loadMapContainer: {
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: 'white',
-    },
     loading:{
         width:width,
         height:height,
@@ -64,48 +59,15 @@ export default StyleSheet.create({
         paddingTop:250,
         paddingRight:15,
     },
-    center:{
-        fontSize: 50,
-        color:'white',
-    },
     map: {
         height: height,
         width: width,
         zIndex: -1,
     },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-    info: {
-
-        padding: 20,
-        paddingBottom:0,
-        paddingTop:0,
-        backgroundColor:'#F5FCFF',
-
-    },
-    description: {
-        flex: 3,
-        padding: 20,
-        width: 372
-    },
-    locations:{
-        width: width - 40
-    },
-    locList:{
-        flex:1,
-        width:width
-    },
     locListIcon: {
         flex: 1,
         maxWidth: 40,
         alignSelf: 'center'
-    },
-    listHeader:{
-        flex:4,
-        width:width
     },
     categoryFilterBtns: {
         flex: 0,
@@ -118,10 +80,6 @@ export default StyleSheet.create({
     },
     distText:{
         fontSize:16,
-        color: '#B8B8B8'
-    },
-    loadingDistText:{
-        fontSize:24,
         color: '#B8B8B8'
     },
     locText:{
@@ -141,57 +99,9 @@ export default StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
-    loadingLocText:{
-        paddingTop: 20,
-        fontSize: 30,
-        color: '#5b73a4'
-    },
-    placeholder: {
-        top: 23,
-        height: 40,
-        width: 40
-    },
-    separator: {
-        width:width*.9,
-        paddingLeft:width*.025,
-        height: 1,
-        backgroundColor: '#dddddd'
-    },
-    infoSection:{
-
-    },
-    input: {
-        height: 40,
-        borderRadius: 8,
-        backgroundColor: 'white',
-    },
-    inputWrapper1: {
-        flex: 1,
-        alignSelf: "stretch"
-    },
-    inputWrapper2: {
-        alignSelf: "stretch",
-        paddingTop: 5,
-        paddingBottom: 10,
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: '#B2E4F7',
-        borderColor: 'red'
-    },
     image: {
         paddingTop: 50,
         width: width + 20
-    },
-    icon: {
-        height: 30,
-        width: 30
-    },
-    icon2: {
-        height: 50,
-        width: 50
-    },
-    spin: {
-        top: 40
     },
     wrapper: {
         flex:1,
@@ -201,52 +111,12 @@ export default StyleSheet.create({
         width:width,
         padding: 5
     },
-    btnContainer: {
-        flex: 1,
-        flexDirection:'row',
-        backgroundColor: 'transparent',
-    },
-    button:{
-        justifyContent: 'center',
-        width: width,
-        backgroundColor:'#dddddd',
-        padding:0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        top: 0,
-        bottom: 0
-    },
-    handlerText: {
-        color: 'white',
-        fontSize: 15,
-        fontWeight: '700',
-        textAlign: 'center'
-    },
-    handBtn: {
-        justifyContent: 'center',
-        alignItems: 'stretch',
-        backgroundColor:'#dddddd',
-        padding:2,
-        width: width / 3,
-        height: 50
-      },
-    handBtnPress: {
-        justifyContent: 'center',
-        alignItems: 'stretch',
-        backgroundColor:'#B2E4F7',
-        padding:2,
-        width: width / 3,
-        height: 50
-    },
     title: {
         textAlignVertical: "center",
         textAlign: "center",
         fontSize:18,
         justifyContent: 'center',
         flex: 1
-    },
-    slideContainer: {
-        paddingRight: 359
     },
     buttonContainer: {
         flex: 1
@@ -324,19 +194,6 @@ export default StyleSheet.create({
         bottom: 100,
         right: 36,
         backgroundColor: '#ffffff',
-    },
-    dirStartBtn: {
-        paddingTop: 5,
-        alignItems: 'center',
-        bottom: 80,
-        right: 30,
-        position: 'absolute',
-        height: 50,
-        width: 50,
-        borderRadius: 25,
-        borderWidth: 1,
-        backgroundColor: '#246dd5',
-        borderColor: '#ffffff'
     },
     toggleDirectionsBtn: {
         bottom: 30,
