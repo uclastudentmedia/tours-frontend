@@ -105,7 +105,7 @@ export default class MainMapView extends Component {
         this.GPSManager.clearWatch(this.watchID);
     }
 
-    subscribe() {
+    subscribe = () => {
 
       PubSub.subscribe('DirectionsBar.showRouteOnMap', (msg, route) => {
         const {
@@ -165,7 +165,7 @@ export default class MainMapView extends Component {
         this.setState({ directionsBarVisible: true });
         this.directionsBar.SetVisible(true);
         this.directionsBar.SetInput({
-          startLocation: GetCurrentLocationObject(this.position),
+          startLocation: GetCurrentLocationObject(this.state.position),
           endLocation: location,
         });
       });
