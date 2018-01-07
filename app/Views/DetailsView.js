@@ -9,6 +9,7 @@ import {
   Button,
   Dimensions,
   TouchableHighlight,
+  Keyboard,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
@@ -63,19 +64,11 @@ export default class DetailsView extends Component
   }
 
   componentDidMount() {
-    this.watchID = this.GPSManager.watchPosition(() => {
-      this.setState({
-        position: this.GPSManager.getPosition()
-      });
-    });
+    Keyboard.dismiss();
   }
 
-  componentWillUnmount(){
-    this.GPSManager.clearWatch(this.watchID);
-  }
-
-  distText = () => {
-    const feet = this.location.FeetAway(this.state.position);
+  distText = (position) => {
+    const feet = this.location.FeetAway(position);
     const minutes = Math.ceil(feet/264);
     const distance = DistanceAwayText(feet);
 
@@ -176,6 +169,7 @@ export default class DetailsView extends Component
   }
 
   render() {
+    const position = this.GPSManager.getPosition();
 
     return (
       <ScrollView contentContainerStyle={{flex:0}}>
@@ -193,10 +187,10 @@ export default class DetailsView extends Component
             <Image source={this.displayImage} style={DetailStyle.displayImage}/>
           </TouchableHighlight>
 
-          {this.state.position &&
+          {position &&
             <View style={DetailStyle.distContainer}>
                 <MaterialIcon size={20} name='directions-walk'/>
-                <Text>{this.distText()}</Text>
+                <Text>{this.distText(position)}</Text>
             </View>
           }
 
