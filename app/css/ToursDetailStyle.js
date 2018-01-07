@@ -29,6 +29,22 @@ export default StyleSheet.create({
     fontSize: 18,
     paddingBottom: 10
   },
+  button: {
+    elevation: 4,
+    borderRadius: 2,
+    flex: 1,
+    alignItems: 'center',
+    padding: 10
+  },
+  buttonText: {
+    color: '#fff',
+  },
+  stopTour: {
+    backgroundColor: '#e66',
+  },
+  startTour: {
+    backgroundColor: '#246dd5',
+  },
   description: {
     paddingTop: 15,
     fontSize: 14,

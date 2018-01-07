@@ -17,7 +17,7 @@ import { Location } from 'app/DataTypes';
 import GPSManager from 'app/GPSManager';
 import { DistanceAwayText } from 'app/Utils';
 import { GetIcon, logo } from 'app/Assets';
-import { DetailStyle } from 'app/css';
+import { DetailStyle as styles } from 'app/css';
 
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -125,9 +125,9 @@ export default class DetailsView extends Component
   /**
    * Formats a landmark's attributes json to DOM.
    * Styles (${depth} is how deeply nested it is):
-   *   - Keys with object values: DetailStyle.attrHeader${depth}
-   *   - Keys with string values: DetailStyle.attrLabel${depth}
-   *   - Strings: DetailStyle.attrText${depth}
+   *   - Keys with object values: styles.attrHeader${depth}
+   *   - Keys with string values: styles.attrLabel${depth}
+   *   - Strings: styles.attrText${depth}
    */
   renderAttributes = () => {
 
@@ -138,10 +138,10 @@ export default class DetailsView extends Component
       if (typeof json !== 'object') {
         return (
             <Text>
-              <Text style={[DetailStyle.attrLabel, DetailStyle[`attrLabel${depth}`]]}>
+              <Text style={[styles.attrLabel, styles[`attrLabel${depth}`]]}>
                 {key}:&nbsp;
               </Text>
-              <Text style={[DetailStyle.attrText, DetailStyle[`attrText${depth}`]]}>
+              <Text style={[styles.attrText, styles[`attrText${depth}`]]}>
                 {json.toString()}
               </Text>
             </Text>
@@ -149,11 +149,11 @@ export default class DetailsView extends Component
       }
       return (
           <View>
-            <Text style={[DetailStyle.attrHeader, DetailStyle[`attrHeader${depth}`]]}>
+            <Text style={[styles.attrHeader, styles[`attrHeader${depth}`]]}>
               {key}
             </Text>
             {Object.keys(json).map(key => (
-                <View key={`${depth}_${key}`} style={DetailStyle.attrIndent}>
+                <View key={`${depth}_${key}`} style={styles.attrIndent}>
                    {render(json[key], key, depth+1)}
                 </View>
             ))}
@@ -162,7 +162,7 @@ export default class DetailsView extends Component
     };
 
     return (
-        <View style={DetailStyle.attrContainer}>
+        <View style={styles.attrContainer}>
             {render(this.location.attributes, 'More Info', 0)}
         </View>
     );
@@ -173,48 +173,54 @@ export default class DetailsView extends Component
 
     return (
       <ScrollView contentContainerStyle={{flex:0}}>
-        <View style={DetailStyle.container}>
+        <View style={styles.container}>
 
-          <View style={DetailStyle.titleSec}>
-            <Image style={DetailStyle.icon}
+          <View style={styles.titleSec}>
+            <Image style={styles.icon}
               source={GetIcon(this.location.category_id)}/>
-            <Text style={DetailStyle.title}>
+            <Text style={styles.title}>
                 {this.location.name}
             </Text>
           </View>
 
           <TouchableHighlight onPress={this.showImages}>
-            <Image source={this.displayImage} style={DetailStyle.displayImage}/>
+            <Image source={this.displayImage} style={styles.displayImage}/>
           </TouchableHighlight>
 
           {position &&
-            <View style={DetailStyle.distContainer}>
+            <View style={styles.distContainer}>
                 <MaterialIcon size={20} name='directions-walk'/>
                 <Text>{this.distText(position)}</Text>
             </View>
           }
 
-          <View style={DetailStyle.flexRow}>
-            <View style={DetailStyle.mapBtn}>
-              <Button title='Show on map'
-                onPress={this.showLocationOnMap}
-              />
-            </View>
-            <View style={DetailStyle.mapBtn}>
-              <Button title='Directions'
-                onPress={this.showRouteToLocation}
-              />
-            </View>
+          <View style={styles.flexRow}>
+            <TouchableHighlight
+              onPress={this.showLocationOnMap}
+              style={[styles.button, styles.mapBtn]}
+              underlayColor='#1d57a9'
+            >
+              <Text style={styles.buttonText}>Show on map</Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              onPress={this.showRouteToLocation}
+              style={[styles.button, styles.mapBtn]}
+              underlayColor='#1d57a9'
+            >
+              <Text style={styles.buttonText}>Directions</Text>
+            </TouchableHighlight>
           </View>
           {this.location.indoor_nav ?
-            <View style={DetailStyle.mapBtn}>
-              <Button title='Indoor Navigation'
-                onPress={this.showIndoorNavigation}
-              />
-            </View>
+            <TouchableHighlight
+              onPress={this.showIndoorNavigation}
+              style={[styles.button, styles.mapBtn]}
+              underlayColor='#1d57a9'
+            >
+              <Text style={styles.buttonText}>Indoor Navigation</Text>
+            </TouchableHighlight>
           : null}
 
-          <Text style={DetailStyle.description}>
+          <Text style={styles.description}>
               {this.location.text_description || 'No description available.'}
           </Text>
 

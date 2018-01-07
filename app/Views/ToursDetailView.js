@@ -128,9 +128,21 @@ export default class ToursDetailView extends Component
             <Text style={styles.length}>{duration} minutes ({distance} mi)</Text>
 
             {tourStarted ?
-              <Button color='#ee6666' title='Stop Tour' onPress={this.stopTour}/>
+              <TouchableHighlight
+                onPress={this.stopTour}
+                style={[styles.button, styles.stopTour]}
+                underlayColor='#e93838'
+              >
+                <Text style={styles.buttonText}>Stop Tour</Text>
+              </TouchableHighlight>
             :
-              <Button color='#246dd5' title='Start Tour' onPress={this.startTour}/>
+              <TouchableHighlight
+                onPress={this.startTour}
+                style={[styles.button, styles.startTour]}
+                underlayColor='#1d57a9'
+              >
+                <Text style={styles.buttonText}>Start Tour</Text>
+              </TouchableHighlight>
             }
 
             <Text style={styles.description}>{text_description}</Text>

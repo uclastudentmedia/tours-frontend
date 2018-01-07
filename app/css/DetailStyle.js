@@ -25,6 +25,17 @@ export default StyleSheet.create({
         backgroundColor: 'white',
         paddingBottom: 15
     },
+    button: {
+        elevation: 4,
+        borderRadius: 2,
+        flex: 1,
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor:  '#246dd5',
+    },
+    buttonText: {
+        color: '#fff',
+    },
     titleSec:{
         flex:1,
         flexDirection:'row',

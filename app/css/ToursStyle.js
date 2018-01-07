@@ -26,5 +26,6 @@ export default StyleSheet.create({
     textShadowColor: '#000',
     textShadowRadius: 10,
     textShadowOffset: {width: 1, height: 1},
+    backgroundColor: 'transparent',
   },
 });
