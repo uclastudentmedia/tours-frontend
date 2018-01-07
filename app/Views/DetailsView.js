@@ -81,7 +81,7 @@ export default class DetailsView extends Component
   }
 
   showLocationOnMap = () => {
-    PubSub.publish('DetailsView.showLocationOnMap', this.location);
+    PubSub.publish('showLocationOnMap', this.location);
 
     this.props.navigation.goBack(this.goBackFrom || null);
 
@@ -92,7 +92,7 @@ export default class DetailsView extends Component
   }
 
   showRouteToLocation = () => {
-    PubSub.publish('DetailsView.showRouteToLocation', this.location);
+    PubSub.publish('showRouteToLocation', this.location);
 
     this.props.navigation.goBack(this.goBackFrom || null);
 

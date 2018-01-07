@@ -36,7 +36,7 @@ export default class ToursView extends Component
           dataSource: ds.cloneWithRows([]),
       };
 
-      PubSub.subscribe('DirectionsBar.showRouteOnMap', (msg, {maneuvers}) => {
+      PubSub.subscribe('showRouteOnMap', (msg, {maneuvers}) => {
           this.setState({
               dataSource: ds.cloneWithRows(maneuvers)
           });

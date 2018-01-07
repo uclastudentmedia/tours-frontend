@@ -69,7 +69,7 @@ export default class LocationListView extends Component
       this.getPosition();
       this.updateLocations();
 
-      PubSub.subscribe('MainMapView.onRegionChange', (msg, region) => {
+      PubSub.subscribe('onRegionChange', (msg, region) => {
         this.region = region;
         this.updateLocations();
       });

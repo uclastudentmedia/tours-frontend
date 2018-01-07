@@ -19,6 +19,7 @@ import {
   IndoorNavigationView,
   ImageView,
   ToursView,
+  ToursDetailView,
 } from 'app/Views';
 
 import GPSManager from 'app/GPSManager';
@@ -104,18 +105,18 @@ class IndoorNavigationScreen extends Component {
   }
 }
 
-class ToursScreen extends Component {
-  static navigationOptions = {
-    tabBarLabel: 'Tours',
-    tabBarIcon: makeImageIcon('tours')
-  };
-
-  render() {
-    return (
-      <ToursView {...this.props} />
-    );
+const ToursScreen = StackNavigator(
+  {
+    ToursHome: { screen: ToursView, navigationOptions: {header: null}},
+    ToursDetail: { screen: ToursDetailView },
+  },
+  {
+    navigationOptions: {
+      tabBarLabel: 'Tours',
+      tabBarIcon: makeImageIcon('tours'),
+    }
   }
-}
+);
 
 
 /**

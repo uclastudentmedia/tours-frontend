@@ -21,12 +21,19 @@ export default class ToursView extends Component {
     }),
   };
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.tours = GetTourList();
   }
 
-  gotoDescription(tour) {
+  componentDidMount() {
+    //this.gotoDescription(this.tours[2]);
+  }
+
+  gotoDescription = (tour) => {
+    this.props.navigation.navigate('ToursDetail', {
+      tour: tour
+    });
   }
 
   render() {

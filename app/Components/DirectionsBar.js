@@ -17,6 +17,8 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {
   DecodePolyline,
   GetCurrentLocationObject,
+  DistanceAwayText,
+  mi2ft,
 } from 'app/Utils';
 
 import GPSManager from 'app/GPSManager';
@@ -27,6 +29,7 @@ import {
   RouteTBT,
   RouteIndoor,
 } from 'app/DataManager';
+import { Location } from 'app/DataTypes';
 
 import {
   styles,
@@ -157,12 +160,17 @@ export default class DirectionsBar extends Component
     // connect to the map icons
     polylineCoords = [].concat(startCoords, polylineCoords, endCoords);
 
-    PubSub.publish('DirectionsBar.showRouteOnMap', {
+    // add distance/time away text to end location callout
+    const directionsDistanceText = `${Math.ceil(minutes)} minutes ` +
+      `(${DistanceAwayText(mi2ft(miles))})`;
+    const endLocationWithDescription = new Location({...endLocation,
+      markerDescription: directionsDistanceText
+    });
+
+    PubSub.publish('showRouteOnMap', {
       polyline: polylineCoords,
-      startLocation: startLocation,
-      endLocation: endLocation,
-      minutes: minutes,
-      miles: miles,
+      locations: [startLocation, endLocationWithDescription],
+      calloutMarker: endLocationWithDescription,
       maneuvers: maneuvers,
     });
   }
@@ -237,7 +245,7 @@ export default class DirectionsBar extends Component
 
     const extraOptions = {};
 
-    RouteTBT(startLocation, endLocation, extraOptions)
+    RouteTBT([startLocation, endLocation], extraOptions)
       .then(data => {
         if (!data) {
           return;

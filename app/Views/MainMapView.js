@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import {
+    Alert,
     View,
     TouchableWithoutFeedback,
     TouchableOpacity,
@@ -19,8 +20,6 @@ import MapView from 'react-native-maps';
 import {
   popPrioritize,
   inRegion,
-  DistanceAwayText,
-  mi2ft,
   GetCurrentLocationObject,
 } from 'app/Utils';
 
@@ -30,8 +29,6 @@ import {
 } from 'app/DataManager';
 
 import { DirectionsBar } from 'app/Components';
-
-import { Location } from 'app/DataTypes';
 
 import GPSManager from 'app/GPSManager';
 
@@ -107,23 +104,14 @@ export default class MainMapView extends Component {
 
     subscribe = () => {
 
-      PubSub.subscribe('DirectionsBar.showRouteOnMap', (msg, route) => {
+      PubSub.subscribe('showRouteOnMap', (msg, route) => {
         const {
-          startLocation,
-          endLocation,
+          locations,
           polyline,
-          minutes,
-          miles,
+          calloutMarker,
         } = route;
 
-        // add distance/time away text to end location callout
-        const directionsDistanceText = `${Math.ceil(minutes)} minutes ` +
-                                       `(${DistanceAwayText(mi2ft(miles))})`;
-        const endLocation1 = new Location({...endLocation,
-          markerDescription: directionsDistanceText
-        });
-
-        this.specialMarkerLocations = [startLocation, endLocation1];
+        this.specialMarkerLocations = locations;
 
         this.updateMapIcons();
 
@@ -136,13 +124,15 @@ export default class MainMapView extends Component {
           })
         });
 
-        const markerRef = this.markerRefs[endLocation.id];
-        if (markerRef) {
-          markerRef.showCallout();
+        if (calloutMarker) {
+          const markerRef = this.markerRefs[calloutMarker.id];
+          if (markerRef) {
+            markerRef.showCallout();
+          }
         }
       });
 
-      PubSub.subscribe('DetailsView.showLocationOnMap', (msg, location) => {
+      PubSub.subscribe('showLocationOnMap', (msg, location) => {
         if (this.state.directionsBarVisible) {
           this.toggleDirections();
         }
@@ -161,13 +151,17 @@ export default class MainMapView extends Component {
         }
       });
 
-      PubSub.subscribe('DetailsView.showRouteToLocation', (msg, location) => {
+      PubSub.subscribe('showRouteToLocation', (msg, location) => {
         this.setState({ directionsBarVisible: true });
         this.directionsBar.SetVisible(true);
         this.directionsBar.SetInput({
           startLocation: GetCurrentLocationObject(this.state.position),
           endLocation: location,
         });
+      });
+
+      PubSub.subscribe('stopTour', () => {
+        this.resetMap();
       });
     }
 
@@ -176,7 +170,7 @@ export default class MainMapView extends Component {
           position
         } = this.state;
         if (!position) {
-          alert('Unable to find your location.');
+          Alert.alert('Unable to find your location.');
           return;
         }
         this.mapView.animateToRegion({
@@ -200,12 +194,15 @@ export default class MainMapView extends Component {
       this.directionsBar.SetVisible(visible);
 
       if (!visible) {
+        this.resetMap();
+        this.directionsBar.Clear();
+      }
+    }
+
+    resetMap = () => {
         this.specialMarkerLocations = [];
         this.setState({ polyline: null });
         this.updateMapIcons();
-
-        this.directionsBar.Clear();
-      }
     }
 
     openSearchMenu = () => {
@@ -269,7 +266,7 @@ export default class MainMapView extends Component {
         return;
       }
       this.region = region;
-      PubSub.publish('MainMapView.onRegionChange', region);
+      PubSub.publish('onRegionChange', region);
       this.updateMapIcons();
     }
 

@@ -395,18 +395,17 @@ export function GetIndoorBuildingByName(name) {
   return find(GetIndoorBuildingList(), 'name', name);
 }
 
-export async function RouteTBT(start, end, extraOptions) {
+export async function RouteTBT(locations, extraOptions) {
   /**
-   * @param start Landmark object
-   * @param end Landmark object
+   * @param locations Array of Landmark
    * @param extraOptions object: additional parameters
    */
 
   let options = {
-    locations: [
-      { lat: start.lat, lon: start.long },
-      { lat: end.lat, lon: end.long }
-    ],
+    locations: locations.map(loc => ({
+      lat: loc.lat,
+      lon: loc.long,
+    })),
     costing: 'pedestrian',
     directions_options: {
       units: 'miles'
