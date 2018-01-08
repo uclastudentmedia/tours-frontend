@@ -20,6 +20,7 @@ import {
   popPrioritize,
   inRegion,
   GetCurrentLocationObject,
+  CURRENT_LOCATION_ID,
 } from 'app/Utils';
 
 import {
@@ -187,6 +188,14 @@ export default class MainMapView extends Component {
       });
       this.directionsBar.SetVisible(visible);
 
+      // if a location is selected, route to it
+      // TODO: reliably tell if a location is selected
+      /*
+      if (visible && this.state.selectedLocation) {
+        PubSub.publish('showRouteToLocation', this.state.selectedLocation);
+      }
+      */
+
       if (!visible) {
         this.resetMap();
         this.directionsBar.Clear();
@@ -247,6 +256,11 @@ export default class MainMapView extends Component {
         // remove locations not in the view
         markerLocations = markerLocations.filter(loc => {
           return inRegion(this.region, loc.lat, loc.long);
+        });
+
+        // remove current location
+        markerLocations = markerLocations.filter(loc => {
+          return loc.id != CURRENT_LOCATION_ID;
         });
 
         this.setState({
@@ -322,30 +336,15 @@ export default class MainMapView extends Component {
 
     // marker selected
     onPressMarker = (loc) => {
-      return (event) => {
-        const ref = this.markerRefs[loc.id];
-        if (ref) {
-          // hide the callout when tapping on the icon with a visible callout
-          if (ref.calloutVisible) {
-            ref.hideCallout();
-          } else {
-            ref.showCallout();
-          }
-          ref.calloutVisible = !ref.calloutVisible;
-        }
-
         this.setState({
           selectedLocation: loc,
-        })
-      };
+        });
     }
 
     onCalloutPress = (location) => {
-      return (event) => {
-        this.props.navigation.navigate('Details', {
-            location: location,
-        });
-      };
+      this.props.navigation.navigate('Details', {
+          location: location,
+      });
     }
 
     render() {
@@ -427,26 +426,15 @@ export default class MainMapView extends Component {
                     {markerLocations.map(loc => (
                         <MapView.Marker
                           key={loc.id}
-                          ref={marker => this.markerRefs[loc.id] = marker}
+                          ref={marker => { this.markerRefs[loc.id] = marker; }}
                           coordinate={{latitude: loc.lat, longitude: loc.long}}
                           anchor={{x: 0.5, y: 0.5}}
                           title={loc.name}
                           description={loc.markerDescription}
                           image={GetIcon(loc.category_id)}
-                          onCalloutPress={this.onCalloutPress(loc)}
-                          calloutVisible={false}
+                          onPress={() => this.onPressMarker(loc)}
+                          onCalloutPress={() => this.onCalloutPress(loc)}
                         >
-                          <TouchableWithoutFeedback
-                            onPress={this.onPressMarker(loc)}
-                          >
-                            <View style={{width:100,height:35}}></View>
-                          </TouchableWithoutFeedback>
-                            <MapView.Callout>
-                                <View style={{flexDirection:'row',padding:2}}>
-                                    <Image source={paw_blue} style={{height:30,width:30}}/>
-                                    <Text>{loc.name}</Text>
-                                </View>
-                            </MapView.Callout>
                         </MapView.Marker>
                     ))}
 
