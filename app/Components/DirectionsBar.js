@@ -19,6 +19,8 @@ import {
   GetCurrentLocationObject,
   DistanceAwayText,
   mi2ft,
+  inRegion,
+  CURRENT_LOCATION_ID,
 } from 'app/Utils';
 
 import GPSManager from 'app/GPSManager';
@@ -260,7 +262,19 @@ export default class DirectionsBar extends Component
           this.showRouteOnMap(startLocation, endLocation, polyline,
                               minutes, miles, maneuvers);
         } else {
-            Alert.alert(data.error);
+            if (startLocation.id == CURRENT_LOCATION_ID) {
+              const region = {
+                latitude: 34.0700086,
+                longitude: -118.446003,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+              };
+              const position = this.GPSManager.getPosition();
+              if (!inRegion(region, position.latitude, position.longitude)) {
+                throw new Error(data.error + '\nYou may be too far from campus.');
+              }
+            }
+            throw new Error(data.error);
         }
       })
       .catch(error => {

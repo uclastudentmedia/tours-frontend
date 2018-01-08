@@ -2,7 +2,6 @@
 
 import React, { Component, PropTypes } from 'react';
 import {
-    Alert,
     View,
     TouchableWithoutFeedback,
     TouchableOpacity,
@@ -166,16 +165,11 @@ export default class MainMapView extends Component {
     }
 
     zoomToCurrentLocation = () => {
-        const {
-          position
-        } = this.state;
-        if (!position) {
-          Alert.alert('Unable to find your location.');
-          return;
-        }
+        const currentLocation = GetCurrentLocationObject(this.state.position);
+
         this.mapView.animateToRegion({
-          latitude: position.latitude,
-          longitude: position.longitude,
+          latitude: currentLocation.lat,
+          longitude: currentLocation.long,
           latitudeDelta: 0.005,
           longitudeDelta: 0.005,
         }, 500);
