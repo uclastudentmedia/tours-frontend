@@ -1,11 +1,18 @@
 import React, {
   StyleSheet,
   Dimensions,
+  Platform,
 } from 'react-native';
 
 const {height, width} = Dimensions.get('window');
 
 export default StyleSheet.create({
+  statusBar: {
+    marginTop: Platform.select({
+      android: 0,
+      ios: 10,
+    }),
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',

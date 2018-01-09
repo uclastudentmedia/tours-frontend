@@ -38,10 +38,7 @@ import {
 } from 'app/css';
 
 const HIDDEN_PX = -150;
-const VISIBLE_PX = Platform.select({
-  android: 0,
-  ios: 10,
-});
+const VISIBLE_PX = 0;
 
 export default class DirectionsBar extends Component
 {
@@ -312,7 +309,9 @@ export default class DirectionsBar extends Component
     const underlayColor = StyleSheet.flatten(styles.directionsBtnPressedColor).backgroundColor;
 
     return (
-      <Animated.View style={[styles.directionsBar, {top: translateYValue}]}>
+      <Animated.View
+        style={[styles.directionsBar, styles.directionsBarStatusBar, {top: translateYValue}]}
+       >
 
         <View style={styles.directionsIcons}>
           <View style={{marginBottom:7}}/>

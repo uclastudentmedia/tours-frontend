@@ -222,7 +222,7 @@ export default class IndoorNavigationView extends Component
 
     return (
         <View>
-          <View style={styles.bar}>
+          <View style={[styles.bar, styles.statusBar]}>
 
             <View style={styles.flexRow}>
               <TouchableHighlight style={styles.btn} underlayColor={underlayActive} onPress={this.selectBuilding}>
@@ -259,7 +259,7 @@ export default class IndoorNavigationView extends Component
           </View>
 
 
-          <View style={styles.container}>
+          <View style={[styles.container, styles.statusBar]}>
 
             <Text style={styles.errorText}>{error}</Text>
 

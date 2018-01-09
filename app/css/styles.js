@@ -13,6 +13,12 @@ import {
 const {height, width} = Dimensions.get('window');
 
 export default StyleSheet.create({
+    statusBar: {
+      paddingTop: Platform.select({
+        android: 0,
+        ios: 15,
+      }),
+    },
     baseText:{
         fontFamily: Platform.select({
           android: 'sans-serif',
@@ -73,10 +79,6 @@ export default StyleSheet.create({
         flex: 0,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: Platform.select({
-          android: 0,
-          ios: 10
-        }),
     },
     distText:{
         fontSize:16,
@@ -223,6 +225,12 @@ export default StyleSheet.create({
         elevation: 10,
         zIndex: 10,
         padding: 10,
+    },
+    directionsBarStatusBar: {
+        paddingTop: Platform.select({
+          android: 10,
+          ios: 20,
+        }),
     },
     directionsIcons: {
         flex: 1,

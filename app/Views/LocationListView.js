@@ -115,7 +115,7 @@ export default class LocationListView extends Component
     } = this.state;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.statusBar]}>
           <View style={styles.categoryFilterBtns}>
             {
               this.categories.map((cat, i) => (

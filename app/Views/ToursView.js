@@ -38,7 +38,7 @@ export default class ToursView extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.statusBar]}>
         {this.tours.map(tour => (
           <TouchableHighlight key={tour.id} underlayColor='#ddd'
             style={styles.listItemContainer}

@@ -7,6 +7,12 @@ import React, {
 const {height, width} = Dimensions.get('window');
 
 export default StyleSheet.create({
+  statusBar: {
+    paddingTop: Platform.select({
+      android: 10,
+      ios: 20,
+    }),
+  },
   flexRow: {
     flex: 1,
     flexDirection: 'row',
@@ -14,10 +20,6 @@ export default StyleSheet.create({
   },
   bar: {
     position: 'absolute',
-    top: Platform.select({
-      android: -10,
-      ios: 0,
-    }),
     backgroundColor: '#f89406',
     width: width,
     flex: 1,
@@ -35,7 +37,7 @@ export default StyleSheet.create({
     flex: 7,
     borderRadius: 5,
     height: 30,
-    marginTop: 10,
+    margin: 5,
     backgroundColor: '#f8bc06',
   },
   btnUnderlayColor: {
