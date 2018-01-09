@@ -4,7 +4,8 @@ import {
     View,
     Button,
     ScrollView,
-    TouchableHighlight
+    TouchableHighlight,
+    Keyboard,
 } from 'react-native';
 
 import Fuse from 'fuse.js';
@@ -81,6 +82,10 @@ export default class SearchView extends Component {
     });
   }
 
+  componentWillUnmount() {
+    Keyboard.dismiss();
+  }
+
   handleSearch = (input) => {
     this.scrollView.scrollTo({y: 0, animated: false});
 
@@ -101,6 +106,7 @@ export default class SearchView extends Component {
   }
 
   handleOnResultSelect(loc) {
+    Keyboard.dismiss();
     this.onResultSelect(loc);
     if (this.goBack !== false) {
       this.props.navigation.goBack();

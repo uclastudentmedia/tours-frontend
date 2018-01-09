@@ -9,7 +9,6 @@ import {
   Button,
   Dimensions,
   TouchableHighlight,
-  Keyboard,
 } from 'react-native';
 import PubSub from 'pubsub-js';
 
@@ -64,7 +63,7 @@ export default class DetailsView extends Component
   }
 
   componentDidMount() {
-    Keyboard.dismiss();
+
   }
 
   distText = (position) => {
