@@ -328,7 +328,7 @@ export default class DirectionsBar extends Component
             underlayColor={underlayColor}
             onPress={this.searchStartLocation}
           >
-            <Text style={styles.directionsText}>
+            <Text style={styles.directionsText} numberOfLines={1}>
               {startLocation ? startLocation.name : 'Select start location'}
             </Text>
           </TouchableHighlight>
@@ -338,7 +338,7 @@ export default class DirectionsBar extends Component
             underlayColor={underlayColor}
             onPress={this.searchEndLocation}
           >
-            <Text style={styles.directionsText}>
+            <Text style={styles.directionsText} numberOfLines={1}>
               {endLocation ? endLocation.name : 'Select destination'}
             </Text>
           </TouchableHighlight>

@@ -226,7 +226,7 @@ export default class IndoorNavigationView extends Component
 
             <View style={styles.flexRow}>
               <TouchableHighlight style={styles.btn} underlayColor={underlayActive} onPress={this.selectBuilding}>
-                <Text style={styles.btnText}>
+                <Text style={styles.btnText} numberOfLines={1}>
                   {building ? building.name : 'Select Building'}
                 </Text>
               </TouchableHighlight>
@@ -238,13 +238,13 @@ export default class IndoorNavigationView extends Component
             </View>
 
             <TouchableHighlight style={[styles.btn, roomColor]} underlayColor={underlayColor} onPress={this.selectStartRoom}>
-              <Text style={styles.btnText}>
+              <Text style={styles.btnText} numberOfLines={1}>
                 {startRoom ? startRoom : 'Select Start Room'}
               </Text>
             </TouchableHighlight>
 
             <TouchableHighlight style={[styles.btn, roomColor]} underlayColor={underlayColor} onPress={this.selectEndRoom}>
-              <Text style={styles.btnText}>
+              <Text style={styles.btnText} numberOfLines={1}>
                 {endRoom ? endRoom : 'Select End Room (optional)'}
               </Text>
             </TouchableHighlight>

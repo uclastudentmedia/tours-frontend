@@ -250,10 +250,11 @@ export default StyleSheet.create({
         marginTop: 10,
     },
     directionsText:{
+        flex: 1,
         color: 'white',
         marginTop: 5,
         marginLeft: 10,
-        fontSize: 17
+        fontSize: 17,
     },
     imageBar: {
         flex: 0,
