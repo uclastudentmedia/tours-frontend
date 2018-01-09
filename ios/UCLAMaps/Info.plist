@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>5</string>
 	<key>CodePushDeploymentKey</key>
 	<string>_PhS8WzAbknW6azZ99Q77Aub_hVf2f862d4e-98d1-42e8-926c-08cce31ed3d6</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -40,7 +40,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Location services are used for maps and directions.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
