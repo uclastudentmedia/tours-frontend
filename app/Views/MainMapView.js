@@ -432,9 +432,13 @@ export default class MainMapView extends Component {
                           title={loc.name}
                           description={loc.markerDescription}
                           image={GetIcon(loc.category_id)}
-                          onPress={() => this.onPressMarker(loc)}
                           onCalloutPress={() => this.onCalloutPress(loc)}
                         >
+                          <TouchableWithoutFeedback
+                            onPress={() => this.onPressMarker(loc)}
+                          >
+                            <View style={{width:35,height:35}}></View>
+                          </TouchableWithoutFeedback>
                         </MapView.Marker>
                     ))}
 
