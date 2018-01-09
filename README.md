@@ -15,3 +15,13 @@ code-push promote UCLAMaps-Android Staging Production
 code-push release-react UCLAMaps-iOS ios
 code-push promote UCLAMaps-iOS Staging Production
 ```
+
+# How to update version for the app store
+### Android
+  - `android/app/build.gradle`: change `versionCode` and `versionName`
+  - `android/app/src/main/AndroidManifest.xml`: change `android:versionCode` and
+    `android:versionName` (should match `build.gradle`)
+### iOS
+  - `ios/UCLAMaps/Info.plist`: change `CFBundleShortVersionString` and
+    `CFBundleVersion`
+
