@@ -336,9 +336,20 @@ export default class MainMapView extends Component {
 
     // marker selected
     onPressMarker = (loc) => {
-        this.setState({
-          selectedLocation: loc,
-        });
+      const ref = this.markerRefs[loc.id];
+      if (ref) {
+        // hide the callout when tapping on the icon with a visible callout
+        if (ref.calloutVisible) {
+          ref.hideCallout();
+        } else {
+          ref.showCallout();
+        }
+        ref.calloutVisible = !ref.calloutVisible;
+      }
+
+      this.setState({
+        selectedLocation: loc,
+      });
     }
 
     onCalloutPress = (location) => {
@@ -433,6 +444,7 @@ export default class MainMapView extends Component {
                           description={loc.markerDescription}
                           image={GetIcon(loc.category_id)}
                           onCalloutPress={() => this.onCalloutPress(loc)}
+                          calloutVisible={false}
                         >
                           <TouchableWithoutFeedback
                             onPress={() => this.onPressMarker(loc)}
