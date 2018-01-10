@@ -407,6 +407,11 @@ export async function RouteTBT(locations, extraOptions) {
       lon: loc.long,
     })),
     costing: 'pedestrian',
+    costing_options: {
+      alley_factor: 1.0,
+      driveway_factor: 1.0,
+      step_penalty: 30,
+    },
     directions_options: {
       units: 'miles'
     }
