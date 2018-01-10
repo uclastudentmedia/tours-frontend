@@ -300,7 +300,7 @@ export default class MainMapView extends Component {
       return (
         <MapView.Polyline
           coordinates={polyline}
-          strokeWidth={3}
+          strokeWidth={5}
           strokeColor={'#246dd5'}
         />
       );
