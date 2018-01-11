@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     Text,
     Image,
-    Platform
+    Platform,
 } from 'react-native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -91,11 +91,14 @@ export default class MainMapView extends Component {
 
     componentDidMount() {
         // get position
-        this.watchID = this.GPSManager.watchPosition(() => {
+        this.watchID = this.GPSManager.watchPosition(position => {
             this.setState({
-                position: this.GPSManager.getPosition()
+                position: position,
             });
         });
+
+        // verify that we have location services
+        this.GPSManager.getPosition(() => {});
     }
 
     componentWillUnmount(){
@@ -154,8 +157,21 @@ export default class MainMapView extends Component {
       PubSub.subscribe('showRouteToLocation', (msg, location) => {
         this.setState({ directionsBarVisible: true });
         this.directionsBar.SetVisible(true);
+
+        const currentLocation = GetCurrentLocationObject(this.state.position);
+        if (!currentLocation) {
+          // force update
+          this.GPSManager.getPosition(position => {
+            const loc = GetCurrentLocationObject(position);
+            this.directionsBar.SetInput({
+              startLocation: loc,
+              endLocation: location,
+            });
+            this.forceUpdatePosition(position);
+          });
+        }
         this.directionsBar.SetInput({
-          startLocation: GetCurrentLocationObject(this.state.position),
+          startLocation: currentLocation,
           endLocation: location,
         });
       });
@@ -165,8 +181,22 @@ export default class MainMapView extends Component {
       });
     }
 
+    forceUpdatePosition = (position) => {
+      this.setState({
+        position: position
+      });
+    }
+
     zoomToCurrentLocation = () => {
         const currentLocation = GetCurrentLocationObject(this.state.position);
+        if (!currentLocation) {
+          // force update
+          this.GPSManager.getPosition(position => {
+              this.forceUpdatePosition(position);
+              this.zoomToCurrentLocation();
+          });
+          return;
+        }
 
         this.mapView.animateToRegion({
           latitude: currentLocation.lat,
@@ -255,7 +285,10 @@ export default class MainMapView extends Component {
 
         // remove locations not in the view
         markerLocations = markerLocations.filter(loc => {
-          return inRegion(this.region, loc.lat, loc.long);
+          var region = { ...this.region };
+          region.latitudeDelta  *= 1.2;
+          region.longitudeDelta *= 1.2;
+          return inRegion(region, loc.lat, loc.long);
         });
 
         // remove current location
@@ -407,6 +440,7 @@ export default class MainMapView extends Component {
 
                 <DirectionsBar {...this.props}
                     ref={ref => this.directionsBar = ref}
+                    forceUpdatePosition={this.forceUpdatePosition}
                 />
 
                 <MapView style={styles.map}

@@ -66,20 +66,17 @@ export default class LocationListView extends Component
       };
   }
   componentDidMount() {
-      this.getPosition();
+      this.watchID = this.GPSManager.watchPosition(position => {
+          this.setState({
+              position: position,
+          });
+      });
+
       this.updateLocations();
 
       PubSub.subscribe('onRegionChange', (msg, region) => {
         this.region = region;
         this.updateLocations();
-      });
-  }
-
-  getPosition() {
-      this.watchID = this.GPSManager.watchPosition(() => {
-          this.setState({
-              position: this.GPSManager.getPosition()
-          });
       });
   }
 

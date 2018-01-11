@@ -48,6 +48,7 @@ export default class DirectionsBar extends Component
     screenProps: PropTypes.shape({
       GPSManager: PropTypes.instanceOf(GPSManager).isRequired,
     }),
+    forceUpdatePosition: PropTypes.func.isRequired,
   };
 
   constructor(props){
@@ -72,20 +73,25 @@ export default class DirectionsBar extends Component
   searchStartLocation = () => {
     const currentLocationText = 'Current Location';
 
-    const onResultSelect = name => {
-      let startLocation;
-      if (name === currentLocationText) {
-        const position = this.GPSManager.getPosition();
-        startLocation = GetCurrentLocationObject(position);
-      } else {
-        startLocation = GetLocationByName(name);
-      }
-
+    const setStartLocation = (startLocation) => {
       this.setState({
         startLocation: startLocation
       });
       this.startLocation = startLocation;
       this.getDirections();
+    };
+
+    const onResultSelect = name => {
+      let startLocation;
+      if (name === currentLocationText) {
+        this.GPSManager.getPosition(position => {
+          const loc = GetCurrentLocationObject(position);
+          setStartLocation(loc);
+          this.props.forceUpdatePosition(position);
+        });
+      } else {
+        setStartLocation(GetLocationByName(name));
+      }
     };
 
     this.props.navigation.navigate('Search', {
@@ -260,16 +266,17 @@ export default class DirectionsBar extends Component
                               minutes, miles, maneuvers);
         } else {
             if (startLocation.id == CURRENT_LOCATION_ID) {
-              const region = {
-                latitude: 34.0700086,
-                longitude: -118.446003,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
-              };
-              const position = this.GPSManager.getPosition();
-              if (!inRegion(region, position.latitude, position.longitude)) {
-                throw new Error(data.error + '\nYou may be too far from campus.');
-              }
+              this.GPSManager.getPosition(position => {
+                const region = {
+                  latitude: 34.0700086,
+                  longitude: -118.446003,
+                  latitudeDelta: 0.05,
+                  longitudeDelta: 0.05,
+                };
+                if (!inRegion(region, position.latitude, position.longitude)) {
+                  throw new Error(data.error + '\nYou may be too far from campus.');
+                }
+              });
             }
             throw new Error(data.error);
         }

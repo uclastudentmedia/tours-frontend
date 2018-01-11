@@ -63,7 +63,9 @@ export default class DetailsView extends Component
   }
 
   componentDidMount() {
-
+    this.GPSManager.getPosition(position => {
+      this.setState({ position: position });
+    }, () => {});
   }
 
   distText = (position) => {
@@ -168,7 +170,7 @@ export default class DetailsView extends Component
   }
 
   render() {
-    const position = this.GPSManager.getPosition();
+    const { position } = this.state;
 
     return (
       <ScrollView contentContainerStyle={{flex:0}}>

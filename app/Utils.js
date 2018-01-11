@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import {
   Image,
   Navigator,
-  Alert,
 } from 'react-native';
 
 import { GetLocationList, GetCategoryByName } from 'app/DataManager';
@@ -190,7 +189,6 @@ export function GetCurrentLocationObject(position) {
 
   //position = { latitude: 34.070286, longitude: -118.443413 };
   if (!position) {
-    Alert.alert('Unable to find your location.');
     return;
   }
 

@@ -1,5 +1,7 @@
 'use strict';
 
+import { Alert } from 'react-native';
+
 export default class GPSManager {
   static options = {
     enableHighAccuracy: true,
@@ -9,36 +11,26 @@ export default class GPSManager {
 
   constructor() {
     //navigator.geolocation.requestAuthorization();
-
-    // internal watch
-    this.watchID = this.watchPosition(this.updatePosition);
-  }
-
-  updatePosition = (position) => {
-    this.position = position.coords;
   }
 
   warn(error) {
     console.warn(error.message || error);
   }
 
-  watchPosition(geo_success,
-                geo_error = this.warn,
-                options = this.options) {
-
-    navigator.geolocation.getCurrentPosition(geo_success, geo_error, options);
-    return navigator.geolocation.watchPosition(geo_success, geo_error, options);
+  alert() {
+    Alert.alert('Unable to find your location.');
   }
 
-  clearInternalWatch() {
-    navigator.geolocation.clearWatch(this.watchID);
+  watchPosition(success, error = this.warn, options = this.options) {
+    navigator.geolocation.getCurrentPosition(p => success(p.coords), error, options);
+    return navigator.geolocation.watchPosition(p => success(p.coords), error, options);
+  }
+
+  getPosition(success, error = this.alert, options = this.options) {
+    return navigator.geolocation.getCurrentPosition(p => success(p.coords), error, options);
   }
 
   clearWatch(watchID) {
-    navigator.geolocation.clearWatch(watchID);
-  }
-
-  getPosition() {
-    return this.position;
+    return navigator.geolocation.clearWatch(watchID);
   }
 }
