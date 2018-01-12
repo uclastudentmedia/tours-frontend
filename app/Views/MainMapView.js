@@ -12,7 +12,7 @@ import {
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 import PubSub from 'pubsub-js';
-import { debounce } from 'lodash';
+import _ from 'lodash';
 
 import MapView from 'react-native-maps';
 
@@ -81,7 +81,7 @@ export default class MainMapView extends Component {
 
         this.firstOnRegionChange = true;
 
-        this.onRegionChange = debounce(this.onRegionChange.bind(this), 100);
+        this.onRegionChange = _.debounce(this.onRegionChange.bind(this), 100);
 
         this.markerRefs = {};
         this.specialMarkerLocations = []; // for route start/end, details, etc.

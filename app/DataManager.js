@@ -1,6 +1,6 @@
 'use strict';
 
-import { merge } from 'lodash';
+import _ from 'lodash';
 
 import { AsyncStorage } from 'react-native';
 //import { AsyncStorage } from 'app/__fakes__/FakeAsyncStorage';
@@ -28,9 +28,14 @@ const ENDPOINTS = {
   CATEGORIES: '/api/category/',
   TOURS: '/api/tour/',
   INDOOR_BUILDINGS: '/indoor/building/',
-  ROUTE_TBT: '/route',
+  //ROUTE_TBT: '/route',
   ROUTE_INDOOR: '/indoor/route',
 };
+
+// Google Maps API
+const GOOGLE_DIRECTIONS = 'https://maps.googleapis.com/maps/api/directions';
+const GOOGLE_API_KEY = 'AIzaSyA1w2qIY6IL3Mk63AklU_1ZZCXCtYVbQrU'; // debug
+//const GOOGLE_API_KEY = 'AIzaSyAwxA0X2eX2zDYU7xrnQlzLrk4AiWF73zw'; // release
 
 // has LoadAllData been called?
 let DATA_LOADED = false;
@@ -395,34 +400,45 @@ export function GetIndoorBuildingByName(name) {
   return find(GetIndoorBuildingList(), 'name', name);
 }
 
+function toQueryString(obj) {
+  const params = Object.entries(obj).map(([key, val]) => {
+    return `${key}=${val}`;
+  });
+  return params.join('&');
+}
+
 export async function RouteTBT(locations, extraOptions) {
   /**
    * @param locations Array of Landmark
    * @param extraOptions object: additional parameters
    */
 
-  let options = {
-    locations: locations.map(loc => ({
-      lat: loc.lat,
-      lon: loc.long,
-    })),
-    costing: 'pedestrian',
-    costing_options: {
-      alley_factor: 1.0,
-      driveway_factor: 1.0,
-      step_penalty: 30,
-    },
-    directions_options: {
-      units: 'miles'
-    }
-  };
-
-  if (extraOptions) {
-    merge(options, extraOptions);
+  if (locations.length < 2) {
+    console.warn('At least 2 locations required');
+    return;
   }
 
-  const endpoint = `${ENDPOINTS.ROUTE_TBT}?json=${JSON.stringify(options)}`;
-  const url = prependDomain(endpoint);
+  const toCoords = loc => `${loc.lat},${loc.long}`;
+
+  let options = {
+    origin: toCoords(locations[0]),
+    destination: toCoords(locations[locations.length-1]),
+    mode: 'walking',
+    key: GOOGLE_API_KEY,
+  };
+
+  // add waypoints if more than 2 locations
+  if (locations.length > 2) {
+    const waypoints = locations.slice(1,-1);
+    options.waypoints = waypoints.map(toCoords).join('|');
+  }
+
+  if (extraOptions) {
+    _.merge(options, extraOptions);
+  }
+
+  const url = `${GOOGLE_DIRECTIONS}/json?${toQueryString(options)}`;
+
   console.log(url);
   return fetch(url)
     .then(response => response.json());

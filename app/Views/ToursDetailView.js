@@ -61,33 +61,25 @@ export default class ToursDetailView extends Component
   startTour = () => {
     this.setState({ tourStarted: true });
 
+    if (this.locations.length == 0) {
+      return;
+    }
+
     RouteTBT(this.locations)
       .then(data => {
-        if (!data || !this.locations.length) {
+        if (!data) {
           return;
         }
-        if (data.error) {
-          Alert.alert(data.error);
+        if (data.status != 'OK') {
+          Alert.alert('Unable to find a route.');
           return;
         }
 
-        const polylines = data.trip.legs.map(leg =>
-          DecodePolyline(leg.shape).map(coord => ({
+        const polyline = data.routes[0].overview_polyline.points;
+        let coords = DecodePolyline(polyline).map(coord => ({
             latitude: coord[0],
-            longitude: coord[1]
-          }))
-        );
-
-        const locationCoords = this.locations.map(loc => ({
-            latitude: loc.lat,
-            longitude: loc.long,
+            longitude: coord[1],
         }));
-
-        // connect polylines and locations
-        let coords = [locationCoords[0]];
-        for (let i = 0; i < polylines.length; i++) {
-          coords = coords.concat(polylines[i], locationCoords[i+1]);
-        }
 
         PubSub.publish('showRouteOnMap', {
           polyline: coords,

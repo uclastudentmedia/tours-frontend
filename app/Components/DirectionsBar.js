@@ -146,7 +146,7 @@ export default class DirectionsBar extends Component
   }
 
 
-  showRouteOnMap = (startLocation, endLocation, polyline, minutes, miles, maneuvers) => {
+  showRouteOnMap = (startLocation, endLocation, polyline, duration, distance, maneuvers) => {
 
     let polylineCoords = DecodePolyline(polyline).map(coord => ({
       latitude: coord[0],
@@ -166,10 +166,9 @@ export default class DirectionsBar extends Component
     polylineCoords = [].concat(startCoords, polylineCoords, endCoords);
 
     // add distance/time away text to end location callout
-    const directionsDistanceText = `${Math.ceil(minutes)} minutes ` +
-      `(${DistanceAwayText(mi2ft(miles))})`;
-    const endLocationWithDescription = new Location({...endLocation,
-      markerDescription: directionsDistanceText
+    const endLocationWithDescription = new Location({
+      ...endLocation,
+      markerDescription: `${duration} (${distance})`,
     });
 
     PubSub.publish('showRouteOnMap', {
@@ -255,15 +254,16 @@ export default class DirectionsBar extends Component
         if (!data) {
           return;
         }
-        if (!data.error) {
-          let leg = data.trip.legs[0];
-          let maneuvers = leg.maneuvers;
-          let polyline = leg.shape;
-          let minutes = leg.summary.time / 60;
-          let miles = leg.summary.length;
+        if (data.status == 'OK') {
+          const route = data.routes[0];
+          const leg = route.legs[0];
+          const distance = leg.distance.text;
+          const duration = leg.duration.text;
+          const polyline = route.overview_polyline.points;
+          const maneuvers = leg.steps;
 
           this.showRouteOnMap(startLocation, endLocation, polyline,
-                              minutes, miles, maneuvers);
+                              duration, distance, maneuvers);
         } else {
             if (startLocation.id == CURRENT_LOCATION_ID) {
               this.GPSManager.getPosition(position => {
